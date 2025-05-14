@@ -1,11 +1,11 @@
 <script>
-import svelteLogo from "./assets/svelte.svg";
-import LineChart from "./components/LineChart.svelte";
-import * as d3 from "d3";
 
+import * as d3 from "d3";
+import LineChart from "./components/LineChart.svelte";
+
+// data import
 let rawData;
 let newData;
-
 d3.csv("../public/data/by_episode.csv")
   .then((data) => {
     rawData = data;
@@ -28,32 +28,23 @@ d3.csv("../public/data/by_episode.csv")
     console.error("Error loading the CSV file:", error);
   });
 
+// handle select and clear events 
+//  const handleSelect = event => {
+//     value = event.detail.value;
+//   };
+//   const handleClear = () => {
+//     value = null;
+//   };
+
 // $: console.log(rawData);
-$: console.log(newData);
+// $: console.log(newData);
 </script>
 
 <main>
-  <div>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>starting page</h1>
 
-  <p>TEST TEST TEST</p>
+  <p>First attempt at the line chart</p>
+   <LineChart data={newData} />
 </main>
 
 <style>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.svelte:hover {
-  filter: drop-shadow(0 0 2em #ff3e00aa);
-}
 </style>
