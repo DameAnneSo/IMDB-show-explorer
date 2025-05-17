@@ -12,7 +12,7 @@ import Line from "./Chart/Line.svelte";
 
 export let data;
 
-const xAccessor = (d) => +d.episodeNumber;
+const xAccessor = (d) => +d.episodeNumberOverall;
 const yAccessor = (d) => +d.episodeRating;
 
 let hoveredPoint = null;
@@ -91,8 +91,8 @@ const handleMouseLeave = () => {
     width={dimensions.width}
     height={dimensions.height}
     on:mousemove={handleMouseMove}
-    on:focus={handleMouseMove}
     on:mouseleave={handleMouseLeave}
+    on:focus={handleMouseMove}
     on:blur={handleMouseLeave}
   >
     <g
