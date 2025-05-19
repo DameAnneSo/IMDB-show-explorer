@@ -2,13 +2,13 @@
 import { setContext } from "svelte";
 import { writable } from "svelte/store";
 import * as d3 from "d3";
-// import Gradient from './Chart/Gradient.svelte';
-// import Area from './Chart/Area.svelte';
+import Gradient from "./Chart/Gradient.svelte";
+import Area from "./Chart/Area.svelte";
 import Line from "./Chart/Line.svelte";
-// import XAxis from './Chart/XAxis.svelte';
-// import YAxis from './Chart/YAxis.svelte';
-// import Point from './Chart/Point.svelte';
-// import Tooltip from './Chart/Tooltip.svelte';
+import XAxis from "./Chart/XAxis.svelte";
+import YAxis from "./Chart/YAxis.svelte";
+import Point from './Chart/Point.svelte';
+import Tooltip from './Chart/Tooltip.svelte';
 
 export let data;
 
@@ -17,7 +17,6 @@ const yAccessor = (d) => +d.episodeRating;
 
 let hoveredPoint = null;
 
-const formatYForTooltip = d3.format(",.0f");
 
 const gradientId = "gradient";
 
@@ -82,6 +81,12 @@ const handleMouseMove = (event) => {
 const handleMouseLeave = () => {
   hoveredPoint = null;
 };
+
+const formatX = d3.format(".0s");
+const formatY = d3.format(".0s");
+const formatYForTooltip = d3.format(",.1f");
+
+
 </script>
 
 <div class="wrapper" bind:clientWidth={width} style="height: {height}px">
@@ -98,7 +103,7 @@ const handleMouseLeave = () => {
     <g
       transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
     >
-      <!-- <defs>
+      <defs>
         <Gradient
           id={gradientId}
           x1="0"
@@ -107,16 +112,16 @@ const handleMouseLeave = () => {
           y2="100%"
           {gradientAttributes}
         />
-      </defs> -->
+      </defs>
 
-      <!-- <Area
+      <Area
         {data}
         xAccessor={xAccessorScaled}
         yAccessor={yAccessorScaled}
         y0Accessor={y0AccessorScaled}
         {interpolation}
         style="fill: url(#{gradientId})"
-      /> -->
+      />
 
       <Line
         {data}
@@ -125,23 +130,19 @@ const handleMouseLeave = () => {
         {interpolation}
       />
 
-      <!-- <XAxis scale={xScale} label="month" formatTick={formatX} />
+      <XAxis scale={xScale} label="episode number" formatTick={formatX} />
 
-      <YAxis
-        scale={yScale}
-        label="regular EI beneficiaries"
-        formatTick={formatY}
-      /> -->
-      <!-- 
+      <YAxis scale={yScale} label="episode rating" formatTick={formatY} />
+      
       {#if hoveredPoint}
         <Point
           x={xAccessorScaled(hoveredPoint)}
           y={yAccessorScaled(hoveredPoint)}
         />
-      {/if} -->
+      {/if}
     </g>
   </svg>
-  <!-- {#if hoveredPoint}
+  {#if hoveredPoint}
     <Tooltip
       xAccessor={xAccessor(hoveredPoint)}
       yAccessor={yAccessor(hoveredPoint)}
@@ -152,7 +153,7 @@ const handleMouseLeave = () => {
       {formatX}
       {formatYForTooltip}
     />
-  {/if} -->
+  {/if}
 </div>
 
 <style>

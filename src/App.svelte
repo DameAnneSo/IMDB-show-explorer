@@ -20,7 +20,7 @@ d3.csv("../data/by_episode.csv")
         seriesLink: d.seriesLink,
         episodeNumberinSeason: +d.episodeNumberinSeason,
         episodeNumberOverall: +d.episodeNumberOverall,
-        episodeRating: +d.episodeRating,
+        episodeRating: parseFloat(d.episodeRating),
         episodeSeason: +d.episodeSeason,
         episodeSynopsis: d.episodeSynopsis,
         episodeVotes: +d.episodeVotes,
@@ -54,7 +54,7 @@ d3.csv("../data/by_episode.csv")
 </script>
 
 <main>
-    <p>Select the show</p>
+    <p>Select a show</p>
   <div class="app">
     <!-- <Header serieTitle={value} /> -->
     <div class="selector">
