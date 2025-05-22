@@ -1,14 +1,14 @@
 <script>
-  export let scale;
-  export let label;
-  export let formatTick;
+export let scale;
+export let label;
+export let formatTick;
 
-  const numberOfTicks = (pixelsAvailable, pixelsPerTick = 50) =>
-    Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
+const numberOfTicks = (pixelsAvailable, pixelsPerTick = 50) =>
+  Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
 
-  $: [yMin, yMax] = scale.range();
+$: [yMin, yMax] = scale.range();
 
-  $: ticks = scale.ticks(numberOfTicks(yMax - yMin));
+$: ticks = scale.ticks(numberOfTicks(yMax - yMin));
 </script>
 
 <g>
@@ -18,30 +18,36 @@
     <g transform={`translate(0 ${scale(tick)})`}>
       <line class="axis__tick-line" x1={0} x2={-6} />
       <text class="axis__tick-text" dx={-10} dy="0.34em" text-anchor="end">
-        {formatTick(tick)}
+        {formatTick(tick)}{tick === Math.max(...ticks) ? "/10" : ""}
       </text>
     </g>
   {/each}
 
-  <text class="axis__label" dx={4} y={-25} dy="0.8em">
+  <text class="axis__label" dx={0} y={-25} dy="0.8em" text-anchor="end">
     {label}
   </text>
 </g>
 
 <style>
-  .axis__line {
-    stroke: #bdc3c7;
-  }
+.axis__line {
+  stroke: var(--color-neutral-300);
+}
 
-  .axis__tick-line {
-    stroke: #bdc3c7;
-  }
+.axis__tick-line {
+  stroke: var(--color-neutral-300);
+}
 
-  .axis__tick-text {
-    fill: #282828;
-  }
+.axis__tick-text {
+  fill: var(--color-neutral-600);
+  font-size: 0.75rem;
+}
 
-  .axis__label {
-    fill: #282828;
-  }
+.axis__label {
+  fill: var(--color-neutral-700);
+  font-style: italic;
+}
+
+.axis__label {
+  font-size: 12px;
+}
 </style>

@@ -1,19 +1,19 @@
 <script>
-  import { getContext } from 'svelte';
+import { getContext } from "svelte";
 
-  export let scale;
-  export let label;
-  export let formatTick;
+export let scale;
+export let label;
+export let formatTick;
 
-  const { dimensions: dimensionsStore } = getContext('chart');
-  $: dimensions = $dimensionsStore;
+const { dimensions: dimensionsStore } = getContext("chart");
+$: dimensions = $dimensionsStore;
 
-  const numberOfTicks = (pixelsAvailable, pixelsPerTick = 140) =>
-    Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
+const numberOfTicks = (pixelsAvailable, pixelsPerTick = 140) =>
+  Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
 
-  $: [xMin, xMax] = scale.range();
+$: [xMin, xMax] = scale.range();
 
-  $: ticks = scale.ticks(numberOfTicks(xMax - xMin));
+$: ticks = scale.ticks(numberOfTicks(xMax - xMin));
 </script>
 
 <g transform={`translate(0 ${dimensions.boundedHeight})`}>
@@ -28,30 +28,31 @@
     </g>
   {/each}
 
-  <text
-    class="axis__label"
-    x={scale.range()[1] / 2}
-    text-anchor="middle"
-    y={50}
-  >
+  <text class="axis__label" x={scale.range()[1] + 5} text-anchor="end" y={40}>
     {label}
   </text>
 </g>
 
 <style>
-  .axis__line {
-    stroke: #bdc3c7;
-  }
+.axis__line {
+  stroke: var(--color-neutral-300);
+}
 
-  .axis__tick-line {
-    stroke: #bdc3c7;
-  }
+.axis__tick-line {
+  stroke: var(--color-neutral-300);
+}
 
-  .axis__tick-text {
-    fill: #282828;
-  }
+.axis__tick-text {
+  fill: var(--color-neutral-600);
+  font-size: 0.75rem;
+}
 
-  .axis__label {
-    fill: #282828;
-  }
+.axis__label {
+  fill: var(--color-neutral-700);
+  font-style: italic;
+}
+
+.axis__label {
+  font-size: 12px;
+}
 </style>

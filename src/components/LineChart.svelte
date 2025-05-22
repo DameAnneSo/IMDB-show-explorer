@@ -7,8 +7,8 @@ import Area from "./Chart/Area.svelte";
 import Line from "./Chart/Line.svelte";
 import XAxis from "./Chart/XAxis.svelte";
 import YAxis from "./Chart/YAxis.svelte";
-import Point from './Chart/Point.svelte';
-import Tooltip from './Chart/Tooltip.svelte';
+import Point from "./Chart/Point.svelte";
+import Tooltip from "./Chart/Tooltip.svelte";
 
 export let data;
 
@@ -17,7 +17,6 @@ const yAccessor = (d) => +d.episodeRating;
 
 let hoveredPoint = null;
 
-
 const gradientId = "gradient";
 
 const gradientAttributes = [
@@ -25,7 +24,8 @@ const gradientAttributes = [
   { offset: "85%", stopColor: "#ffffff", stopOpacity: "0" },
 ];
 
-const interpolation = d3.curveMonotoneX;
+// const interpolation = d3.curveMonotoneX;
+const interpolation = d3.curveLinear;
 
 const bisectX = d3.bisector(xAccessor).left;
 
@@ -82,11 +82,9 @@ const handleMouseLeave = () => {
   hoveredPoint = null;
 };
 
-const formatX = d3.format(".0s");
+const formatX = d3.format("d");
 const formatY = d3.format(".0s");
 const formatYForTooltip = d3.format(",.1f");
-
-
 </script>
 
 <div class="wrapper" bind:clientWidth={width} style="height: {height}px">
@@ -132,8 +130,8 @@ const formatYForTooltip = d3.format(",.1f");
 
       <XAxis scale={xScale} label="episode number" formatTick={formatX} />
 
-      <YAxis scale={yScale} label="episode rating" formatTick={formatY} />
-      
+      <YAxis scale={yScale} label="rating" formatTick={formatY} />
+
       {#if hoveredPoint}
         <Point
           x={xAccessorScaled(hoveredPoint)}

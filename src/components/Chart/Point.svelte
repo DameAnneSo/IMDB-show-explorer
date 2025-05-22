@@ -1,6 +1,6 @@
 <script>
-  export let x;
-  export let y;
+export let x;
+export let y;
 </script>
 
 <g>
@@ -8,7 +8,7 @@
 </g>
 
 <style>
-  .point {
-    fill: #4427ca;
-  }
+.point {
+  fill: var(--color-primary-dark);
+}
 </style>

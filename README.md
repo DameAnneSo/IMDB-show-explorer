@@ -11,5 +11,4 @@ Creating an exploratory tool + custom analyses on the data.
 - Leandro
 - Anne-Sophie
 
-3/ create the chart 
-4/ 
+Line chart template is from Leandro's project: https://github.com/leandrocollares/ei-beneficiaries-in-canada/tree/main
