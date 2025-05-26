@@ -17,13 +17,6 @@ const yAccessor = (d) => +d.episodeRating;
 
 let hoveredPoint = null;
 
-// Remove gradient-related code
-// const gradientId = "gradient";
-// const gradientAttributes = [
-//   { offset: "0%", stopColor: "#4427ca", stopOpacity: "0.6" },
-//   { offset: "85%", stopColor: "#ffffff", stopOpacity: "0" },
-// ];
-
 const interpolation = d3.curveLinear;
 
 const bisectX = d3.bisector(xAccessor).left;
@@ -106,28 +99,6 @@ const formatYForTooltip = d3.format(",.1f");
         xScale={xScale}
         boundedHeight={dimensions.boundedHeight}
       />
-
-      <!-- Remove gradient definition -->
-      <!-- <defs>
-        <Gradient
-          id={gradientId}
-          x1="0"
-          y1="0"
-          x2="0"
-          y2="100%"
-          {gradientAttributes}
-        />
-      </defs> -->
-
-      <!-- Update Area to not use gradient -->
-      <!-- <Area
-        {data}
-        xAccessor={xAccessorScaled}
-        yAccessor={yAccessorScaled}
-        y0Accessor={y0AccessorScaled}
-        {interpolation}
-        style="fill: rgba(68, 39, 202, 0.1); stroke: none;"
-      /> -->
 
       <Line
         {data}

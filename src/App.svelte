@@ -61,9 +61,6 @@ $: highestRating =
   filteredData.length > 0 ? d3.max(filteredData, (d) => d.episodeRating) : null;
 $: lowestRating =
   filteredData.length > 0 ? d3.min(filteredData, (d) => d.episodeRating) : null;
-
-// // $: console.log(rawData);
-// // $: console.log(newData);
 </script>
 
 <main>

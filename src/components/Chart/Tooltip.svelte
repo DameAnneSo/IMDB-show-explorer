@@ -23,9 +23,6 @@ $: console.log(data.seriesTitle);
   <div>
     episode {formatX(xAccessor)}
     <span class="tooltip_data">{formatYForTooltip(yAccessor)}/10 </span>
-   
-    <!-- season {data[0].episodeSeason} -->
-    <!-- votes: {data[0].episodeVotes} -->
   </div>
 </div>
 
