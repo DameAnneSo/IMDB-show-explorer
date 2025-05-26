@@ -21,8 +21,9 @@ $: console.log(data.seriesTitle);
   style="transform: translate(calc(-50% + {x}px), calc(-100% + {y}px))"
 >
   <div>
-    <span class="tooltip_data">{formatYForTooltip(yAccessor)}/10 </span>
     episode {formatX(xAccessor)}
+    <span class="tooltip_data">{formatYForTooltip(yAccessor)}/10 </span>
+   
     <!-- season {data[0].episodeSeason} -->
     <!-- votes: {data[0].episodeVotes} -->
   </div>
