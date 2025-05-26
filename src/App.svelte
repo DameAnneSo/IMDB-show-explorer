@@ -70,16 +70,16 @@ $: lowestRating =
   <Header seriesTitle={value} />
 
   <p>Select a show</p>
+  <div class="selector">
+    <Select
+      items={seriesTitleArray}
+      {value}
+      placeholder="Select a series..."
+      on:select={handleSelect}
+      on:clear={handleClear}
+    />
+  </div>
   <div class="app">
-    <div class="selector">
-      <Select
-        items={seriesTitleArray}
-        {value}
-        placeholder="Select a series..."
-        on:select={handleSelect}
-        on:clear={handleClear}
-      />
-    </div>
     {#if newData && value}
       <LineChart data={newData.filter((d) => d.seriesTitle === value)} />
     {/if}
@@ -103,7 +103,7 @@ $: lowestRating =
 </main>
 
 <style>
-.selector p {
+.selector {
   text-align: left;
 }
 

@@ -2,7 +2,7 @@
 import { setContext } from "svelte";
 import { writable } from "svelte/store";
 import * as d3 from "d3";
-import Gradient from "./Chart/Gradient.svelte";
+import SeasonBands from "./Chart/BandsSeasons.svelte";
 import Area from "./Chart/Area.svelte";
 import Line from "./Chart/Line.svelte";
 import XAxis from "./Chart/XAxis.svelte";
@@ -17,14 +17,13 @@ const yAccessor = (d) => +d.episodeRating;
 
 let hoveredPoint = null;
 
-const gradientId = "gradient";
+// Remove gradient-related code
+// const gradientId = "gradient";
+// const gradientAttributes = [
+//   { offset: "0%", stopColor: "#4427ca", stopOpacity: "0.6" },
+//   { offset: "85%", stopColor: "#ffffff", stopOpacity: "0" },
+// ];
 
-const gradientAttributes = [
-  { offset: "0%", stopColor: "#4427ca", stopOpacity: "0.6" },
-  { offset: "85%", stopColor: "#ffffff", stopOpacity: "0" },
-];
-
-// const interpolation = d3.curveMonotoneX;
 const interpolation = d3.curveLinear;
 
 const bisectX = d3.bisector(xAccessor).left;
@@ -35,7 +34,7 @@ $: height = 0.65 * width;
 const margins = {
   marginTop: 40,
   marginRight: 20,
-  marginBottom: 65,
+  marginBottom: 40,
   marginLeft: 45,
 };
 
@@ -101,7 +100,15 @@ const formatYForTooltip = d3.format(",.1f");
     <g
       transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
     >
-      <defs>
+      <!-- Season bands in background -->
+      <SeasonBands 
+        {data}
+        xScale={xScale}
+        boundedHeight={dimensions.boundedHeight}
+      />
+
+      <!-- Remove gradient definition -->
+      <!-- <defs>
         <Gradient
           id={gradientId}
           x1="0"
@@ -110,16 +117,17 @@ const formatYForTooltip = d3.format(",.1f");
           y2="100%"
           {gradientAttributes}
         />
-      </defs>
+      </defs> -->
 
-      <Area
+      <!-- Update Area to not use gradient -->
+      <!-- <Area
         {data}
         xAccessor={xAccessorScaled}
         yAccessor={yAccessorScaled}
         y0Accessor={y0AccessorScaled}
         {interpolation}
-        style="fill: url(#{gradientId})"
-      />
+        style="fill: rgba(68, 39, 202, 0.1); stroke: none;"
+      /> -->
 
       <Line
         {data}
@@ -150,6 +158,7 @@ const formatYForTooltip = d3.format(",.1f");
       marginTop={margins.marginTop}
       {formatX}
       {formatYForTooltip}
+      {data}
     />
   {/if}
 </div>
