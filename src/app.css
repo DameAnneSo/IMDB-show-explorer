@@ -79,7 +79,7 @@ body {
 
 h1 {
   font-size: 2.5rem;
-  line-height: 1.1;
+  line-height: 1;
 }
 
 
@@ -99,7 +99,7 @@ p {
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.5rem 2rem;
   text-align: center;
 }
 
