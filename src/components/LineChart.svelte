@@ -34,7 +34,7 @@ $: height = 0.65 * width;
 const margins = {
   marginTop: 40,
   marginRight: 20,
-  marginBottom: 40,
+  marginBottom: 45,
   marginLeft: 45,
 };
 
