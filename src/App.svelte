@@ -67,39 +67,34 @@ $: lowestRating =
 </script>
 
 <main>
-  <Header seriesTitle={value} />
-
-  <p>Select a show</p>
-  <div class="selector">
-    <Select
-      items={seriesTitleArray}
-      {value}
-      placeholder="Select a series..."
-      on:select={handleSelect}
-      on:clear={handleClear}
-    />
-  </div>
   <div class="app">
+    <Header seriesTitle={value} />
+    <p>Select a show</p>
+    <div class="selector">
+      <Select
+        items={seriesTitleArray}
+        {value}
+        placeholder="Select a series..."
+        on:select={handleSelect}
+        on:clear={handleClear}
+      />
+    </div>
     {#if newData && value}
       <LineChart data={newData.filter((d) => d.seriesTitle === value)} />
     {/if}
+    <div class="wrapper">
+      {#if value && highestRating !== null && lowestRating !== null}
+        <p>
+          Highest rating: {highestRating.toFixed(1)} | Lowest rating: {lowestRating.toFixed(1)}
+        </p>
+      {:else if value}
+        <p>Loading ratings...</p>
+      {:else}
+        <p>Select a series to see ratings</p>
+      {/if}
+    </div>
+    <Footer />
   </div>
-
-  <div class="wrapper">
-    {#if value && highestRating !== null && lowestRating !== null}
-      <p>
-        Highest rating: {highestRating.toFixed(1)} | Lowest rating: {lowestRating.toFixed(
-          1
-        )}
-      </p>
-    {:else if value}
-      <p>Loading ratings...</p>
-    {:else}
-      <p>Select a series to see ratings</p>
-    {/if}
-  </div>
-
-  <Footer />
 </main>
 
 <style>
