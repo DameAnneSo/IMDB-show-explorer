@@ -104,6 +104,7 @@ $: lowestRating =
 
 <style>
 .selector {
+  width: 450px;
   text-align: left;
 }
 
