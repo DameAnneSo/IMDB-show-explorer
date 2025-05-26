@@ -1,3 +1,35 @@
+/* add colour variables */
+:root {
+  --color-primary: #6a00f0; 
+  --color-primary-link: #a66aff;
+  --color-primary-active: #dc267f;
+  --color-primary-dark: #4b00a3;
+
+  --color-neutral-50: oklch(0.985 0 0);
+  --color-neutral-100: oklch(0.97 0 0);
+  --color-neutral-200: oklch(0.922 0 0);
+  --color-neutral-300: oklch(0.87 0 0);
+  --color-neutral-400: oklch(0.708 0 0);
+  --color-neutral-500: oklch(0.556 0 0);
+  --color-neutral-600: oklch(0.439 0 0);
+  --color-neutral-700: oklch(0.371 0 0);
+  --color-neutral-800: oklch(0.269 0 0);
+  --color-neutral-900: oklch(0.205 0 0);
+  --color-neutral-950: oklch(0.145 0 0);
+
+  --color-purple-50: #f5f0ff;
+  --color-purple-100: #e8dbff;
+  --color-purple-200: #d8bfff;
+  --color-purple-300: #c29aff;
+  --color-purple-400: #a66aff;
+  --color-purple-500: #8f3eff;
+  --color-purple-600: #7b1fff;
+  --color-purple-700: #6a00f0;
+  --color-purple-800: #5a00c7;
+  --color-purple-900: #4b00a3;
+  --color-purple-950: #37007a;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -15,12 +47,27 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color:var(--color-primary);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--color-primary-light);
 }
+
+a {
+  color: var(--color-primary);
+  text-decoration-thickness: 0.0625rem;
+  text-underline-offset: 0.1em;
+}
+
+a:visited {
+  color: var(--color-primary-dark);
+}
+
+a:active {
+  color: var(--color-primary-active)
+}
+
 
 body {
   margin: 0;
@@ -31,10 +78,20 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 2.5rem;
+  line-height: 1;
 }
 
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 1;
+  text-align: left;
+}
+
+p {
+  text-align: left;
+}
 .card {
   padding: 2em;
 }
@@ -42,7 +99,7 @@ h1 {
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.5rem 2rem;
   text-align: center;
 }
 
@@ -58,7 +115,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--color-primary);
 }
 button:focus,
 button:focus-visible {
@@ -68,12 +125,13 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: var(--color-neutral-50);
   }
   a:hover {
-    color: #747bff;
+    color: var(--color-primary);
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--color-neutral-50);
   }
 }
+
