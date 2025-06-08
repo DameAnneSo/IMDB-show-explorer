@@ -13,7 +13,8 @@
     disabled = false,
     selectedValues = $bindable([]),
     onchange = undefined,
-    id = undefined
+    id = undefined,
+    showClearButton = true // Clear button visibility
   } = $props();
   
   // Internal state
@@ -86,6 +87,16 @@
     }
   }
 
+  const clearAll = () => {
+    selectedValues = [];
+    inputValue = '';
+    // Dispatch custom event
+    dispatchChangeEvent(selectedValues);
+    if (onchange) {
+      onchange({ detail: { selected: selectedValues } });
+    }
+  }
+
   const handleKeydown = (event) => {
     if (event.key === 'Enter' && inputValue && filteredOptions.length > 0) {
       selectOption(filteredOptions[0]);
@@ -149,17 +160,33 @@
       </div>
     {/each}
     
-          <input 
-      type="text"
-      bind:this={inputElement}
-      bind:value={inputValue}
-      onkeydown={handleKeydown}
-      onfocus={handleFocus}
-      placeholder={selectedValues.length === 0 ? placeholder : ''}
-      class="flex-grow outline-none px-1 py-1 min-w-[50px] bg-transparent {disabled ? 'cursor-not-allowed' : ''}"
-      disabled={disabled}
-      aria-autocomplete="list"
-    />
+    <div class="flex items-center flex-grow">
+      <input 
+        type="text"
+        bind:this={inputElement}
+        bind:value={inputValue}
+        onkeydown={handleKeydown}
+        onfocus={handleFocus}
+        placeholder={selectedValues.length === 0 ? placeholder : ''}
+        class="flex-grow outline-none px-1 py-1 min-w-[50px] bg-transparent {disabled ? 'cursor-not-allowed' : ''}"
+        disabled={disabled}
+        aria-autocomplete="list"
+      />
+      
+      {#if showClearButton && selectedValues.length > 0 && !disabled}
+        <button
+          type="button"
+          class="ml-2 text-gray-400 hover:text-gray-600 focus:outline-none flex-shrink-0"
+          onclick={(e) => { e.stopPropagation(); clearAll(); }}
+          aria-label="Clear all selections"
+          title="Clear all"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      {/if}
+    </div>
   </div>
   
   {#if isOpen && filteredOptions.length > 0}

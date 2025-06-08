@@ -104,6 +104,19 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     selectedSeasons = [];
   };
 
+  // Individual clear functions for each category
+  const clearGenres = () => {
+    selectedGenres = [];
+  };
+
+  const clearLanguages = () => {
+    selectedLanguages = [];
+  };
+
+  const clearSeasons = () => {
+    selectedSeasons = [];
+  };
+
   const hasActiveFilters = $derived(
     selectedGenres.length > 0 || selectedLanguages.length > 0 || selectedSeasons.length > 0
   );
@@ -127,9 +140,20 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
   <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV Shows</h1>
   <div class="grid md:grid-cols-3 gap-4 mb-6">
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2" for="genres-select">
-        Genres
-      </label>
+      <div class="flex items-center justify-between mb-2">
+        <label class="block text-sm font-medium text-gray-700" for="genres-select">
+          Genres
+        </label>
+        {#if selectedGenres.length > 0}
+          <button
+            onclick={clearGenres}
+            class="text-xs text-red-600 hover:text-red-800 font-medium"
+            title="Clear genre filters"
+          >
+            Clear ({selectedGenres.length})
+          </button>
+        {/if}
+      </div>
       <MultiSelect
         options={availableGenres}
         bind:selectedValues={selectedGenres}
@@ -140,9 +164,20 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     </div>
     
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2" for="languages-select">
-        Languages
-      </label>
+      <div class="flex items-center justify-between mb-2">
+        <label class="block text-sm font-medium text-gray-700" for="languages-select">
+          Languages
+        </label>
+        {#if selectedLanguages.length > 0}
+          <button
+            onclick={clearLanguages}
+            class="text-xs text-red-600 hover:text-red-800 font-medium"
+            title="Clear language filters"
+          >
+            Clear ({selectedLanguages.length})
+          </button>
+        {/if}
+      </div>
       <MultiSelect
         options={availableLanguages}
         bind:selectedValues={selectedLanguages}
@@ -153,9 +188,20 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     </div>
     
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2" for="seasons-select">
-        Number of Seasons
-      </label>
+      <div class="flex items-center justify-between mb-2">
+        <label class="block text-sm font-medium text-gray-700" for="seasons-select">
+          Number of Seasons
+        </label>
+        {#if selectedSeasons.length > 0}
+          <button
+            onclick={clearSeasons}
+            class="text-xs text-red-600 hover:text-red-800 font-medium"
+            title="Clear season filters"
+          >
+            Clear ({selectedSeasons.length})
+          </button>
+        {/if}
+      </div>
       <MultiSelect
         options={availableSeasons}
         bind:selectedValues={selectedSeasons}
