@@ -14,7 +14,7 @@
     selectedValues = $bindable([]),
     onchange = undefined,
     id = undefined,
-    showClearButton = true // Clear button visibility
+    showClearButton = true // New prop to control clear button visibility
   } = $props();
   
   // Internal state
@@ -95,6 +95,22 @@
     if (onchange) {
       onchange({ detail: { selected: selectedValues } });
     }
+  }
+
+  const selectAll = () => {
+    // Select all available options that aren't already selected
+    const unselectedOptions = options.filter(opt => !selectedValues.includes(opt));
+    selectedValues = [...selectedValues, ...unselectedOptions];
+    inputValue = '';
+    // Keep dropdown open after selection
+    isOpen = true;
+    // Dispatch custom event
+    dispatchChangeEvent(selectedValues);
+    if (onchange) {
+      onchange({ detail: { selected: selectedValues } });
+    }
+    // Focus input after selection
+    setTimeout(() => inputElement?.focus(), 0);
   }
 
   const handleKeydown = (event) => {
@@ -189,12 +205,26 @@
     </div>
   </div>
   
-  {#if isOpen && filteredOptions.length > 0}
+  {#if isOpen && (filteredOptions.length > 0 || options.length > selectedValues.length)}
     <div 
       id="options-listbox"
       class="absolute z-10 w-full mt-1 max-h-[{maxHeight}] overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg"
       role="listbox"
     >
+      <!-- Select All option - only show if there are unselected options and no search filter -->
+      {#if !inputValue && options.length > selectedValues.length}
+        <div 
+          class="px-4 py-2 hover:bg-blue-100 cursor-pointer border-b border-gray-200 font-medium text-blue-700 bg-blue-25"
+          onclick={(e) => { e.stopPropagation(); selectAll(); }}
+          onkeydown={(e) => e.key === 'Enter' && selectAll()}
+          role="option"
+          aria-selected="false"
+          tabindex="0"
+        >
+          ✓ Select All ({options.length - selectedValues.length} remaining)
+        </div>
+      {/if}
+      
       {#each filteredOptions as option (option)}
         <div 
           class="px-4 py-2 hover:bg-blue-50 cursor-pointer"
