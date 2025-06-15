@@ -3,73 +3,74 @@
   import RangeSlider from './lib/RangeSlider.svelte';
   import * as d3 from 'd3';
   
-  const csvData = `name,genres,languages,seasons
-Line of Duty,thriller,"English",6
-Breaking Bad,crime drama,"English",5
-Money Heist,heist thriller,"Spanish",5
-Dark,sci-fi thriller,"German",3
-The Crown,biographical drama,"English",6
-Narcos,crime drama,"Spanish, English",3
-Stranger Things,sci-fi/horror,"English",4
-Borgen,political drama,"Danish",4
-Fauda,action thriller,"Hebrew, Arabic",4
-The Bridge,crime thriller,"Swedish, Danish",4`;
-
   let shows = $state([]);
   let selectedGenres = $state([]);
   let selectedLanguages = $state([]);
-  let maxSeasons = $state(6); // Dynamically set
+  let maxSeasons = $state(12);
   
   let availableGenres = $state([]);
   let availableLanguages = $state([]);
   let minSeasonsInDataset = $state(1);
-  let maxSeasonsInDataset = $state(6);
+  let maxSeasonsInDataset = $state(12);
+  let isLoading = $state(true);
+  let loadError = $state(null);
 
-  const parseCSVData = () => {
-    const showData = d3.csvParse(csvData, (d) => {
-      return {
-        name: d.name?.trim() || '',
+  const loadCSVData = async () => {
+    try {
+      isLoading = true;
+      loadError = null;
+      
+      const csvData = await d3.csv('/public/data/series.csv');
+      
+      const showData = csvData.map(d => ({
+        name: d.title?.trim() || '',
         genres: d.genres?.trim() || '',
-        languages: d.languages?.replace(/"/g, '').trim() || '',
+        languages: d.language?.trim() || '',
         seasons: parseInt(d.seasons) || 0
-      };
-    });
+      }));
 
-    shows = showData;
+      shows = showData;
 
-    const genresSet = new Set();
-    const languagesSet = new Set();
-    let minSeasons = Infinity;
-    let maxSeasonsFound = 0;
+      const genresSet = new Set();
+      const languagesSet = new Set();
+      let minSeasons = Infinity;
+      let maxSeasonsFound = 0;
 
-    showData.forEach(show => {
-      if (show.genres) {
-        show.genres.split(/[,/]/).forEach(genre => {
-          const cleanGenre = genre.trim();
-          if (cleanGenre) genresSet.add(cleanGenre);
-        });
-      }
+      showData.forEach(show => {
+        if (show.genres) {
+          show.genres.split(',').forEach(genre => {
+            const cleanGenre = genre.trim();
+            if (cleanGenre) genresSet.add(cleanGenre);
+          });
+        }
 
-      if (show.languages) {
-        show.languages.split(',').forEach(lang => {
-          const cleanLang = lang.trim();
-          if (cleanLang) languagesSet.add(cleanLang);
-        });
-      }
+        if (show.languages) {
+          show.languages.split(',').forEach(lang => {
+            const cleanLang = lang.trim();
+            if (cleanLang) languagesSet.add(cleanLang);
+          });
+        }
 
-      if (show.seasons > 0) {
-        minSeasons = Math.min(minSeasons, show.seasons);
-        maxSeasonsFound = Math.max(maxSeasonsFound, show.seasons);
-      }
-    });
+        if (show.seasons > 0) {
+          minSeasons = Math.min(minSeasons, show.seasons);
+          maxSeasonsFound = Math.max(maxSeasonsFound, show.seasons);
+        }
+      });
 
-    availableGenres = Array.from(genresSet).sort();
-    availableLanguages = Array.from(languagesSet).sort();
-    minSeasonsInDataset = minSeasons === Infinity ? 1 : minSeasons;
-    maxSeasonsInDataset = maxSeasonsFound;
-    
-    // Set initial slider value to maximum seasons
-    maxSeasons = maxSeasonsInDataset;
+      availableGenres = Array.from(genresSet).sort();
+      availableLanguages = Array.from(languagesSet).sort();
+      minSeasonsInDataset = minSeasons === Infinity ? 1 : minSeasons;
+      maxSeasonsInDataset = maxSeasonsFound;
+      
+      // Set initial slider value to maximum seasons
+      maxSeasons = maxSeasonsInDataset;
+      
+    } catch (error) {
+      console.error('Error loading CSV data:', error);
+      loadError = 'Failed to load series data. Please check that the file exists at /public/data/series.csv';
+    } finally {
+      isLoading = false;
+    }
   }
 
   const filteredShows = $derived(() => {
@@ -77,7 +78,7 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     
     return shows.filter(show => {
       if (selectedGenres.length > 0) {
-        const showGenres = show.genres.split(/[,/]/).map(g => g.trim());
+        const showGenres = show.genres.split(',').map(g => g.trim());
         const hasGenre = selectedGenres.some(selectedGenre => 
           showGenres.some(showGenre => 
             showGenre.toLowerCase().includes(selectedGenre.toLowerCase())
@@ -130,8 +131,6 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     maxSeasons < maxSeasonsInDataset
   );
 
-  parseCSVData();
-
   const handleGenreChange = (event) => {
     console.log('Genres changed:', event.detail.selected);
   }
@@ -143,11 +142,36 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
   const handleSeasonsChange = (event) => {
     console.log('Max seasons changed:', event.detail.value);
   }
+
+  loadCSVData();
 </script>
 
 <main class="p-6 max-w-4xl mx-auto">
   <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV Shows</h1>
-  <div class="grid md:grid-cols-3 gap-4 mb-6">
+  
+  {#if isLoading}
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <span class="ml-3 text-gray-600">Loading series data...</span>
+    </div>
+  {:else if loadError}
+    <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Error Loading Data</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>{loadError}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {:else}
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
     <div>
       <div class="flex items-center justify-between mb-2">
         <label class="block text-sm font-medium text-gray-700" for="genres-select">
@@ -279,4 +303,5 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
       </div>
     {/if}
   </div>
+  {/if}
 </main>
