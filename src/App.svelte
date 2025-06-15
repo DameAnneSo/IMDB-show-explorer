@@ -1,5 +1,6 @@
 <script>
   import MultiSelect from './lib/MultiSelect.svelte';
+  import RangeSlider from './lib/RangeSlider.svelte';
   import * as d3 from 'd3';
   
   const csvData = `name,genres,languages,seasons
@@ -17,11 +18,12 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
   let shows = $state([]);
   let selectedGenres = $state([]);
   let selectedLanguages = $state([]);
-  let selectedSeasons = $state([]);
+  let maxSeasons = $state(6); // Dynamically set
   
   let availableGenres = $state([]);
   let availableLanguages = $state([]);
-  let availableSeasons = $state([]);
+  let minSeasonsInDataset = $state(1);
+  let maxSeasonsInDataset = $state(6);
 
   const parseCSVData = () => {
     const showData = d3.csvParse(csvData, (d) => {
@@ -37,7 +39,8 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
 
     const genresSet = new Set();
     const languagesSet = new Set();
-    const seasonsSet = new Set();
+    let minSeasons = Infinity;
+    let maxSeasonsFound = 0;
 
     showData.forEach(show => {
       if (show.genres) {
@@ -55,13 +58,18 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
       }
 
       if (show.seasons > 0) {
-        seasonsSet.add(show.seasons.toString());
+        minSeasons = Math.min(minSeasons, show.seasons);
+        maxSeasonsFound = Math.max(maxSeasonsFound, show.seasons);
       }
     });
 
     availableGenres = Array.from(genresSet).sort();
     availableLanguages = Array.from(languagesSet).sort();
-    availableSeasons = Array.from(seasonsSet).sort((a, b) => parseInt(a) - parseInt(b));
+    minSeasonsInDataset = minSeasons === Infinity ? 1 : minSeasons;
+    maxSeasonsInDataset = maxSeasonsFound;
+    
+    // Set initial slider value to maximum seasons
+    maxSeasons = maxSeasonsInDataset;
   }
 
   const filteredShows = $derived(() => {
@@ -88,10 +96,9 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
         if (!hasLanguage) return false;
       }
 
-      if (selectedSeasons.length > 0) {
-        if (!selectedSeasons.includes(show.seasons.toString())) {
-          return false;
-        }
+      // Filter by maximum number of seasons
+      if (show.seasons > maxSeasons) {
+        return false;
       }
 
       return true;
@@ -101,7 +108,7 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
   const clearAllFilters = () => {
     selectedGenres = [];
     selectedLanguages = [];
-    selectedSeasons = [];
+    maxSeasons = maxSeasonsInDataset; // Reset to maximum
   };
 
   // Individual clear functions for each category
@@ -113,12 +120,14 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     selectedLanguages = [];
   };
 
-  const clearSeasons = () => {
-    selectedSeasons = [];
+  const resetSeasons = () => {
+    maxSeasons = maxSeasonsInDataset;
   };
 
   const hasActiveFilters = $derived(
-    selectedGenres.length > 0 || selectedLanguages.length > 0 || selectedSeasons.length > 0
+    selectedGenres.length > 0 || 
+    selectedLanguages.length > 0 || 
+    maxSeasons < maxSeasonsInDataset
   );
 
   parseCSVData();
@@ -131,8 +140,8 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     console.log('Languages changed:', event.detail.selected);
   }
 
-  const handleSeasonChange = (event) => {
-    console.log('Seasons changed:', event.detail.selected);
+  const handleSeasonsChange = (event) => {
+    console.log('Max seasons changed:', event.detail.value);
   }
 </script>
 
@@ -189,26 +198,30 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
     
     <div>
       <div class="flex items-center justify-between mb-2">
-        <label class="block text-sm font-medium text-gray-700" for="seasons-select">
-          Number of Seasons
+        <label class="block text-sm font-medium text-gray-700" for="seasons-slider">
+          Maximum Seasons
         </label>
-        {#if selectedSeasons.length > 0}
+        {#if maxSeasons < maxSeasonsInDataset}
           <button
-            onclick={clearSeasons}
+            onclick={resetSeasons}
             class="text-xs text-red-600 hover:text-red-800 font-medium"
-            title="Clear season filters"
+            title="Reset season filter"
           >
-            Clear ({selectedSeasons.length})
+            Reset
           </button>
         {/if}
       </div>
-      <MultiSelect
-        options={availableSeasons}
-        bind:selectedValues={selectedSeasons}
-        placeholder="Select seasons..."
-        onchange={handleSeasonChange}
-        id="seasons-select"
+      <RangeSlider
+        min={minSeasonsInDataset}
+        max={maxSeasonsInDataset}
+        bind:value={maxSeasons}
+        id="seasons-slider"
+        onchange={handleSeasonsChange}
+        showValue={true}
       />
+      <div class="text-xs text-gray-600 mt-1">
+        Shows with {maxSeasons} season{maxSeasons !== 1 ? 's' : ''} or fewer
+      </div>
     </div>
   </div>
 
@@ -232,8 +245,8 @@ The Bridge,crime thriller,"Swedish, Danish",4`;
       {#if selectedLanguages.length > 0}
         <div><strong>Languages:</strong> {selectedLanguages.join(', ')}</div>
       {/if}
-      {#if selectedSeasons.length > 0}
-        <div><strong>Seasons:</strong> {selectedSeasons.join(', ')}</div>
+      {#if maxSeasons < maxSeasonsInDataset}
+        <div><strong>Maximum Seasons:</strong> {maxSeasons}</div>
       {/if}
       {#if !hasActiveFilters}
         <div class="text-gray-500 italic">No filters applied</div>
