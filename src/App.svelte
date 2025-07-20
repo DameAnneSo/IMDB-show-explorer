@@ -24,29 +24,30 @@
       
       // Load both CSV files
       const [seriesData, episodeData] = await Promise.all([
-        d3.csv('/public/data/seriesv3.csv'),
-        d3.csv('/public/data/episodes.csv')
+        d3.csv('/public/data/series_test.csv'),
+        d3.csv('/public/data/episodes_test.csv')
       ]);
       
       const showData = seriesData.map(d => ({
         name: d.title?.trim() || '',
         genres: d.genres?.trim() || '',
-        languages: d.language?.trim() || '',
+        languages: d.languages?.trim() || '',
         seasons: parseInt(d.seasons) || 0,
         episodes: parseInt(d.episodes) || 0,
-        overall_rating: parseFloat(d.overall_rating) || 0,
+        overall_ratings: parseFloat(d.overall_ratings) || 0,
       }));
 
       const episodesData = episodeData.map(d => ({
+        seriesRank: parseInt(d.seriesRank) || 0,
         seriesTitle: d.seriesTitle?.trim() || '',
-        seriesLink: d.seriesLink?.trim() || '',
-        seriesEpisodesLink: d.seriesEpisodesLink?.trim() || '',
+        // seriesLink: d.seriesLink?.trim() || '',
+        // seriesEpisodesLink: d.seriesEpisodesLink?.trim() || '',
+        seriesNumberOfEpisodes: parseInt(d.seriesNumberOfEpisodes) || 0,
         episodeSeason: parseInt(d.episodeSeason) || 0,
-        episodeNumber: parseInt(d.episodeNumber) || 0,
-        episodeTitle: d.episodeTitle?.trim() || '',
-        episodeDate: d.episodeDate?.trim() || '',
+        episodeNumberOverall: parseInt(d.episodeNumberOverall) || 0,
+        // episodeDate: d.episodeDate?.trim() || '',
         episodeRating: parseFloat(d.episodeRating) || 0,
-        episodeVotes: parseInt(d.episodeVotes) || 0
+        // episodeVotes: parseInt(d.episodeVotes) || 0
       }));
 
       shows = showData;
