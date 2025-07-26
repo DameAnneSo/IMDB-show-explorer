@@ -24,8 +24,8 @@
       
       // Load both CSV files
       const [seriesData, episodeData] = await Promise.all([
-        d3.csv('/public/data/series_test.csv'),
-        d3.csv('/public/data/episodes_test.csv')
+        d3.csv('/data/series_test.csv'),
+        d3.csv('/data/episodes_test.csv')
       ]);
       
       const showData = seriesData.map(d => ({
