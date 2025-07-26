@@ -1,6 +1,5 @@
 <script>
-  import MultiSelect from './lib/MultiSelect.svelte';
-  import RangeSlider from './lib/RangeSlider.svelte';
+  import Filters from './lib/Filters.svelte';
   import Charts from './lib/Charts.svelte';
   import * as d3 from 'd3';
   
@@ -22,7 +21,7 @@
       isLoading = true;
       loadError = null;
       
-      // Load both CSV files
+      // Load CSV files
       const [seriesData, episodeData] = await Promise.all([
         d3.csv('/data/series_test.csv'),
         d3.csv('/data/episodes_test.csv')
@@ -40,25 +39,22 @@
       const episodesData = episodeData.map(d => ({
         seriesRank: parseInt(d.seriesRank) || 0,
         seriesTitle: d.seriesTitle?.trim() || '',
-        // seriesLink: d.seriesLink?.trim() || '',
-        // seriesEpisodesLink: d.seriesEpisodesLink?.trim() || '',
         seriesNumberOfEpisodes: parseInt(d.seriesNumberOfEpisodes) || 0,
         episodeSeason: parseInt(d.episodeSeason) || 0,
         episodeNumberOverall: parseInt(d.episodeNumberOverall) || 0,
-        // episodeDate: d.episodeDate?.trim() || '',
         episodeRating: parseFloat(d.episodeRating) || 0,
-        // episodeVotes: parseInt(d.episodeVotes) || 0
       }));
 
       shows = showData;
       episodes = episodesData;
 
+      // Compute available options and ranges from the data
       const genresSet = new Set();
       const languagesSet = new Set();
-      let minSeasons = Infinity;
-      let maxSeasonsFound = 0;
+      const seasonCounts = [];
 
       showData.forEach(show => {
+        // Extract genres
         if (show.genres) {
           show.genres.split(',').forEach(genre => {
             const cleanGenre = genre.trim();
@@ -66,6 +62,7 @@
           });
         }
 
+        // Extract languages
         if (show.languages) {
           show.languages.split(',').forEach(lang => {
             const cleanLang = lang.trim();
@@ -73,18 +70,27 @@
           });
         }
 
+        // Collect season counts
         if (show.seasons > 0) {
-          minSeasons = Math.min(minSeasons, show.seasons);
-          maxSeasonsFound = Math.max(maxSeasonsFound, show.seasons);
+          seasonCounts.push(show.seasons);
         }
       });
 
+      // Set values
       availableGenres = Array.from(genresSet).sort();
       availableLanguages = Array.from(languagesSet).sort();
-      minSeasonsInDataset = minSeasons === Infinity ? 1 : minSeasons;
-      maxSeasonsInDataset = maxSeasonsFound;
       
-      // Set initial slider value to maximum seasons
+      // Compute min/max seasons from actual data
+      if (seasonCounts.length > 0) {
+        minSeasonsInDataset = Math.min(...seasonCounts);
+        maxSeasonsInDataset = Math.max(...seasonCounts);
+      } else {
+        // Fallback values if no valid season data
+        minSeasonsInDataset = 1;
+        maxSeasonsInDataset = 1;
+      }
+      
+      // Set initial slider value to maximum seasons found in data
       maxSeasons = maxSeasonsInDataset;
       
     } catch (error) {
@@ -139,48 +145,11 @@
     );
   });
 
-  const clearAllFilters = () => {
-    selectedGenres = [];
-    selectedLanguages = [];
-    maxSeasons = maxSeasonsInDataset; // Reset to maximum
-  };
-
-  // Individual clear functions for each category
-  const clearGenres = () => {
-    selectedGenres = [];
-  };
-
-  const clearLanguages = () => {
-    selectedLanguages = [];
-  };
-
-  const resetSeasons = () => {
-    maxSeasons = maxSeasonsInDataset;
-  };
-
-  const hasActiveFilters = $derived(
-    selectedGenres.length > 0 || 
-    selectedLanguages.length > 0 || 
-    maxSeasons < maxSeasonsInDataset
-  );
-
-  const handleGenreChange = (event) => {
-    console.log('Genres changed:', event.detail.selected);
-  }
-
-  const handleLanguageChange = (event) => {
-    console.log('Languages changed:', event.detail.selected);
-  }
-
-  const handleSeasonsChange = (event) => {
-    console.log('Max seasons changed:', event.detail.value);
-  }
-
   loadCSVData();
 </script>
 
 <main class="p-6 max-w-4xl mx-auto">
-  <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV Shows</h1>
+  <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV shows</h1>
   
   {#if isLoading}
     <div class="flex justify-center items-center py-12">
@@ -204,115 +173,20 @@
       </div>
     </div>
   {:else}
-    <div class="grid md:grid-cols-3 gap-4 mb-6">
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="block text-sm font-medium text-gray-700" for="genres-select">
-            Genres
-          </label>
-          {#if selectedGenres.length > 0}
-            <button
-              onclick={clearGenres}
-              class="text-xs text-red-600 hover:text-red-800 font-medium"
-              title="Clear genre filters"
-            >
-              Clear ({selectedGenres.length})
-            </button>
-          {/if}
-        </div>
-        <MultiSelect
-          options={availableGenres}
-          bind:selectedValues={selectedGenres}
-          placeholder="Select genres..."
-          onchange={handleGenreChange}
-          id="genres-select"
-        />
-      </div>
-      
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="block text-sm font-medium text-gray-700" for="languages-select">
-            Languages
-          </label>
-          {#if selectedLanguages.length > 0}
-            <button
-              onclick={clearLanguages}
-              class="text-xs text-red-600 hover:text-red-800 font-medium"
-              title="Clear language filters"
-            >
-              Clear ({selectedLanguages.length})
-            </button>
-          {/if}
-        </div>
-        <MultiSelect
-          options={availableLanguages}
-          bind:selectedValues={selectedLanguages}
-          placeholder="Select languages..."
-          onchange={handleLanguageChange}
-          id="languages-select"
-        />
-      </div>
-      
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <label class="block text-sm font-medium text-gray-700" for="seasons-slider">
-            Maximum Seasons
-          </label>
-          {#if maxSeasons < maxSeasonsInDataset}
-            <button
-              onclick={resetSeasons}
-              class="text-xs text-red-600 hover:text-red-800 font-medium"
-              title="Reset season filter"
-            >
-              Reset
-            </button>
-          {/if}
-        </div>
-        <RangeSlider
-          min={minSeasonsInDataset}
-          max={maxSeasonsInDataset}
-          bind:value={maxSeasons}
-          id="seasons-slider"
-          onchange={handleSeasonsChange}
-          showValue={true}
-        />
-        <div class="text-xs text-gray-600 mt-1">
-          Shows with {maxSeasons} season{maxSeasons !== 1 ? 's' : ''} or fewer
-        </div>
-      </div>
+    <!-- Filters component -->
+    <div class="mb-6">
+      <Filters
+        {availableGenres}
+        {availableLanguages}
+        {minSeasonsInDataset}
+        {maxSeasonsInDataset}
+        bind:selectedGenres
+        bind:selectedLanguages
+        bind:maxSeasons
+      />
     </div>
 
-    {#if hasActiveFilters}
-      <div class="mb-4">
-        <button
-          onclick={clearAllFilters}
-          class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-        >
-          Clear All Filters
-        </button>
-      </div>
-    {/if}
-
-    <div class="mb-6 p-4 bg-gray-50 rounded-md">
-      <h2 class="font-semibold mb-2">Active Filters:</h2>
-      <div class="space-y-1 text-sm">
-        {#if selectedGenres.length > 0}
-          <div><strong>Genres:</strong> {selectedGenres.join(', ')}</div>
-        {/if}
-        {#if selectedLanguages.length > 0}
-          <div><strong>Languages:</strong> {selectedLanguages.join(', ')}</div>
-        {/if}
-        {#if maxSeasons < maxSeasonsInDataset}
-          <div><strong>Maximum Seasons:</strong> {maxSeasons}</div>
-        {/if}
-        {#if !hasActiveFilters}
-          <div class="text-gray-500 italic">No filters applied</div>
-        {/if}
-      </div>
-    </div>
-
-    
-
+    <!-- Results section -->
     <div class="mb-4">
       <h2 class="text-xl font-semibold mb-4">
         Results ({filteredShows().length} of {shows.length} shows)
@@ -338,7 +212,8 @@
         </div>
       {/if}
     </div>
-    <!-- Charts Component -->
+
+    <!-- Charts component -->
     <Charts 
       shows={filteredShows()}
       episodes={filteredEpisodes()} 
