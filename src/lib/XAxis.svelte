@@ -19,7 +19,7 @@
         y={10}
         dy="0.8em"
         text-anchor="middle"
-        fill='#282828'
+        fill='#000000'
       >
         {tick}
       </text>
