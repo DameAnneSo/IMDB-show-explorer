@@ -32,7 +32,7 @@
     text-anchor="middle"
     y={50}
   >
-    Episode number
+    episode number
   </text>
 </g>
 
