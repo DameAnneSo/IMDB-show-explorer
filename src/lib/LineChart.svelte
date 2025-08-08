@@ -1,6 +1,8 @@
 <script>
   import * as d3 from 'd3';
-
+  import XAxis from './XAxis.svelte';
+  import YAxis from './YAxis.svelte';
+ 
   let { showName, episodeData, overallRating, seasons, episodes, xScale, yScale, width, height, margins } = $props();
 
   const xAccessor = d => +d.episodeNumberOverall;
@@ -52,6 +54,14 @@
     <g
       transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}
     >
+      <XAxis
+        {xScale}
+        {height}
+        {margins}
+      />
+      <YAxis
+        {yScale}
+      />
       {#if line}
         <path class="line" d={line} />
       {/if}
