@@ -1,12 +1,20 @@
 <script>
-  let { yScale } = $props();
+let { yScale } = $props();
 
-  const numberOfTicks = (pixelsAvailable, pixelsPerTick = 40) =>
-    Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
+const numberOfTicks = (pixelsAvailable, pixelsPerTick = 40) =>
+  Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
 
-  const [yMin, yMax] = $derived(yScale.range());
+const [yMin, yMax] = $derived(yScale.range());
 
-  const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
+const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
+
+// new console.log of Svelte 5:
+// $inspect({
+//   yMin,
+//   yMax,
+//   ticks,
+//   numberOfTicks: numberOfTicks(yMax - yMin),
+// });
 </script>
 
 <g>
@@ -16,32 +24,26 @@
     <g transform={`translate(0 ${yScale(tick)})`}>
       <line class="axis__tick" x1={0} x2={-6} />
 
-      <text
-        dx={-10}
-        dy="0.34em"
-        text-anchor="end"
-      >
+      <text dx={-10} dy="0.34em" text-anchor="end">
         {tick}
       </text>
     </g>
   {/each}
 
   <!-- <text class="axis__label" dx={4} y={-25} dy="0.8em"> -->
-  <text class="axis__label" x={-20} y={-15}>
-    rating
-  </text>
+  <text class="axis__label" x={-20} y={-15}> rating </text>
 </g>
 
 <style>
-  .axis__line {
-    stroke: #bdc3c7;
-  }
+.axis__line {
+  stroke: #bdc3c7;
+}
 
-  .axis__tick {
-    stroke: #bdc3c7;
-  }
+.axis__tick {
+  stroke: #bdc3c7;
+}
 
-  .axis__label {
-    fill: #282828;
-  }
+.axis__label {
+  fill: #282828;
+}
 </style>

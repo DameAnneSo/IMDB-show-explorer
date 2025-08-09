@@ -187,7 +187,7 @@
     </div>
 
     <!-- Results section -->
-    <div class="mb-4">
+    <!-- <div class="mb-4">
       <h2 class="text-xl font-semibold mb-4">
         Results ({filteredShows().length} of {shows.length} shows)
       </h2>
@@ -211,7 +211,7 @@
           {/each}
         </div>
       {/if}
-    </div>
+    </div> -->
 
     <!-- Charts component -->
     <Charts 
