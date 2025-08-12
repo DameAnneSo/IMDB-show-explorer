@@ -66,7 +66,11 @@ const infoString = $derived(
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
-      <SeasonBands {episodeData} {xScale} {boundedHeight} />
+     <SeasonBands
+  {episodeData}
+  {xScale}
+  {boundedHeight}
+/>
       {#if line}
         <path class="line" d={line} />
       {/if}

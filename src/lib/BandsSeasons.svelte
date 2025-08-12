@@ -1,25 +1,20 @@
 <script>
-let {episodeData, xScale, boundedHeight } = $props();
+let { episodeData, xScale, boundedHeight } = $props();
 
 // Group data by season and find the episode range for each season
 const seasonRanges =
   episodeData?.reduce((acc, d) => {
     const season = d.episodeSeason;
+    const episodeNum = +d.episodeNumberOverall;
     if (!acc[season]) {
       acc[season] = {
-        season,
-        minEpisode: d.episodeNumberOverall,
-        maxEpisode: d.episodeNumberOverall,
+        season: +season,
+        minEpisode: episodeNum,
+        maxEpisode: episodeNum,
       };
     } else {
-      acc[season].minEpisode = Math.min(
-        acc[season].minEpisode,
-        d.episodeNumberOverall
-      );
-      acc[season].maxEpisode = Math.max(
-        acc[season].maxEpisode,
-        d.episodeNumberOverall
-      );
+      acc[season].minEpisode = Math.min(acc[season].minEpisode, episodeNum);
+      acc[season].maxEpisode = Math.max(acc[season].maxEpisode, episodeNum);
     }
     return acc;
   }, {}) || {};
@@ -30,19 +25,17 @@ const seasons = Object.values(seasonRanges).sort((a, b) => a.season - b.season);
 // Create bands with alternating colors
 const seasonBands = seasons.map((season, index) => {
   const x = xScale(season.minEpisode);
-  const width = xScale(season.maxEpisode) - xScale(season.minEpisode);
-
+  const width = xScale(season.maxEpisode
+  ) - xScale(season.minEpisode);
   return {
-    ...season,
     x,
     width,
-    fill:
-      index % 2 === 0 ? "var(--color-neutral-50)" : "var(--color-neutral-200)", // Make gray more visible for debugging
-    opacity: 1, // Make both visible for debugging
+    season: season.season,
+    color: index % 2 === 0 ? "var(--color-neutral-50)" : "var(--color-neutral-200)"
   };
 });
-
 </script>
+
 
 {#if seasons.length > 1}
   {#each seasonBands as band, i}
@@ -51,8 +44,8 @@ const seasonBands = seasons.map((season, index) => {
       y={0}
       width={band.width}
       height={boundedHeight}
-      fill={band.fill}
-      fill-opacity={band.opacity}
+      fill={band.color}
+
     />
     <!-- Add text labels for debugging -->
     <text
