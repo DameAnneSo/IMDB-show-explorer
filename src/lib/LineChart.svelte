@@ -2,7 +2,7 @@
 import * as d3 from "d3";
 import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
-import SeasonBands from "./BandsSeasons.svelte";
+import SeasonBands from "./SeasonBands.svelte";
 
 let {
   showName,
@@ -66,11 +66,11 @@ const infoString = $derived(
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
-     <SeasonBands
-  {episodeData}
-  {xScale}
-  {boundedHeight}
-/>
+      <SeasonBands
+         {episodeData}
+         {xScale}
+         {boundedHeight}
+      />
       {#if line}
         <path class="line" d={line} />
       {/if}
