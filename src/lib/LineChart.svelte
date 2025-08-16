@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
+import LittleDots from "./LittleDots.svelte";
 
 let {
   showName,
@@ -71,6 +72,13 @@ const infoString = $derived(
          {xScale}
          {boundedHeight}
       />
+      <LittleDots
+       {episodeData}
+        {xScale}
+        {yScale}
+        {xAccessor}
+        {yAccessor}
+      />
       {#if line}
         <path class="line" d={line} />
       {/if}
@@ -88,7 +96,7 @@ const infoString = $derived(
 .line {
   fill: none;
   stroke: #4427ca;
-  stroke-width: 2px;
+  stroke-width: 1px;
   stroke-linecap: round;
   transition: all 0.3s ease-out;
 }
