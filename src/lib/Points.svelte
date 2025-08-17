@@ -3,7 +3,7 @@
 
 </script>
 
-<g class="little-dots">
+<g class="points">
   {#each episodeData as episode}
     <circle
       cx={xScale(xAccessor(episode))}
@@ -15,7 +15,7 @@
 </g>
 
 <style>
-  .little-dots {
+  .points {
     position: absolute;
     pointer-events: none;
   }

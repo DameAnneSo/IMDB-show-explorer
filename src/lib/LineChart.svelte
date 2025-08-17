@@ -98,6 +98,5 @@ const infoString = $derived(
   stroke: #4427ca;
   stroke-width: 1px;
   stroke-linecap: round;
-  transition: all 0.3s ease-out;
 }
 </style>
