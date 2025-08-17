@@ -8,7 +8,7 @@
     <circle
       cx={xScale(xAccessor(episode))}
       cy={yScale(yAccessor(episode))}
-      r="2"
+      r="3"
       fill="var(--color-primary)"
     />
   {/each}
@@ -18,8 +18,5 @@
   .points {
     position: absolute;
     pointer-events: none;
-  }
-  circle {
-    transition: fill 0.3s ease;
   }
 </style> 
