@@ -13,10 +13,3 @@
     />
   {/each}
 </g>
-
-<style>
-  .points {
-    position: absolute;
-    pointer-events: none;
-  }
-</style> 
