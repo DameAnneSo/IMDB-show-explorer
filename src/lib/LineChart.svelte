@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
-import LittleDots from "./LittleDots.svelte";
+import Points from "./Points.svelte";
 
 let {
   showName,
@@ -72,7 +72,7 @@ const infoString = $derived(
          {xScale}
          {boundedHeight}
       />
-      <LittleDots
+      <Points
        {episodeData}
         {xScale}
         {yScale}
