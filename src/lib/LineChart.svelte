@@ -68,16 +68,17 @@ const infoString = $derived(
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
       <SeasonBands
-         {episodeData}
-         {xScale}
-         {boundedHeight}
+        {episodeData}
+        {xScale}
+        {boundedHeight}
       />
       <Points
-       {episodeData}
+        {episodeData}
         {xScale}
         {yScale}
         {xAccessor}
         {yAccessor}
+        {width}
       />
       {#if line}
         <path class="line" d={line} />
