@@ -7,14 +7,6 @@ const numberOfTicks = (pixelsAvailable, pixelsPerTick = 40) =>
 const [yMin, yMax] = $derived(yScale.range());
 
 const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
-
-// new console.log of Svelte 5:
-// $inspect({
-//   yMin,
-//   yMax,
-//   ticks,
-//   numberOfTicks: numberOfTicks(yMax - yMin),
-// });
 </script>
 
 <g>

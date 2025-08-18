@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
+import Points from "./Points.svelte";
 
 let {
   showName,
@@ -67,9 +68,17 @@ const infoString = $derived(
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
       <SeasonBands
-         {episodeData}
-         {xScale}
-         {boundedHeight}
+        {episodeData}
+        {xScale}
+        {boundedHeight}
+      />
+      <Points
+        {episodeData}
+        {xScale}
+        {yScale}
+        {xAccessor}
+        {yAccessor}
+        {width}
       />
       {#if line}
         <path class="line" d={line} />
@@ -88,8 +97,7 @@ const infoString = $derived(
 .line {
   fill: none;
   stroke: #4427ca;
-  stroke-width: 2px;
+  stroke-width: 1px;
   stroke-linecap: round;
-  transition: all 0.3s ease-out;
 }
 </style>
