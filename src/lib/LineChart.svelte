@@ -4,6 +4,8 @@ import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
 import Points from "./Points.svelte";
+import Pictograms from "./Pictograms.svelte";
+
 
 let {
   showName,
@@ -79,6 +81,13 @@ const infoString = $derived(
         {xAccessor}
         {yAccessor}
         {width}
+      />
+      <Pictograms 
+        {episodeData}
+        {xAccessor}
+        {yAccessor}
+        {xScale}
+        {yScale}
       />
       {#if line}
         <path class="line" d={line} />

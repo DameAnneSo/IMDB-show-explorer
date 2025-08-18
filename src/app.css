@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+/* add colour variables */
+:root {
+  --color-primary: #6a00f0; 
+  --color-primary-link: #a66aff;
+  --color-primary-active: #dc267f;
+  --color-primary-dark: #4b00a3;
+
+  --color-neutral-50: oklch(0.985 0 0);
+  --color-neutral-100: oklch(0.97 0 0);
+  --color-neutral-200: oklch(0.922 0 0);
+  --color-neutral-300: oklch(0.87 0 0);
+  --color-neutral-400: oklch(0.708 0 0);
+  --color-neutral-500: oklch(0.556 0 0);
+  --color-neutral-600: oklch(0.439 0 0);
+  --color-neutral-700: oklch(0.371 0 0);
+  --color-neutral-800: oklch(0.269 0 0);
+  --color-neutral-900: oklch(0.205 0 0);
+  --color-neutral-950: oklch(0.145 0 0);
+
+  --color-50: #f5f0ff;
+  --color-100: #e8dbff;
+  --color-200: #d8bfff;
+  --color-300: #c29aff;
+  --color-400: #a66aff;
+  --color-500: #8f3eff;
+  --color-600: #7b1fff;
+  --color-700: #6a00f0;
+  --color-800: #5a00c7;
+  --color-900: #4b00a3;
+  --color-950: #37007a;
+
+ /* warning colours */
+  --red-light: #f8d7da;
+  --red-dark: #842029;
+  --green-light: #d1e7dd;
+  --green-dark: #0f5132;
+}
