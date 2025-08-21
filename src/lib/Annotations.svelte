@@ -1,6 +1,6 @@
 <script>
 import * as d3 from "d3";
-let { episodeData, xAccessor, yAccessor, xScale, yScale} = $props();
+let { episodeData, xAccessor, yAccessor, xScale, yScale } = $props();
 
 // Find the max and min values using unscaled access
 const maxY = $derived(d3.max(episodeData, yAccessor)); // Changed: max for highest rating
@@ -36,7 +36,7 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
     height={fontSize + padding}
     rx="3"
   />
-  
+
   <!-- Green "+" above the max point -->
   <text
     class="highest"
@@ -45,7 +45,7 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
     text-anchor="middle"
     font-size="12"
   >
-    +{maxPoint.episodeRating.toFixed(1)}
+    {maxPoint.episodeRating.toFixed(1)}
   </text>
 
   <!-- Background rectangle for lowest point -->
@@ -66,7 +66,7 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
     text-anchor="middle"
     font-size="12"
   >
-    −{minPoint.episodeRating.toFixed(1)}
+    {minPoint.episodeRating.toFixed(1)}
   </text>
 </g>
 

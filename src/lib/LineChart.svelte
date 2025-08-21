@@ -4,7 +4,7 @@ import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
 import Points from "./Points.svelte";
-import Pictograms from "./Pictograms.svelte";
+import Annotations from "./Annotations.svelte";
 
 
 let {
@@ -82,7 +82,7 @@ const infoString = $derived(
         {yAccessor}
         {width}
       />
-      <Pictograms 
+      <Annotations 
         {episodeData}
         {xAccessor}
         {yAccessor}
