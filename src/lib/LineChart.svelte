@@ -5,7 +5,7 @@ import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
 import Points from "./Points.svelte";
 import Annotations from "./Annotations.svelte";
-
+import HoveredPoint from "./HoveredPoint.svelte";
 
 let {
   showName,
@@ -36,6 +36,20 @@ const validData = $derived(
   }) || []
 );
 
+let hoveredPoint = $state(null);
+// function created using D3's bisector utility that helps find the closest data point when hovering over the chart
+const bisectX = d3.bisector(xAccessor).left;
+const handleMouseMove = (event) => {
+  // Get the x-coordinate of the mouse event and find the closest data point
+  const xCoordinate = xScale.invert(event.offsetX - margins.marginLeft);
+  const index = bisectX(episodeData, xCoordinate);
+  hoveredPoint = episodeData[index - 1];
+};
+
+const handleMouseLeave = () => {
+  hoveredPoint = null;
+};
+
 const lineGenerator = $derived(
   d3
     .line()
@@ -65,32 +79,32 @@ const infoString = $derived(
 <h1>{infoString}</h1>
 
 <div class="chart-wrapper" style="height:{height}px">
-  <svg class="chart" {width} {height}>
+  <svg
+    class="chart"
+    {width}
+    {height}
+    role="img"
+    onmousemove={handleMouseMove}
+    onmouseleave={handleMouseLeave}
+    onfocus={handleMouseMove}
+    onblur={handleMouseLeave}
+  >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
-      <SeasonBands
-        {episodeData}
-        {xScale}
-        {boundedHeight}
-      />
-      <Points
-        {episodeData}
-        {xScale}
-        {yScale}
-        {xAccessor}
-        {yAccessor}
-        {width}
-      />
-      <Annotations 
-        {episodeData}
-        {xAccessor}
-        {yAccessor}
-        {xScale}
-        {yScale}
-      />
+      <SeasonBands {episodeData} {xScale} {boundedHeight} />
+      <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
+      <Annotations {episodeData} {xAccessor} {yAccessor} {xScale} {yScale} />
       {#if line}
         <path class="line" d={line} />
+      {/if}
+
+      {#if hoveredPoint}
+        <HoveredPoint
+          x={xAccessorScaled(hoveredPoint)}
+          y={yAccessorScaled(hoveredPoint)}
+          {width}
+        />
       {/if}
     </g>
   </svg>
