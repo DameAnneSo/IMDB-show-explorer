@@ -1,11 +1,14 @@
 <script>
 import * as d3 from "d3";
+import { setContext } from "svelte";
+import { writable } from "svelte/store";
 import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
 import Points from "./Points.svelte";
 import Annotations from "./Annotations.svelte";
 import HoveredPoint from "./HoveredPoint.svelte";
+import Tooltip from "./Tooltip.svelte";
 
 let {
   showName,
@@ -26,6 +29,26 @@ const yAccessor = (d) => +d.episodeRating;
 
 const xAccessorScaled = $derived((d) => xScale(xAccessor(d)));
 const yAccessorScaled = $derived((d) => yScale(yAccessor(d)));
+
+const dimensions = writable({
+  width,
+  height,
+  marginLeft: margins.marginLeft,
+  marginTop: margins.marginTop,
+  // ...other margins if needed
+});
+
+$effect(() => {
+  dimensions.set({
+    width,
+    height,
+    marginLeft: margins.marginLeft,
+    marginTop: margins.marginTop,
+    // ...other margins if needed
+  });
+});
+
+setContext("chart", { dimensions });
 
 // Filter out invalid data points before creating the line
 const validData = $derived(
@@ -74,6 +97,9 @@ const line = $derived(lineGenerator(validData));
 const infoString = $derived(
   `${showName} | overall rating: ${overallRating} | ${seasons} season(s) | ${episodes} episodes`
 );
+
+const formatX = d3.format("d");
+const formatYForTooltip = d3.format(",.1f");
 </script>
 
 <h1>{infoString}</h1>
@@ -108,6 +134,18 @@ const infoString = $derived(
       {/if}
     </g>
   </svg>
+
+  {#if hoveredPoint}
+    <Tooltip
+      xAccessor={xAccessor(hoveredPoint)}
+      yAccessor={yAccessor(hoveredPoint)}
+      xAccessorScaled={xAccessorScaled(hoveredPoint)}
+      yAccessorScaled={yAccessorScaled(hoveredPoint)}
+      {formatX}
+      {formatYForTooltip}
+      data={hoveredPoint}
+    />
+  {/if}
 </div>
 
 <style>
