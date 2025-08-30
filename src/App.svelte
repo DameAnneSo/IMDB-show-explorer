@@ -148,7 +148,7 @@
   loadCSVData();
 </script>
 
-<main class="p-6 max-w-4xl mx-auto">
+<main class="p-6 max-w-6xl mx-auto">
   <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV shows</h1>
   
   {#if isLoading}
