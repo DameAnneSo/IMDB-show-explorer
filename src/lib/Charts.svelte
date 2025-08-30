@@ -1,8 +1,11 @@
 <script>
 import * as d3 from "d3";
 import LineChart from "./LineChart.svelte";
+import Toggle from "./Toggle.svelte";
 
 let { shows = [], episodes = [] } = $props();
+
+let showAnnotations = $state(true);
 
 const maxEpisodes = $derived(
   shows.reduce((max, show) => {
@@ -49,6 +52,19 @@ const yScale = $derived(
 );
 </script>
 
+<div class="mb-10">
+  <div class="flex items-center">
+    <Toggle
+      bind:checked={showAnnotations}
+      label="Show Annotations"
+      id="annotations-toggle"
+    />
+  </div>
+  <div class="mt-3 text-sm text-gray-600">
+    <p>Toggle to show/hide season bands and min/max ratings on all charts</p>
+  </div>
+</div>
+
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
     <LineChart
@@ -63,6 +79,7 @@ const yScale = $derived(
       {height}
       {margins}
       {boundedHeight}
+      {showAnnotations}
     />
   {/each}
 </div>
