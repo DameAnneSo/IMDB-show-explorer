@@ -22,6 +22,7 @@ let {
   height,
   margins,
   boundedHeight,
+  showAnnotations = true
 } = $props();
 
 const xAccessor = (d) => +d.episodeNumberOverall;
@@ -118,13 +119,16 @@ const formatYForTooltip = d3.format(",.1f");
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
-      <SeasonBands {episodeData} {xScale} {boundedHeight} />
+      {#if showAnnotations}
+        <SeasonBands {episodeData} {xScale} {boundedHeight} />
+      {/if}
       <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
-      <MinMaxRatings {episodeData} {xAccessor} {yAccessor} {xScale} {yScale} />
+      {#if showAnnotations}
+        <MinMaxRatings {episodeData} {xAccessor} {yAccessor} {xScale} {yScale} />
+      {/if}
       {#if line}
         <path class="line" d={line} />
       {/if}
-
       {#if hoveredPoint}
         <HoveredPoint
           x={xAccessorScaled(hoveredPoint)}
