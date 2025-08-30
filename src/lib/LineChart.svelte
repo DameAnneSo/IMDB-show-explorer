@@ -6,7 +6,7 @@ import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
 import Points from "./Points.svelte";
-import Annotations from "./Annotations.svelte";
+import MinMaxRatings from "./MinMaxRatings.svelte";
 import HoveredPoint from "./HoveredPoint.svelte";
 import Tooltip from "./Tooltip.svelte";
 
@@ -120,7 +120,7 @@ const formatYForTooltip = d3.format(",.1f");
       <YAxis {yScale} />
       <SeasonBands {episodeData} {xScale} {boundedHeight} />
       <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
-      <Annotations {episodeData} {xAccessor} {yAccessor} {xScale} {yScale} />
+      <MinMaxRatings {episodeData} {xAccessor} {yAccessor} {xScale} {yScale} />
       {#if line}
         <path class="line" d={line} />
       {/if}
