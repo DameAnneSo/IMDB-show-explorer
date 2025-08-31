@@ -1,7 +1,5 @@
 <script>
 import * as d3 from "d3";
-import { setContext } from "svelte";
-import { writable } from "svelte/store";
 import XAxis from "./XAxis.svelte";
 import YAxis from "./YAxis.svelte";
 import SeasonBands from "./SeasonBands.svelte";
@@ -30,26 +28,6 @@ const yAccessor = (d) => +d.episodeRating;
 
 const xAccessorScaled = $derived((d) => xScale(xAccessor(d)));
 const yAccessorScaled = $derived((d) => yScale(yAccessor(d)));
-
-const dimensions = writable({
-  width,
-  height,
-  marginLeft: margins.marginLeft,
-  marginTop: margins.marginTop,
-  // ...other margins if needed
-});
-
-$effect(() => {
-  dimensions.set({
-    width,
-    height,
-    marginLeft: margins.marginLeft,
-    marginTop: margins.marginTop,
-    // ...other margins if needed
-  });
-});
-
-setContext("chart", { dimensions });
 
 // Filter out invalid data points before creating the line
 const validData = $derived(
@@ -145,6 +123,8 @@ const formatYForTooltip = d3.format(",.1f");
       yAccessor={yAccessor(hoveredPoint)}
       xAccessorScaled={xAccessorScaled(hoveredPoint)}
       yAccessorScaled={yAccessorScaled(hoveredPoint)}
+      {width}
+      {margins}
       {formatX}
       {formatYForTooltip}
       data={hoveredPoint}

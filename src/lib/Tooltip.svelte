@@ -1,30 +1,26 @@
 <script>
-import { getContext } from "svelte";
 let {
   xAccessor,
   yAccessor,
   xAccessorScaled,
   yAccessorScaled,
+  width,
+  margins,
   formatX,
   formatYForTooltip,
   data,
 } = $props();
 
-const { dimensions: dimensionsStore } = getContext("chart");
-const dimensions = $derived($dimensionsStore);
-const marginLeft = $derived(dimensions.marginLeft);
-const marginTop = $derived(dimensions.marginTop)
 let tooltipWidth = $state();
 
-// Use margins from dimensions instead of props
-const x = $derived(xAccessorScaled + marginLeft);
-const y = $derived(yAccessorScaled + marginTop);
+const x = $derived(xAccessorScaled + margins.marginLeft);
+const y = $derived(yAccessorScaled + margins.marginTop);
 
 const xNudge = 15;
 const yNudge = 15;
 
-const  isFallingOffChart = $derived(tooltipWidth + x > dimensions.width);
-const  xPosition = $derived(isFallingOffChart ? x - tooltipWidth - xNudge : x + xNudge);
+const isFallingOffChart = $derived(tooltipWidth + x > width);
+const xPosition = $derived(isFallingOffChart ? x - tooltipWidth - xNudge : x + xNudge);
 const yPosition = $derived(y + yNudge);
 </script>
 
@@ -62,6 +58,7 @@ const yPosition = $derived(y + yNudge);
   display: block;
   margin-bottom: 0.3em;
 }
+
 .tooltip_accent {
   text-transform: uppercase;
   font-size: 1rem;
