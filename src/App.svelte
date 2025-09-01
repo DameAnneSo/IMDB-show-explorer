@@ -1,6 +1,7 @@
 <script>
   import Filters from './lib/Filters.svelte';
   import Charts from './lib/Charts.svelte';
+  import BackToTopButton from './lib/BackToTopButton.svelte';
   import * as d3 from 'd3';
   
   let shows = $state([]);
@@ -219,4 +220,5 @@
       episodes={filteredEpisodes()} 
     />
   {/if}
+  <BackToTopButton />
 </main>
