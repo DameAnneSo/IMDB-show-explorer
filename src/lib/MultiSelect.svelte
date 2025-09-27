@@ -14,7 +14,8 @@
     selectedValues = $bindable([]),
     onchange = undefined,
     id = undefined,
-    showClearButton = true
+    showClearButton = true,
+    label = '' // For screen readers when no visible label
   } = $props();
   
   // Internal state
@@ -22,7 +23,12 @@
   let inputValue = $state('');
   let inputElement;
   let containerElement;
-  let filteredOptions = $derived(
+  let listboxElement = $state();
+  let activeDescendant = $state(null);
+  let focusedOptionIndex = $state(-1);
+  let focusedOnSelectAll = $state(false);
+  
+  const filteredOptions = $derived(
     options.filter(opt => {
       // Don't show already selected options
       if (selectedValues.includes(opt)) return false;
@@ -37,10 +43,26 @@
     })
   );
   
+  // Reset focused option index when filtered options change
+  $effect(() => {
+    if (filteredOptions.length === 0) {
+      focusedOptionIndex = -1;
+      focusedOnSelectAll = false;
+      activeDescendant = null;
+    } else if (focusedOptionIndex >= filteredOptions.length) {
+      focusedOptionIndex = filteredOptions.length - 1;
+      focusedOnSelectAll = false;
+      activeDescendant = `option-${filteredOptions[focusedOptionIndex]}`;
+    }
+  });
+  
   // Handle clicking outside to close dropdown
   const handleClickOutside = (event) => {
     if (containerElement && !containerElement.contains(event.target)) {
       isOpen = false;
+      focusedOptionIndex = -1;
+      focusedOnSelectAll = false;
+      activeDescendant = null;
     }
   }
   
@@ -56,18 +78,28 @@
     if (!disabled) {
       isOpen = !isOpen;
       if (isOpen) {
+        focusedOptionIndex = -1;
+        focusedOnSelectAll = false;
+        activeDescendant = null;
         // Focus the input when opening dropdown
         setTimeout(() => inputElement?.focus(), 0);
+      } else {
+        focusedOptionIndex = -1;
+        focusedOnSelectAll = false;
+        activeDescendant = null;
       }
     }
   }
 
-  const selectOption = (option) => {
+  const selectOption = (option, index = -1) => {
     if (!selectedValues.includes(option)) {
       selectedValues = [...selectedValues, option];
       inputValue = '';
       // Keep dropdown open after selection
       isOpen = true;
+      focusedOptionIndex = -1;
+      focusedOnSelectAll = false;
+      activeDescendant = null;
       // Dispatch custom event
       dispatchChangeEvent(selectedValues);
       if (onchange) {
@@ -75,6 +107,9 @@
       }
       // Focus input after selection to continue typing
       setTimeout(() => inputElement?.focus(), 0);
+      
+      // Announce selection to screen readers
+      announceToScreenReader(`${option} selected. ${selectedValues.length} items selected.`);
     }
   }
   
@@ -85,23 +120,37 @@
     if (onchange) {
       onchange({ detail: { selected: selectedValues } });
     }
+    
+    // Announce removal to screen readers
+    announceToScreenReader(`${option} removed. ${selectedValues.length} items selected.`);
   }
 
   const clearAll = () => {
+    const clearedCount = selectedValues.length;
     selectedValues = [];
     inputValue = '';
+    focusedOptionIndex = -1;
+    focusedOnSelectAll = false;
+    activeDescendant = null;
     // Dispatch custom event
     dispatchChangeEvent(selectedValues);
     if (onchange) {
       onchange({ detail: { selected: selectedValues } });
     }
+    
+    // Announce to screen readers
+    announceToScreenReader(`All ${clearedCount} items cleared.`);
   }
 
   const selectAll = () => {
     // Select all available options that aren't already selected
     const unselectedOptions = options.filter(opt => !selectedValues.includes(opt));
+    const newSelections = unselectedOptions.length;
     selectedValues = [...selectedValues, ...unselectedOptions];
     inputValue = '';
+    focusedOptionIndex = -1;
+    focusedOnSelectAll = false;
+    activeDescendant = null;
     // Keep dropdown open after selection
     isOpen = true;
     // Dispatch custom event
@@ -111,21 +160,139 @@
     }
     // Focus input after selection
     setTimeout(() => inputElement?.focus(), 0);
+    
+    // Announce to screen readers
+    announceToScreenReader(`${newSelections} items selected. ${selectedValues.length} total items selected.`);
   }
 
   const handleKeydown = (event) => {
-    if (event.key === 'Enter' && inputValue && filteredOptions.length > 0) {
-      selectOption(filteredOptions[0]);
-      event.preventDefault();
-    } else if (event.key === 'Escape') {
-      isOpen = false;
-    } else if (event.key === 'Backspace' && !inputValue && selectedValues.length > 0) {
-      removeOption(selectedValues[selectedValues.length - 1]);
-    } else {
-      // For all other keys, ensure the dropdown is open while typing
-      if (!isOpen && event.key.length === 1) {
-        isOpen = true;
-      }
+    const hasSelectAll = !inputValue && options.length > selectedValues.length;
+    
+    switch (event.key) {
+      case 'Enter':
+        event.preventDefault();
+        if (focusedOnSelectAll && hasSelectAll) {
+          selectAll();
+        } else if (focusedOptionIndex >= 0 && focusedOptionIndex < filteredOptions.length) {
+          selectOption(filteredOptions[focusedOptionIndex], focusedOptionIndex);
+        } else if (inputValue && filteredOptions.length > 0) {
+          selectOption(filteredOptions[0], 0);
+        } else if (!isOpen) {
+          isOpen = true;
+        }
+        break;
+        
+      case 'Escape':
+        event.preventDefault();
+        isOpen = false;
+        focusedOptionIndex = -1;
+        focusedOnSelectAll = false;
+        activeDescendant = null;
+        break;
+        
+      case 'ArrowDown':
+        event.preventDefault();
+        
+        if (!isOpen) {
+          isOpen = true;
+          if (hasSelectAll) {
+            focusedOnSelectAll = true;
+            focusedOptionIndex = -1;
+            activeDescendant = 'select-all-option';
+          } else if (filteredOptions.length > 0) {
+            focusedOnSelectAll = false;
+            focusedOptionIndex = 0;
+            activeDescendant = `option-${filteredOptions[0]}`;
+          }
+        } else {
+          if (focusedOnSelectAll) {
+            if (filteredOptions.length > 0) {
+              focusedOnSelectAll = false;
+              focusedOptionIndex = 0;
+              activeDescendant = `option-${filteredOptions[0]}`;
+            }
+          } else if (focusedOptionIndex === -1) {
+            if (hasSelectAll) {
+              focusedOnSelectAll = true;
+              activeDescendant = 'select-all-option';
+            } else if (filteredOptions.length > 0) {
+              focusedOnSelectAll = false;
+              focusedOptionIndex = 0;
+              activeDescendant = `option-${filteredOptions[0]}`;
+            }
+          } else {
+            if (focusedOptionIndex < filteredOptions.length - 1) {
+              focusedOptionIndex++;
+              activeDescendant = `option-${filteredOptions[focusedOptionIndex]}`;
+            }
+          }
+        }
+        break;
+        
+      case 'ArrowUp':
+        event.preventDefault();
+        if (!isOpen) {
+          isOpen = true;
+          if (filteredOptions.length > 0) {
+            focusedOnSelectAll = false;
+            focusedOptionIndex = filteredOptions.length - 1;
+            activeDescendant = `option-${filteredOptions[focusedOptionIndex]}`;
+          } else if (hasSelectAll) {
+            focusedOnSelectAll = true;
+            focusedOptionIndex = -1;
+            activeDescendant = 'select-all-option';
+          }
+        } else if (focusedOptionIndex === 0) {
+          if (hasSelectAll) {
+            focusedOnSelectAll = true;
+            focusedOptionIndex = -1;
+            activeDescendant = 'select-all-option';
+          }
+        } else if (focusedOptionIndex > 0) {
+          focusedOptionIndex--;
+          activeDescendant = `option-${filteredOptions[focusedOptionIndex]}`;
+        }
+        break;
+        
+      case 'Home':
+        if (isOpen) {
+          event.preventDefault();
+          if (hasSelectAll) {
+            focusedOnSelectAll = true;
+            focusedOptionIndex = -1;
+            activeDescendant = 'select-all-option';
+          } else if (filteredOptions.length > 0) {
+            focusedOnSelectAll = false;
+            focusedOptionIndex = 0;
+            activeDescendant = `option-${filteredOptions[0]}`;
+          }
+        }
+        break;
+        
+      case 'End':
+        if (isOpen && filteredOptions.length > 0) {
+          event.preventDefault();
+          focusedOnSelectAll = false;
+          focusedOptionIndex = filteredOptions.length - 1;
+          activeDescendant = `option-${filteredOptions[focusedOptionIndex]}`;
+        }
+        break;
+        
+      case 'Backspace':
+        if (!inputValue && selectedValues.length > 0) {
+          event.preventDefault();
+          removeOption(selectedValues[selectedValues.length - 1]);
+        }
+        break;
+        
+      default:
+        if (!isOpen && event.key.length === 1) {
+          isOpen = true;
+          focusedOptionIndex = -1;
+          focusedOnSelectAll = false;
+          activeDescendant = null;
+        }
+        break;
     }
   }
   
@@ -143,13 +310,47 @@
       isOpen = true;
     }
   }
+  
+  // Announce changes to screen readers
+  const announceToScreenReader = (message) => {
+    // Create a temporary element for screen reader announcements
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.setAttribute('class', 'sr-only');
+    announcement.style.position = 'absolute';
+    announcement.style.left = '-10000px';
+    announcement.style.width = '1px';
+    announcement.style.height = '1px';
+    announcement.style.overflow = 'hidden';
+    
+    document.body.appendChild(announcement);
+    announcement.textContent = message;
+    
+    // Clean up after announcement
+    setTimeout(() => {
+      if (announcement.parentNode) {
+        document.body.removeChild(announcement);
+      }
+    }, 1000);
+  }
+  
+  // Generate unique IDs for options
+  const getOptionId = (option) => `option-${option}`;
+  const comboboxId = id || `multiselect-${Math.random().toString(36).substr(2, 9)}`;
+  const listboxId = `${comboboxId}-listbox`;
 </script>
 
 <div 
   class="relative w-full" 
   bind:this={containerElement}
-  {id}
+  id={comboboxId}
 >
+  <!-- Hidden label for screen readers if no visible label -->
+  {#if label && !id}
+    <label class="sr-only" for="{comboboxId}-input">{label}</label>
+  {/if}
+  
   <div 
     class="flex flex-wrap items-center min-h-10 w-full px-3 py-2 border rounded-md bg-white {isOpen ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-300'} {disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-text'}"
     onclick={toggleDropdown}
@@ -157,8 +358,10 @@
     role="combobox"
     aria-expanded={isOpen}
     aria-haspopup="listbox"
-    aria-owns="options-listbox"
-    aria-controls="options-listbox"
+    aria-owns={listboxId}
+    aria-controls={listboxId}
+    aria-activedescendant={activeDescendant}
+    aria-label={label || `MultiSelect with ${selectedValues.length} items selected`}
     tabindex={disabled ? -1 : 0}
   >
     {#each selectedValues as item (item)}
@@ -166,12 +369,13 @@
         <span>{item}</span>
         <button 
           type="button"
-          class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none"
+          class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
           onclick={(e) => { e.stopPropagation(); removeOption(item); }}
           aria-label={`Remove ${item}`}
           disabled={disabled}
+          tabindex={disabled ? -1 : 0}
         >
-          &times;
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
     {/each}
@@ -179,6 +383,7 @@
     <div class="flex items-center flex-grow">
       <input 
         type="text"
+        id="{comboboxId}-input"
         bind:this={inputElement}
         bind:value={inputValue}
         onkeydown={handleKeydown}
@@ -187,56 +392,118 @@
         class="flex-grow outline-none px-1 py-1 min-w-[50px] bg-transparent {disabled ? 'cursor-not-allowed' : ''}"
         disabled={disabled}
         aria-autocomplete="list"
+        aria-expanded={isOpen}
+        aria-controls={listboxId}
+        aria-activedescendant={activeDescendant}
+        aria-describedby="{comboboxId}-help"
+        role="combobox"
       />
       
       {#if showClearButton && selectedValues.length > 0 && !disabled}
         <button
           type="button"
-          class="ml-2 text-gray-400 hover:text-gray-600 focus:outline-none flex-shrink-0"
+          class="ml-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded flex-shrink-0"
           onclick={(e) => { e.stopPropagation(); clearAll(); }}
           aria-label="Clear all selections"
           title="Clear all"
+          tabindex={0}
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       {/if}
     </div>
+    
+    <!-- Dropdown indicator -->
+    <div class="ml-2 flex-shrink-0">
+      <svg 
+        class="w-4 h-4 text-gray-400 transition-transform {isOpen ? 'rotate-180' : ''}" 
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </div>
+  </div>
+  
+  <!-- Hidden help text for screen readers -->
+  <div id="{comboboxId}-help" class="sr-only">
+    Use arrow keys to navigate options, Enter to select, Escape to close, Backspace to remove last selection.
   </div>
   
   {#if isOpen && (filteredOptions.length > 0 || options.length > selectedValues.length)}
     <div 
-      id="options-listbox"
+      id={listboxId}
+      bind:this={listboxElement}
       class="absolute z-10 w-full mt-1 max-h-[{maxHeight}] overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg"
       role="listbox"
+      aria-label="Available options"
+      aria-multiselectable="true"
     >
       <!-- Select All option - only show if there are unselected options and no search filter -->
       {#if !inputValue && options.length > selectedValues.length}
         <div 
-          class="px-4 py-2 hover:bg-blue-100 cursor-pointer border-b border-gray-200 font-medium text-blue-700 bg-blue-25"
+          id="select-all-option"
+          class="px-4 py-2 hover:bg-blue-100 cursor-pointer border-b border-gray-200 font-medium text-blue-700 bg-blue-25 focus:bg-blue-100 focus:outline-none {focusedOnSelectAll ? 'bg-blue-100' : ''}"
           onclick={(e) => { e.stopPropagation(); selectAll(); }}
-          onkeydown={(e) => e.key === 'Enter' && selectAll()}
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectAll();
+            }
+          }}
           role="option"
           aria-selected="false"
-          tabindex="0"
+          aria-label={`Select all remaining ${options.length - selectedValues.length} options`}
+          tabindex="-1"
         >
-          ✓ Select All ({options.length - selectedValues.length} remaining)
+          <span aria-hidden="true">✓</span> Select All ({options.length - selectedValues.length} remaining)
         </div>
       {/if}
       
-      {#each filteredOptions as option (option)}
+      {#each filteredOptions as option, index (option)}
         <div 
-          class="px-4 py-2 hover:bg-blue-50 cursor-pointer"
-          onclick={(e) => { e.stopPropagation(); selectOption(option); }}
-          onkeydown={(e) => e.key === 'Enter' && selectOption(option)}
+          id={getOptionId(option)}
+          class="px-4 py-2 hover:bg-blue-50 cursor-pointer focus:bg-blue-100 focus:outline-none {focusedOptionIndex === index ? 'bg-blue-100' : ''}"
+          onclick={(e) => { e.stopPropagation(); selectOption(option, index); }}
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectOption(option, index);
+            }
+          }}
           role="option"
           aria-selected="false"
-          tabindex="0"
+          aria-label={option}
+          tabindex="-1"
         >
           {option}
         </div>
       {/each}
+      
+      <!-- No options message -->
+      {#if filteredOptions.length === 0 && inputValue}
+        <div class="px-4 py-2 text-gray-500 italic" role="status" aria-live="polite">
+          No options found for "{inputValue}"
+        </div>
+      {/if}
     </div>
   {/if}
 </div>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
