@@ -43,7 +43,9 @@
         seriesNumberOfEpisodes: parseInt(d.seriesNumberOfEpisodes) || 0,
         episodeSeason: parseInt(d.episodeSeason) || 0,
         episodeNumberOverall: parseInt(d.episodeNumberOverall) || 0,
+        episodeNumberinSeason: parseInt(d.episodeNumberinSeason) || 0,
         episodeRating: parseFloat(d.episodeRating) || 0,
+        episodeTitle: d.episodeTitle?.trim() || ''
       }));
 
       shows = showData;

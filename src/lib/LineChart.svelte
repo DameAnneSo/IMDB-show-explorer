@@ -79,6 +79,31 @@ const infoString = $derived(
 
 const formatX = d3.format("d");
 const formatYForTooltip = d3.format(",.1f");
+
+const ariaLabel = $derived(
+  !validData || validData.length === 0 
+    ? "Empty chart"
+    : (() => {
+        const ratings = validData.map(d => yAccessor(d));
+        const minRating = Math.min(...ratings);
+        const maxRating = Math.max(...ratings);
+        // Find the actual episode objects for min and max ratings
+        const worstEpisode = validData.find(d => yAccessor(d) === minRating);
+        const bestEpisode = validData.find(d => yAccessor(d) === maxRating);
+        
+        const worstInfo = worstEpisode 
+          ? `"${worstEpisode.episodeTitle}" (episode ${worstEpisode.episodeNumberinSeason}, season ${worstEpisode.episodeSeason})`
+          : "unknown episode";
+          
+        const bestInfo = bestEpisode 
+          ? `"${bestEpisode.episodeTitle}" (episode ${bestEpisode.episodeNumberinSeason}, season ${bestEpisode.episodeSeason})`
+          : "unknown episode";
+        
+        return `This is a line chart of IMDB ratings for the TV series ${showName}, ${episodes} episodes across ${seasons} ${seasons === 1 ? 'season' : 'seasons'}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
+      })()
+);
+
+
 </script>
 
 <h1>{infoString}</h1>
@@ -89,6 +114,7 @@ const formatYForTooltip = d3.format(",.1f");
     {width}
     {height}
     role="img"
+    aria-label={ariaLabel}
     onmousemove={handleMouseMove}
     onmouseleave={handleMouseLeave}
     onfocus={handleMouseMove}
