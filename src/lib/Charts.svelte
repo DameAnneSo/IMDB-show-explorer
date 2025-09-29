@@ -52,6 +52,7 @@ const yScale = $derived(
 );
 </script>
 
+{#if sortedShows.length > 0}
 <div class="mb-10">
   <div class="flex items-center">
     <Toggle
@@ -64,6 +65,7 @@ const yScale = $derived(
     <p>Toggle to show/hide season bands and min/max ratings on all charts</p>
   </div>
 </div>
+{/if}
 
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
