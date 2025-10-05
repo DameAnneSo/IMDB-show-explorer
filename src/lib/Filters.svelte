@@ -60,7 +60,9 @@
 
 <div class="space-y-6">
   <!-- Filter Controls -->
-  <div class="grid md:grid-cols-3 gap-4">
+  <fieldset class="grid md:grid-cols-3 gap-4">
+    <legend class="sr-only">Filter TV shows by genre, language, and number of seasons</legend>
+    
     <!-- Genres Filter -->
     <div>
       <div class="flex items-center justify-between mb-2">
@@ -69,9 +71,10 @@
         </label>
         {#if selectedGenres.length > 0}
           <button
+            type="button"
             onclick={clearGenres}
-            class="text-xs text-red-600 hover:text-red-800 font-medium"
-            title="Clear genre filters"
+            class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded px-1"
+            aria-label="Clear all selected genres"
           >
             Clear ({selectedGenres.length})
           </button>
@@ -94,9 +97,10 @@
         </label>
         {#if selectedLanguages.length > 0}
           <button
+            type="button"
             onclick={clearLanguages}
-            class="text-xs text-red-600 hover:text-red-800 font-medium"
-            title="Clear language filters"
+            class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded px-1"
+            aria-label="Clear all selected languages"
           >
             Clear ({selectedLanguages.length})
           </button>
@@ -119,9 +123,10 @@
         </label>
         {#if maxSeasons < maxSeasonsInDataset}
           <button
+            type="button"
             onclick={resetSeasons}
-            class="text-xs text-red-600 hover:text-red-800 font-medium"
-            title="Reset season filter"
+            class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded px-1"
+            aria-label="Reset maximum seasons filter to show all shows"
           >
             Reset
           </button>
@@ -135,18 +140,20 @@
         onchange={handleSeasonsChange}
         showValue={true}
       />
-      <div class="text-xs text-gray-600 mt-1">
+      <div class="text-xs text-gray-600 mt-1" id="seasons-help" aria-live="polite">
         Shows with {maxSeasons} season{maxSeasons !== 1 ? 's' : ''} or fewer
       </div>
     </div>
-  </div>
+  </fieldset>
 
   <!-- Clear all filters button -->
   {#if hasActiveFilters}
     <div>
       <button
+        type="button"
         onclick={clearAllFilters}
-        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+        aria-label="Clear all active filters"
       >
         Clear all filters
       </button>
@@ -154,7 +161,7 @@
   {/if}
 
   <!-- Active filters display -->
-  <div class="p-4 bg-gray-50 rounded-md">
+  <div class="p-4 bg-gray-50 rounded-md" role="status" aria-live="polite" aria-atomic="true">
     <h2 class="font-semibold mb-2">Active filters:</h2>
     <div class="space-y-1 text-sm">
       {#if selectedGenres.length > 0}
@@ -172,3 +179,17 @@
     </div>
   </div>
 </div>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
