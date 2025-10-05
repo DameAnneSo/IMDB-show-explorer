@@ -94,7 +94,9 @@
   <h2 id="filters-heading" class="sr-only">Filter TV shows</h2>
   
   <!-- Filter Controls -->
-  <div class="grid md:grid-cols-3 gap-4">
+  <fieldset class="grid md:grid-cols-3 gap-4">
+    <legend class="sr-only">Filter TV shows by genre, language, and number of seasons</legend>
+    
     <!-- Genres Filter -->
     <div>
       <div class="flex items-center justify-between mb-2">
@@ -172,7 +174,7 @@
             type="button"
             onclick={resetSeasons}
             class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-2 py-1"
-            aria-label="Reset season filter to maximum"
+            aria-label="Reset maximum seasons filter to show all shows"
           >
             Reset
           </button>
@@ -194,7 +196,7 @@
         Shows with {maxSeasons} season{maxSeasons !== 1 ? 's' : ''} or fewer
       </div>
     </div>
-  </div>
+  </fieldset>
 
   <!-- Clear all filters button -->
   {#if hasActiveFilters}
