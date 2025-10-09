@@ -67,6 +67,15 @@ const yScale = $derived(
 </div>
 {/if}
 
+<h1>
+  {#if sortedShows.length === 0}
+    No shows correspond to your filters
+  {:else}
+    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
+  {/if}
+</h1>
+
+
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
     <LineChart
