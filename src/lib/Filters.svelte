@@ -22,22 +22,21 @@
   );
 
   const clearAllFilters = () => {
+    const totalFilters = selectedGenres.length + selectedLanguages.length + (maxSeasons < maxSeasonsInDataset ? 1 : 0);
     selectedGenres = [];
     selectedLanguages = [];
     maxSeasons = maxSeasonsInDataset;
-    announceToScreenReader('All filters cleared');
+    announceToScreenReader(`All ${totalFilters} filters cleared`);
   };
 
-  const clearGenres = () => {
-    const count = selectedGenres.length;
-    selectedGenres = [];
-    announceToScreenReader(`${count} genre filter${count !== 1 ? 's' : ''} cleared`);
+  const removeGenre = (genre) => {
+    selectedGenres = selectedGenres.filter(g => g !== genre);
+    announceToScreenReader(`${genre} removed from genre filters. ${selectedGenres.length} genre filters remaining.`);
   };
 
-  const clearLanguages = () => {
-    const count = selectedLanguages.length;
-    selectedLanguages = [];
-    announceToScreenReader(`${count} language filter${count !== 1 ? 's' : ''} cleared`);
+  const removeLanguage = (language) => {
+    selectedLanguages = selectedLanguages.filter(l => l !== language);
+    announceToScreenReader(`${language} removed from language filters. ${selectedLanguages.length} language filters remaining.`);
   };
 
   const resetSeasons = () => {
@@ -99,25 +98,13 @@
     
     <!-- Genres Filter -->
     <div>
-      <div class="flex items-center justify-between mb-2">
-        <label 
-          class="block text-sm font-medium text-gray-700" 
-          for="genres-select"
-          id="genres-label"
-        >
-          Genres
-        </label>
-        {#if selectedGenres.length > 0}
-          <button
-            type="button"
-            onclick={clearGenres}
-            class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-2 py-1"
-            aria-label={`Clear ${selectedGenres.length} genre filter${selectedGenres.length !== 1 ? 's' : ''}`}
-          >
-            Clear ({selectedGenres.length})
-          </button>
-        {/if}
-      </div>
+      <label 
+        class="block text-sm font-medium text-blue-800 mb-2" 
+        for="genres-select"
+        id="genres-label"
+      >
+        Genres
+      </label>
       <MultiSelect
         options={availableGenres}
         bind:selectedValues={selectedGenres}
@@ -130,25 +117,13 @@
     
     <!-- Languages filter -->
     <div>
-      <div class="flex items-center justify-between mb-2">
-        <label 
-          class="block text-sm font-medium text-gray-700" 
-          for="languages-select"
-          id="languages-label"
-        >
-          Languages
-        </label>
-        {#if selectedLanguages.length > 0}
-          <button
-            type="button"
-            onclick={clearLanguages}
-            class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-2 py-1"
-            aria-label={`Clear ${selectedLanguages.length} language filter${selectedLanguages.length !== 1 ? 's' : ''}`}
-          >
-            Clear ({selectedLanguages.length})
-          </button>
-        {/if}
-      </div>
+      <label 
+        class="block text-sm font-medium text-amber-800 mb-2" 
+        for="languages-select"
+        id="languages-label"
+      >
+        Languages
+      </label>
       <MultiSelect
         options={availableLanguages}
         bind:selectedValues={selectedLanguages}
@@ -161,25 +136,13 @@
     
     <!-- Seasons filter -->
     <div>
-      <div class="flex items-center justify-between mb-2">
-        <label 
-          class="block text-sm font-medium text-gray-700" 
-          for="seasons-slider"
-          id="seasons-label"
-        >
-          Maximum seasons
-        </label>
-        {#if maxSeasons < maxSeasonsInDataset}
-          <button
-            type="button"
-            onclick={resetSeasons}
-            class="text-xs text-red-600 hover:text-red-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-2 py-1"
-            aria-label="Reset maximum seasons filter to show all shows"
-          >
-            Reset
-          </button>
-        {/if}
-      </div>
+      <label 
+        class="block text-sm font-medium text-purple-800 mb-2" 
+        for="seasons-slider"
+        id="seasons-label"
+      >
+        Maximum number of seasons
+      </label>
       <RangeSlider
         min={minSeasonsInDataset}
         max={maxSeasonsInDataset}
@@ -198,66 +161,102 @@
     </div>
   </fieldset>
 
-  <!-- Clear all filters button -->
+  <!-- Active filters display with pills -->
   {#if hasActiveFilters}
-    <div>
-      <button
-        type="button"
-        onclick={clearAllFilters}
-        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-        aria-label="Clear all active filters"
+    <div 
+      role="region"
+      aria-labelledby="active-filters-heading"
+      aria-live="polite"
+      aria-atomic="false"
+    >
+      <h2 
+        id="active-filters-heading" 
+        class="font-semibold mb-3"
       >
-        Clear all filters
-      </button>
+        Active filters:
+      </h2>
+      
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Clear all filters button -->
+        <button
+          type="button"
+          onclick={clearAllFilters}
+          class="px-3 py-1.5 text-gray-600 border border-gray-600 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors text-sm font-medium"
+          aria-label="Clear all active filters"
+        >
+          Clear all
+        </button>
+        
+        <!-- Genre pills -->
+        {#each selectedGenres as genre (genre)}
+          <div class="flex items-center bg-blue-100 text-blue-800 border border-blue-300 rounded-md px-3 py-1.5 text-sm">
+            <span class="ml-1">{genre}</span>
+            <button 
+              type="button"
+              class="ml-2 text-blue-600 hover:text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
+              onclick={() => removeGenre(genre)}
+              aria-label={`Remove ${genre} from genre filters`}
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        {/each}
+        
+        <!-- Language pills -->
+        {#each selectedLanguages as language (language)}
+          <div class="flex items-center bg-amber-100 text-amber-800 border border-amber-300 rounded-md px-3 py-1.5 text-sm">
+            <span class="ml-1">{language}</span>
+            <button 
+              type="button"
+              class="ml-2 text-amber-600 hover:text-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 rounded"
+              onclick={() => removeLanguage(language)}
+              aria-label={`Remove ${language} from language filters`}
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        {/each}
+        
+        <!-- Seasons pill -->
+        {#if maxSeasons < maxSeasonsInDataset}
+          <div class="flex items-center bg-purple-100 text-purple-800 border border-purple-300 rounded-md px-3 py-1.5 text-sm">
+            <span class="font-medium">Max seasons:</span>
+            <span class="ml-1">{maxSeasons}</span>
+            <button 
+              type="button"
+              class="ml-2 text-purple-600 hover:text-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 rounded"
+              onclick={resetSeasons}
+              aria-label="Reset maximum seasons filter to show all shows"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        {/if}
+      </div>
+    </div>
+  {:else}
+    <!-- No filters message -->
+    <div 
+      role="region"
+      aria-labelledby="active-filters-heading"
+    >
+      <h2 
+        id="active-filters-heading" 
+        class="font-semibold mb-2"
+      >
+        Active filters:
+      </h2>
+      <div class="text-gray-500 text-sm">
+        No filters applied
+      </div>
     </div>
   {/if}
-
-  <!-- Active filters display -->
-  <div 
-    class="p-4 bg-gray-50 rounded-md"
-    role="region"
-    aria-labelledby="active-filters-heading"
-    aria-live="polite"
-    aria-atomic="false"
-  >
-    <h2 
-      id="active-filters-heading" 
-      class="font-semibold mb-2"
-    >
-      Active filters:
-    </h2>
-    <div class="space-y-1 text-sm">
-      {#if selectedGenres.length > 0}
-        <div>
-          <strong>Genres:</strong> 
-          <span aria-label={`${selectedGenres.length} genres selected: ${selectedGenres.join(', ')}`}>
-            {selectedGenres.join(', ')}
-          </span>
-        </div>
-      {/if}
-      {#if selectedLanguages.length > 0}
-        <div>
-          <strong>Languages:</strong> 
-          <span aria-label={`${selectedLanguages.length} languages selected: ${selectedLanguages.join(', ')}`}>
-            {selectedLanguages.join(', ')}
-          </span>
-        </div>
-      {/if}
-      {#if maxSeasons < maxSeasonsInDataset}
-        <div>
-          <strong>Maximum Seasons:</strong> 
-          <span aria-label={`Maximum seasons set to ${maxSeasons}`}>
-            {maxSeasons}
-          </span>
-        </div>
-      {/if}
-      {#if !hasActiveFilters}
-        <div class="text-gray-500 italic">
-          No filters applied
-        </div>
-      {/if}
-    </div>
-  </div>
 </section>
 
 <style>

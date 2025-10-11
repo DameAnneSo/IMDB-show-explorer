@@ -339,6 +339,13 @@
   const getOptionId = (option) => `option-${option}`;
   const comboboxId = id || `multiselect-${Math.random().toString(36).substr(2, 9)}`;
   const listboxId = `${comboboxId}-listbox`;
+  
+  // Summary text for selected items
+  const selectionSummary = $derived(
+    selectedValues.length === 0 
+      ? placeholder 
+      : `${selectedValues.length} item${selectedValues.length !== 1 ? 's' : ''} selected`
+  );
 </script>
 
 <div 
@@ -352,7 +359,7 @@
   {/if}
   
   <div 
-    class="flex flex-wrap items-center min-h-10 w-full px-3 py-2 border rounded-md bg-white {isOpen ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-300'} {disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-text'}"
+    class="flex items-center min-h-10 w-full px-3 py-2 border rounded-md bg-white {isOpen ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-300'} {disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-text'}"
     onclick={toggleDropdown}
     onkeydown={handleContainerKeydown}
     role="combobox"
@@ -364,23 +371,7 @@
     aria-label={label || `MultiSelect with ${selectedValues.length} items selected`}
     tabindex={disabled ? -1 : 0}
   >
-    {#each selectedValues as item (item)}
-      <div class="flex items-center bg-blue-100 text-blue-800 rounded-md px-2 py-1 m-1 text-sm">
-        <span>{item}</span>
-        <button 
-          type="button"
-          class="ml-1 text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
-          onclick={(e) => { e.stopPropagation(); removeOption(item); }}
-          aria-label={`Remove ${item}`}
-          disabled={disabled}
-          tabindex={disabled ? -1 : 0}
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    {/each}
-    
-    <div class="flex items-center flex-grow">
+    <div class="flex items-center flex-grow min-w-0">
       <input 
         type="text"
         id="{comboboxId}-input"
@@ -388,8 +379,8 @@
         bind:value={inputValue}
         onkeydown={handleKeydown}
         onfocus={handleFocus}
-        placeholder={selectedValues.length === 0 ? placeholder : ''}
-        class="flex-grow outline-none px-1 py-1 min-w-[50px] bg-transparent {disabled ? 'cursor-not-allowed' : ''}"
+        placeholder={selectionSummary}
+        class="flex-grow outline-none px-1 py-1 min-w-[50px] bg-transparent {disabled ? 'cursor-not-allowed' : ''} placeholder-gray-500"
         disabled={disabled}
         aria-autocomplete="list"
         aria-expanded={isOpen}

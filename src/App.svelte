@@ -188,34 +188,6 @@
         bind:maxSeasons
       />
     </div>
-
-    <!-- Results section -->
-    <!-- <div class="mb-4">
-      <h2 class="text-xl font-semibold mb-4">
-        Results ({filteredShows().length} of {shows.length} shows)
-      </h2>
-      
-      {#if filteredShows().length === 0}
-        <div class="text-center py-8 text-gray-500">
-          <p>No shows match your current filters.</p>
-          <p class="text-sm mt-2">Try adjusting or clearing your filters.</p>
-        </div>
-      {:else}
-        <div class="grid gap-4">
-          {#each filteredShows() as show (show.name)}
-            <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-              <h3 class="font-semibold text-lg mb-2">{show.name}</h3>
-              <div class="grid md:grid-cols-3 gap-2 text-sm text-gray-600">
-                <div><strong>Genre:</strong> {show.genres}</div>
-                <div><strong>Languages:</strong> {show.languages}</div>
-                <div><strong>Seasons:</strong> {show.seasons}</div>
-              </div>
-            </div>
-          {/each}
-        </div>
-      {/if}
-    </div> -->
-
     <!-- Charts component -->
     <Charts 
       shows={filteredShows()}
