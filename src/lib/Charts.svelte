@@ -52,8 +52,16 @@ const yScale = $derived(
 );
 </script>
 
+<h1 class="mb-5">
+  {#if sortedShows.length === 0}
+    No shows correspond to your filters
+  {:else}
+    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
+  {/if}
+</h1>
+
 {#if sortedShows.length > 0}
-<div class="mb-10">
+<div class="mb-5">
   <div class="flex items-center">
     <Toggle
       bind:checked={showAnnotations}
@@ -66,15 +74,6 @@ const yScale = $derived(
   </div>
 </div>
 {/if}
-
-<h1>
-  {#if sortedShows.length === 0}
-    No shows correspond to your filters
-  {:else}
-    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
-  {/if}
-</h1>
-
 
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
