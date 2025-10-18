@@ -20,7 +20,9 @@ const xNudge = 15;
 const yNudge = 15;
 
 const isFallingOffChart = $derived(tooltipWidth + x > width);
-const xPosition = $derived(isFallingOffChart ? x - tooltipWidth - xNudge : x + xNudge);
+const xPosition = $derived(
+  isFallingOffChart ? x - tooltipWidth - xNudge : x + xNudge
+);
 const yPosition = $derived(y + yNudge);
 </script>
 
@@ -30,13 +32,29 @@ const yPosition = $derived(y + yNudge);
   style="transform: translate({xPosition}px, {yPosition}px)"
 >
   <div>
-    <span class="tooltip_intro">
-      episode {formatX(xAccessor)} | season {data.episodeSeason}</span
-    >
-    <span class="tooltip_main">
+    <div class="tooltip_header">
+      <span class="tooltip_intro">
+        episode {data.episodeNumberinSeason} | season {data.episodeSeason}
+      </span>
       <span class="tooltip_accent">{formatYForTooltip(yAccessor)}/10</span>
-      <span class="tooltip_receeded">{data.episodeVotes} votes</span>
-    </span>
+    </div>
+    <hr class="divider" />
+    <table class="tooltip_table">
+      <tbody>
+        <tr>
+          <td class="label">Number of votes:</td>
+          <td class="value">{data.episodeVotes || "include later"}</td>
+        </tr>
+        <tr>
+          <td class="label">Episode title:</td>
+          <td class="value">{data.episodeTitle}</td>
+        </tr>
+        <tr>
+          <td class="label">Episode's number overall:</td>
+          <td class="value">{data.episodeNumberOverall}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -54,9 +72,10 @@ const yPosition = $derived(y + yNudge);
   transition: transform 300ms ease;
 }
 
-.tooltip_main {
-  display: block;
-  margin-bottom: 0.3em;
+.tooltip_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tooltip_accent {
@@ -67,11 +86,7 @@ const yPosition = $derived(y + yNudge);
   background-color: var(--color-100);
   border-radius: 3px;
   padding: 0px 4px;
-}
-
-.tooltip_receeded {
-  font-size: 0.8rem;
-  color: var(--color-neutral-700);
+  margin-left: 0;
 }
 
 .tooltip_intro {
@@ -79,5 +94,37 @@ const yPosition = $derived(y + yNudge);
   color: var(--color-neutral-500);
   text-transform: uppercase;
   font-size: 0.8rem;
+}
+
+.divider {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.tooltip_table {
+  width: 100%;
+  margin-top: 0.5em;
+}
+
+.tooltip_table td {
+  padding: 2px 0;
+  border: none;
+}
+
+.value {
+  text-align: end;
+  font-weight: 600;
+  color: var(--color-neutral-800);
+}
+
+.label {
+  text-align: left;
+  font-weight: 400;
+  color: var(--color-neutral-500);
+  opacity: 0.8;
+  padding-right: 12px; /* Breathing space between columns */
+  font-size: 0.85em; /* Slightly smaller to recede */
 }
 </style>
