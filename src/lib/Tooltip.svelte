@@ -31,31 +31,29 @@ const yPosition = $derived(y + yNudge);
   class="tooltip"
   style="transform: translate({xPosition}px, {yPosition}px)"
 >
-  <div>
-    <div class="tooltip_header">
+  <div class="tooltip_header">
+    <div class="tooltip_top_line">
       <span class="tooltip_intro">
         episode {data.episodeNumberinSeason} | season {data.episodeSeason}
       </span>
       <span class="tooltip_accent">{formatYForTooltip(yAccessor)}/10</span>
     </div>
-    <hr class="divider" />
-    <table class="tooltip_table">
-      <tbody>
-        <tr>
-          <td class="label">Number of votes:</td>
-          <td class="value">{data.episodeVotes || "include later"}</td>
-        </tr>
-        <tr>
-          <td class="label">Episode title:</td>
-          <td class="value">{data.episodeTitle}</td>
-        </tr>
-        <tr>
-          <td class="label">Episode's number overall:</td>
-          <td class="value">{data.episodeNumberOverall}</td>
-        </tr>
-      </tbody>
-    </table>
+    <p class="tooltip_title">"{data.episodeTitle}"</p>
   </div>
+
+  <hr class="divider" />
+  <table class="tooltip_table">
+    <tbody>
+      <tr>
+        <td class="label">Number of votes:</td>
+        <td class="value">{data.episodeVotes || "include later"}</td>
+      </tr>
+      <tr>
+        <td class="label">Episode's number overall:</td>
+        <td class="value">{data.episodeNumberOverall}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <style>
@@ -73,6 +71,12 @@ const yPosition = $derived(y + yNudge);
 }
 
 .tooltip_header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltip_top_line {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -94,6 +98,13 @@ const yPosition = $derived(y + yNudge);
   color: var(--color-neutral-500);
   text-transform: uppercase;
   font-size: 0.8rem;
+}
+
+.tooltip_title {
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  margin: 0;
+  width: 100%;
 }
 
 .divider {
