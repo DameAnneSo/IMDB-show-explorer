@@ -73,7 +73,7 @@ const yPosition = $derived(y + yNudge);
 .tooltip_header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+
 }
 
 .tooltip_top_line {
@@ -101,10 +101,10 @@ const yPosition = $derived(y + yNudge);
 }
 
 .tooltip_title {
-  font-weight: 600;
+  font-weight: 400;
   color: var(--color-neutral-500);
-  margin: 0;
   width: 100%;
+  margin: -2px 0 0 0;
 }
 
 .divider {
