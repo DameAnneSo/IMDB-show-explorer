@@ -65,12 +65,9 @@ const yScale = $derived(
   <div class="flex items-center">
     <Toggle
       bind:checked={showAnnotations}
-      label="Show Annotations"
+      label="Show annotations (season bands and min/max ratings)"
       id="annotations-toggle"
     />
-  </div>
-  <div class="mt-3 text-sm text-gray-600">
-    <p>Toggle to show/hide season bands and min/max ratings on all charts</p>
   </div>
 </div>
 {/if}
