@@ -250,7 +250,7 @@
         id="active-filters-heading" 
         class="font-semibold mb-2"
       >
-        Active filters:
+        Active filters
       </h2>
       <div class="text-gray-500 text-sm">
         No filters applied
