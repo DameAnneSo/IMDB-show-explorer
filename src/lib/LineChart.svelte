@@ -20,7 +20,7 @@ let {
   height,
   margins,
   boundedHeight,
-  showAnnotations = true
+  showAnnotations = true,
 } = $props();
 
 const xAccessor = (d) => +d.episodeNumberOverall;
@@ -73,40 +73,49 @@ const lineGenerator = $derived(
 
 const line = $derived(lineGenerator(validData));
 
-const infoString = $derived(
-  `${showName} | overall rating: ${overallRating} | ${seasons} season(s) | ${episodes} episodes`
-);
-
 const formatX = d3.format("d");
 const formatYForTooltip = d3.format(",.1f");
 
 const ariaLabel = $derived(
-  !validData || validData.length === 0 
+  !validData || validData.length === 0
     ? "Empty chart"
     : (() => {
-        const ratings = validData.map(d => yAccessor(d));
+        const ratings = validData.map((d) => yAccessor(d));
         const minRating = Math.min(...ratings);
         const maxRating = Math.max(...ratings);
         // Find the actual episode objects for min and max ratings
-        const worstEpisode = validData.find(d => yAccessor(d) === minRating);
-        const bestEpisode = validData.find(d => yAccessor(d) === maxRating);
-        
-        const worstInfo = worstEpisode 
+        const worstEpisode = validData.find((d) => yAccessor(d) === minRating);
+        const bestEpisode = validData.find((d) => yAccessor(d) === maxRating);
+
+        const worstInfo = worstEpisode
           ? `"${worstEpisode.episodeTitle}" (episode ${worstEpisode.episodeNumberinSeason}, season ${worstEpisode.episodeSeason})`
           : "unknown episode";
-          
-        const bestInfo = bestEpisode 
+
+        const bestInfo = bestEpisode
           ? `"${bestEpisode.episodeTitle}" (episode ${bestEpisode.episodeNumberinSeason}, season ${bestEpisode.episodeSeason})`
           : "unknown episode";
-        
-        return `This is a line chart of IMDB ratings for the TV series ${showName}, ${episodes} episodes across ${seasons} ${seasons === 1 ? 'season' : 'seasons'}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
+
+        return `This is a line chart of IMDB ratings for the TV series ${showName}, ${episodes} episodes across ${seasons} ${seasons === 1 ? "season" : "seasons"}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
       })()
 );
-
-
 </script>
 
-<h1>{infoString}</h1>
+<h1 class="info-header">
+  <span class="episode-value">{showName}</span>
+  <span class="separator">|</span>
+  <span class="episode-info"
+    >rated <span class="episode-value">{overallRating}/10</span>
+    <span class="separator">|</span>
+    <span class="episode-value">{seasons} </span>
+
+    <span class="episode-info"> {seasons === 1 ? "season" : "seasons"}</span>
+    <span class="separator">|</span>
+    <span class="episode-value"
+      >{episodes}
+      <span class="episode-info"> episodes</span>
+    </span>
+  </span>
+</h1>
 
 <div class="chart-wrapper" style="height:{height}px">
   <svg
@@ -128,7 +137,13 @@ const ariaLabel = $derived(
       {/if}
       <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
       {#if showAnnotations}
-        <MinMaxRatings {episodeData} {xAccessor} {yAccessor} {xScale} {yScale} />
+        <MinMaxRatings
+          {episodeData}
+          {xAccessor}
+          {yAccessor}
+          {xScale}
+          {yScale}
+        />
       {/if}
       {#if line}
         <path class="line" d={line} />
@@ -170,5 +185,29 @@ const ariaLabel = $derived(
   stroke: #4427ca;
   stroke-width: 1px;
   stroke-linecap: round;
+}
+
+.info-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+.episode-value {
+  font-weight: 700;
+  color: var(--color-primary, #4427ca);
+}
+
+.separator {
+  color: var(--color-neutral-400, #999);
+  font-weight: 300;
+}
+
+.episode-info {
+  color: var(--color-neutral-600, #666);
+  font-weight: 400;
 }
 </style>
