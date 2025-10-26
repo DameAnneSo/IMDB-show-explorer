@@ -52,22 +52,7 @@ const yScale = $derived(
 );
 </script>
 
-{#if sortedShows.length > 0}
-<div class="mb-10">
-  <div class="flex items-center">
-    <Toggle
-      bind:checked={showAnnotations}
-      label="Show Annotations"
-      id="annotations-toggle"
-    />
-  </div>
-  <div class="mt-3 text-sm text-gray-600">
-    <p>Toggle to show/hide season bands and min/max ratings on all charts</p>
-  </div>
-</div>
-{/if}
-
-<h1>
+<h1 class="mb-5">
   {#if sortedShows.length === 0}
     No shows correspond to your filters
   {:else}
@@ -75,6 +60,17 @@ const yScale = $derived(
   {/if}
 </h1>
 
+{#if sortedShows.length > 0}
+<div class="mb-5">
+  <div class="flex items-center">
+    <Toggle
+      bind:checked={showAnnotations}
+      label="Show annotations (season bands and min/max ratings)"
+      id="annotations-toggle"
+    />
+  </div>
+</div>
+{/if}
 
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}

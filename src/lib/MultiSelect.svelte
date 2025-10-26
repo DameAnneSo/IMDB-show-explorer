@@ -27,6 +27,7 @@
   let activeDescendant = $state(null);
   let focusedOptionIndex = $state(-1);
   let focusedOnSelectAll = $state(false);
+  let isToggling = false;
   
   const filteredOptions = $derived(
     options.filter(opt => {
@@ -69,24 +70,39 @@
   // Set up click outside listener with cleanup
   $effect(() => {
     if (isOpen) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+      // Use setTimeout to delay listener attachment until after the current click event completes
+      const timeoutId = setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+      }, 0);
+      
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener('click', handleClickOutside);
+      };
     }
   });
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (event) => {
     if (!disabled) {
+      event?.stopPropagation();
+      isToggling = true;
       isOpen = !isOpen;
       if (isOpen) {
         focusedOptionIndex = -1;
         focusedOnSelectAll = false;
         activeDescendant = null;
         // Focus the input when opening dropdown
-        setTimeout(() => inputElement?.focus(), 0);
+        setTimeout(() => {
+          inputElement?.focus();
+          isToggling = false;
+        }, 0);
       } else {
         focusedOptionIndex = -1;
         focusedOnSelectAll = false;
         activeDescendant = null;
+        setTimeout(() => {
+          isToggling = false;
+        }, 0);
       }
     }
   }
@@ -299,14 +315,14 @@
   // Add keyboard support for container
   const handleContainerKeydown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      toggleDropdown();
+      toggleDropdown(event);
       event.preventDefault();
     }
   }
   
-  // Also open dropdown when input gets focus
+  // Also open dropdown when input gets focus (but not if already opening)
   const handleFocus = () => {
-    if (!isOpen) {
+    if (!isOpen && !isToggling) {
       isOpen = true;
     }
   }
@@ -360,7 +376,7 @@
   
   <div 
     class="flex items-center min-h-10 w-full px-3 py-2 border rounded-md bg-white {isOpen ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-300'} {disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-text'}"
-    onclick={toggleDropdown}
+    onclick={(e) => toggleDropdown(e)}
     onkeydown={handleContainerKeydown}
     role="combobox"
     aria-expanded={isOpen}
@@ -379,6 +395,7 @@
         bind:value={inputValue}
         onkeydown={handleKeydown}
         onfocus={handleFocus}
+        onclick={(e) => e.stopPropagation()}
         placeholder={selectionSummary}
         class="flex-grow outline-none px-1 py-1 min-w-[50px] bg-transparent {disabled ? 'cursor-not-allowed' : ''} placeholder-gray-500"
         disabled={disabled}
@@ -395,6 +412,13 @@
           type="button"
           class="ml-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded flex-shrink-0"
           onclick={(e) => { e.stopPropagation(); clearAll(); }}
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              clearAll();
+            }
+          }}
           aria-label="Clear all selections"
           title="Clear all"
           tabindex={0}
