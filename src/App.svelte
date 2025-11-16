@@ -200,7 +200,7 @@ loadCSVData();
       />
     </div>
     <!-- Charts component -->
-    <Charts shows={filteredShows()} episodes={filteredEpisodes()} />
+    <Charts shows={filteredShows()} episodes={filteredEpisodes()} {maxSeasons} />
   {/if}
   <BackToTopButton />
   <Footer />

@@ -1,12 +1,19 @@
 <script>
-  let {xScale, height, margins } = $props();
-
+  let {xScale, height, margins, maxSeasons } = $props();
+  
   const numberOfTicks = (pixelsAvailable, pixelsPerTick = 80) =>
     Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
-
+  
   const [xMin, xMax] = $derived(xScale.range());
-
-  const ticks = $derived(xScale.ticks(numberOfTicks(xMax - xMin)));
+  
+  const defaultTicks = $derived(xScale.ticks(numberOfTicks(xMax - xMin)));
+  
+  // Filter out non-integer ticks
+  const ticks = $derived(
+    maxSeasons <= 2
+      ? defaultTicks.filter(tick => Number.isInteger(tick))
+      : defaultTicks
+  );
 </script>
 
 <g transform={`translate(0 ${height - margins.marginTop - margins.marginBottom})`}>
