@@ -13,6 +13,7 @@ let {
   episodeData,
   overallRating,
   seasons,
+  maxSeasons,
   episodes,
   xScale,
   yScale,
@@ -130,7 +131,7 @@ const ariaLabel = $derived(
     onblur={handleMouseLeave}
   >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
-      <XAxis {xScale} {height} {margins} />
+      <XAxis {xScale} {height} {margins} {maxSeasons}/>
       <YAxis {yScale} />
       {#if showAnnotations}
         <SeasonBands {episodeData} {xScale} {boundedHeight} />

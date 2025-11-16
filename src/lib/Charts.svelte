@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import LineChart from "./LineChart.svelte";
 import Toggle from "./Toggle.svelte";
 
-let { shows = [], episodes = [] } = $props();
+let { shows = [], episodes = [], maxSeasons } = $props();
 
 let showAnnotations = $state(true);
 
@@ -79,6 +79,7 @@ const yScale = $derived(
       episodeData={episodes.filter((ep) => ep.seriesTitle == show.name)}
       overallRating={show.overall_ratings}
       seasons={show.seasons}
+      {maxSeasons}
       episodes={show.episodes}
       {xScale}
       {yScale}
