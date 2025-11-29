@@ -80,20 +80,20 @@ text {
 }
 
 .highest {
-  fill: var(--green-dark);
+  fill: var(--warn-neg-5);
 }
 
 .lowest {
-  fill: var(--red-dark);
+  fill: var(--warn-pos-5);
 }
 
 .highest_background {
-  fill: var(--green-light);
+  fill: var(--warn-neg-0);
   opacity: 0.8;
 }
 
 .lowest_background {
-  fill: var(--red-light);
+  fill: var(--warn-pos-0);
   opacity: 0.8;
 }
 </style>

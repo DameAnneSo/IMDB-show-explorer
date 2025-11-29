@@ -152,56 +152,106 @@ const filteredEpisodes = $derived(() => {
 loadCSVData();
 </script>
 
-<main class="p-6 max-w-6xl mx-auto">
-  <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV shows</h1>
+<div class="app-wrapper">
+  <main class="p-6 max-w-6xl mx-auto">
+    <h1 class="text-5xl font-display font-bold mb-6 text-primary">
+      IMDb best-rated TV shows
+    </h1>
 
-  {#if isLoading}
-    <div class="flex justify-center items-center py-12">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-      ></div>
-      <span class="ml-3 text-gray-600">Loading series data...</span>
-    </div>
-  {:else if loadError}
-    <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg
-            class="h-5 w-5 text-red-400"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">Error Loading Data</h3>
-          <div class="mt-2 text-sm text-red-700">
-            <p>{loadError}</p>
+    <div class="filters-and-status">
+      <div class="filters-content">
+        {#if isLoading}
+          <div class="flex justify-center items-center py-12">
+            <div
+              class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+            ></div>
+            <span class="ml-3 text-neutral-600">Loading series data...</span>
           </div>
-        </div>
+        {:else if loadError}
+          <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  Error Loading Data
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <p>{loadError}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {:else}
+          <!-- Filters component -->
+          <div class="mb-6">
+            <Filters
+              {availableGenres}
+              {availableLanguages}
+              {minSeasonsInDataset}
+              {maxSeasonsInDataset}
+              bind:selectedGenres
+              bind:selectedLanguages
+              bind:maxSeasons
+            />
+          </div>
+        {/if}
       </div>
     </div>
-  {:else}
-    <!-- Filters component -->
-    <div class="mb-6">
-      <Filters
-        {availableGenres}
-        {availableLanguages}
-        {minSeasonsInDataset}
-        {maxSeasonsInDataset}
-        bind:selectedGenres
-        bind:selectedLanguages
-        bind:maxSeasons
-      />
-    </div>
+    <!-- Close filters-and-status here -->
     <!-- Charts component -->
-    <Charts shows={filteredShows()} episodes={filteredEpisodes()} {maxSeasons} />
-  {/if}
-  <BackToTopButton />
+    {#if !isLoading && !loadError}
+      <Charts
+        shows={filteredShows()}
+        episodes={filteredEpisodes()}
+        {maxSeasons}
+      />
+    {/if}
+
+    <BackToTopButton />
+  </main>
   <Footer />
-</main>
+</div>
+
+<style>
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* This makes main grow to push footer down */
+}
+h1 {
+  margin-bottom: 5rem;
+}
+
+.filters-and-status {
+  background-color: var(--color-primary-100);
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.filters-content {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+</style>

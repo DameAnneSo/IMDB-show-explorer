@@ -1,8 +1,6 @@
 <script>
-
- let { x, y, width } = $props();
+let { x, y, width } = $props();
 // $inspect(x, y);
-
 </script>
 
 <g>

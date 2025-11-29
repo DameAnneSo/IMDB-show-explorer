@@ -52,26 +52,27 @@ const yScale = $derived(
 );
 </script>
 
-<h1 class="mb-5">
-  {#if sortedShows.length === 0}
-    No shows correspond to your filters
-  {:else}
-    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
-  {/if}
-</h1>
-
+<div class="results-note-section">
 {#if sortedShows.length > 0}
-<div class="mb-5">
+<div class="mb-5 flex flex-wrap items-center justify-between gap-4">
+  <h1 class="text-lg font-semibold leading-none">
+    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
+  </h1>
+  
   <div class="flex items-center">
     <Toggle
       bind:checked={showAnnotations}
-      label="Show annotations (season bands and min/max ratings)"
+      label="Show / hide annotations"
       id="annotations-toggle"
     />
   </div>
 </div>
+{:else}
+<h1 class="mb-5 text-center">
+  No shows correspond to your filters
+</h1>
 {/if}
-
+</div>
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
     <LineChart
@@ -95,5 +96,9 @@ const yScale = $derived(
 <style>
 .line-charts {
   width: 100%;
+}
+.results-note-section {
+  margin-bottom:3rem; 
+
 }
 </style>

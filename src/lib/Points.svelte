@@ -1,6 +1,5 @@
 <script>
- let { episodeData, xScale, yScale, xAccessor, yAccessor, width } = $props();
-
+let { episodeData, xScale, yScale, xAccessor, yAccessor, width } = $props();
 </script>
 
 <g class="points">

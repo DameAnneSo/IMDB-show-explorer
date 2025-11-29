@@ -131,11 +131,12 @@ const ariaLabel = $derived(
     onblur={handleMouseLeave}
   >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
-      <XAxis {xScale} {height} {margins} {maxSeasons}/>
-      <YAxis {yScale} />
       {#if showAnnotations}
         <SeasonBands {episodeData} {xScale} {boundedHeight} />
       {/if}
+      <XAxis {xScale} {height} {margins} {maxSeasons} />
+      <YAxis {yScale} />
+
       <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
       {#if showAnnotations}
         <MinMaxRatings
@@ -180,10 +181,11 @@ const ariaLabel = $derived(
   font-size: 16px;
   width: 100%;
   max-width: 600px;
+  margin-bottom: 2rem;
 }
 .line {
   fill: none;
-  stroke: #4427ca;
+  stroke: var(--color-primary);
   stroke-width: 1px;
   stroke-linecap: round;
 }
@@ -199,16 +201,16 @@ const ariaLabel = $derived(
 
 .episode-value {
   font-weight: 700;
-  color: var(--color-primary, #4427ca);
+  color: var(--color-primary);
 }
 
 .separator {
-  color: var(--color-neutral-400, #999);
+  color: var(--color-neutral-400);
   font-weight: 300;
 }
 
 .episode-info {
-  color: var(--color-neutral-600, #666);
+  color: var(--color-neutral-600);
   font-weight: 400;
 }
 </style>
