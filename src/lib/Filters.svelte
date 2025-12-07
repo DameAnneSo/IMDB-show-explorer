@@ -97,7 +97,7 @@ const announceToScreenReader = (message) => {
   <h2 id="filters-heading" class="sr-only">Filter TV shows</h2>
 
   <!-- Filter Controls -->
-  <fieldset class="grid md:grid-cols-3 gap-4 mb-3">
+  <fieldset class="filter-grid">
     <legend class="sr-only"
       >Filter TV shows by genre, language, and number of seasons</legend
     >
@@ -184,7 +184,7 @@ const announceToScreenReader = (message) => {
         <button
           type="button"
           onclick={clearAllFilters}
-          class="px-2 py-0.5 text-primary-800 bg-white border border-primary-400 rounded-md hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors text-sm font-medium"
+          class="px-2 py-1 text-primary-800 bg-white border border-primary-400 rounded-md hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors text-sm font-medium"
           aria-label="Clear all active filters"
         >
           Clear all
@@ -304,5 +304,18 @@ const announceToScreenReader = (message) => {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>

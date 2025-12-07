@@ -153,13 +153,15 @@ loadCSVData();
 </script>
 
 <div class="app-wrapper">
-  <main class="p-6 max-w-6xl mx-auto">
-    <h1 class="text-5xl font-display font-bold mb-6 text-primary">
-      IMDb best-rated TV shows
-    </h1>
+  <main class="main-content">
+    <div class="main-inner">
+      <h1 class="page-title">
+        IMDb best-rated TV shows
+      </h1>
+    </div>
 
-    <div class="filters-and-status">
-      <div class="filters-content">
+    <div class="filters-section">
+      <div class="filters-inner">
         {#if isLoading}
           <div class="flex justify-center items-center py-12">
             <div
@@ -195,31 +197,31 @@ loadCSVData();
           </div>
         {:else}
           <!-- Filters component -->
-          <div class="mb-6">
-            <Filters
-              {availableGenres}
-              {availableLanguages}
-              {minSeasonsInDataset}
-              {maxSeasonsInDataset}
-              bind:selectedGenres
-              bind:selectedLanguages
-              bind:maxSeasons
-            />
-          </div>
+          <Filters
+            {availableGenres}
+            {availableLanguages}
+            {minSeasonsInDataset}
+            {maxSeasonsInDataset}
+            bind:selectedGenres
+            bind:selectedLanguages
+            bind:maxSeasons
+          />
         {/if}
       </div>
     </div>
-    <!-- Close filters-and-status here -->
-    <!-- Charts component -->
-    {#if !isLoading && !loadError}
-      <Charts
-        shows={filteredShows()}
-        episodes={filteredEpisodes()}
-        {maxSeasons}
-      />
-    {/if}
 
-    <BackToTopButton />
+    <div class="main-inner">
+      <!-- Charts component -->
+      {#if !isLoading && !loadError}
+        <Charts
+          shows={filteredShows()}
+          episodes={filteredEpisodes()}
+          {maxSeasons}
+        />
+      {/if}
+
+      <BackToTopButton />
+    </div>
   </main>
   <Footer />
 </div>
@@ -231,26 +233,50 @@ loadCSVData();
   flex-direction: column;
 }
 
-main {
-  flex: 1; /* This makes main grow to push footer down */
-}
-h1 {
-  margin-bottom: 5rem;
+.main-content {
+  flex: 1;
 }
 
-.filters-and-status {
+.main-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-bottom: 3rem;
+  margin-top: 1.5rem;
+  color: var(--color-primary);
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+@media (min-width: 640px) {
+  .page-title {
+    font-size: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    font-size: 3.5rem;
+    margin-bottom: 5rem;
+  }
+}
+
+.filters-section {
   background-color: var(--color-primary-100);
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  padding: 2rem;
+  width: 100%;
+  padding: 2rem 1.5rem;
   margin-bottom: 3rem;
 }
 
-.filters-content {
+.filters-inner {
   max-width: 72rem;
   margin: 0 auto;
 }

@@ -180,7 +180,6 @@ const ariaLabel = $derived(
   position: relative;
   font-size: 16px;
   width: 100%;
-  max-width: 600px;
   margin-bottom: 2rem;
 }
 .line {
