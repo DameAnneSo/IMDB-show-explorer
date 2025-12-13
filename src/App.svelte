@@ -154,7 +154,7 @@ loadCSVData();
 
 <div class="app-wrapper">
   <main class="main-content">
-    <div class="main-inner">
+    <div class="content-container">
       <h1 class="page-title">
         IMDb best-rated TV shows
       </h1>
@@ -210,7 +210,7 @@ loadCSVData();
       </div>
     </div>
 
-    <div class="main-inner">
+    <div class="content-container">
       <!-- Charts component -->
       {#if !isLoading && !loadError}
         <Charts
@@ -237,7 +237,7 @@ loadCSVData();
   flex: 1;
 }
 
-.main-inner {
+.content-container {
   max-width: 72rem;
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -271,7 +271,6 @@ loadCSVData();
 
 .filters-section {
   background-color: var(--color-primary-100);
-  width: 100%;
   padding: 2rem 1.5rem;
   margin-bottom: 3rem;
 }

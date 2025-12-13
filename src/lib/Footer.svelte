@@ -1,6 +1,6 @@
-<footer class="footer-full-width">
+<footer class="footer">
   <div class="footer-content">
-    <p>
+    <p class="footer-line">
       Developed by
       <a
         href="https://curiousdata.netlify.app/"
@@ -17,8 +17,9 @@
       >
         Leandro Collares
       </a>
-
-      &middot; Source:
+    </p>
+    <p class="footer-line">
+      Source:
       <a
         href="https://www.imdb.com/chart/top/"
         target="_blank"
@@ -40,12 +41,9 @@
 </footer>
 
 <style>
-.footer-full-width {
-  width: 100%;
+.footer {
   background-color: var(--color-primary-100);
-  padding: 1rem 1.5rem 2rem 1.5rem;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
+  padding: 1.5rem 1.5rem 2rem 1.5rem;
 }
 
 .footer-content {
@@ -53,9 +51,9 @@
   margin: 0 auto;
 }
 
-p {
+.footer-line {
   text-align: center;
-  margin: 0;
+  margin: 0.25rem 0;
   color: var(--color-neutral-700);
 }
 
