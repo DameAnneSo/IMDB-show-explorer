@@ -1,4 +1,5 @@
 <script>
+import Intro from "./lib/Intro.svelte";
 import Filters from "./lib/Filters.svelte";
 import Charts from "./lib/Charts.svelte";
 import BackToTopButton from "./lib/BackToTopButton.svelte";
@@ -158,6 +159,8 @@ loadCSVData();
       <h1 class="page-title">
         IMDb best-rated TV shows
       </h1>
+      
+      <Intro />
     </div>
 
     <div class="filters-section">
@@ -247,7 +250,7 @@ loadCSVData();
   font-size: 2.5rem;
   font-family: var(--font-display);
   font-weight: 700;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   margin-top: 1.5rem;
   color: var(--color-primary);
   line-height: 1.2;
@@ -258,14 +261,14 @@ loadCSVData();
   .page-title {
     font-size: 3rem;
     margin-top: 2rem;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
   }
 }
 
 @media (min-width: 768px) {
   .page-title {
     font-size: 3.5rem;
-    margin-bottom: 5rem;
+    margin-bottom: 2.5rem;
   }
 }
 
