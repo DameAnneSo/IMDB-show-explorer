@@ -42,7 +42,7 @@
 
 <style>
 .footer {
-  background-color: var(--color-primary-100);
+  background-color: var(--color-primary-50);
   padding: 1.5rem 1.5rem 2rem 1.5rem;
 }
 
