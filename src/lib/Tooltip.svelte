@@ -63,7 +63,7 @@ const yPosition = $derived(y + yNudge);
   left: 0;
   padding: 0.6em 0.5em;
   pointer-events: none;
-  background: var(--color-neutral-100);
+  background: var(--color-neutral-50);
   border-radius: 2px;
   font-size: 14px;
   text-align: left;
