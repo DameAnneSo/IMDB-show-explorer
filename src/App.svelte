@@ -26,7 +26,8 @@ const loadCSVData = async () => {
 
     // Load CSV files
     const [seriesData, episodeData] = await Promise.all([
-      d3.csv("/data/series_test.csv"),
+      // d3.csv("/data/series_test.csv"),
+      d3.csv("/data/series_test_extended.csv"),
       d3.csv("/data/episodes_test.csv"),
     ]);
 
@@ -37,6 +38,9 @@ const loadCSVData = async () => {
       seasons: parseInt(d.seasons) || 0,
       episodes: parseInt(d.episodes) || 0,
       overall_ratings: parseFloat(d.overall_ratings) || 0,
+      storyline: d.storyline?.trim() || "",
+      genresList: d.genres?.trim() || "",
+      link: d.link?.trim() || "",
     }));
 
     const episodesData = episodeData.map((d) => ({

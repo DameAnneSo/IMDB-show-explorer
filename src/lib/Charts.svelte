@@ -82,6 +82,9 @@ const yScale = $derived(
       seasons={show.seasons}
       {maxSeasons}
       episodes={show.episodes}
+      storyline={show.storyline}
+      genres={show.genres}
+      link={show.link}
       {xScale}
       {yScale}
       {width}
