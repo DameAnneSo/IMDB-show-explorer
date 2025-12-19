@@ -63,7 +63,7 @@ const yPosition = $derived(y + yNudge);
   left: 0;
   padding: 0.6em 0.5em;
   pointer-events: none;
-  background: var(--color-neutral-100);
+  background: var(--color-neutral-50);
   border-radius: 2px;
   font-size: 14px;
   text-align: left;
@@ -73,7 +73,6 @@ const yPosition = $derived(y + yNudge);
 .tooltip_header {
   display: flex;
   flex-direction: column;
-
 }
 
 .tooltip_top_line {
@@ -87,7 +86,7 @@ const yPosition = $derived(y + yNudge);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-primary);
-  background-color: var(--color-100);
+  background-color: var(--color-primary-100);
   border-radius: 3px;
   padding: 0px 4px;
   margin-left: 0;
@@ -95,7 +94,7 @@ const yPosition = $derived(y + yNudge);
 
 .tooltip_intro {
   font-weight: 700;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
   text-transform: uppercase;
   font-size: 0.8rem;
 }
@@ -127,7 +126,7 @@ const yPosition = $derived(y + yNudge);
 .value {
   text-align: end;
   font-weight: 600;
-  color: var(--color-neutral-800);
+  color: var(--color-neutral-500);
 }
 
 .label {

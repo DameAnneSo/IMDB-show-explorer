@@ -16,7 +16,8 @@ const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
     <g transform={`translate(0 ${yScale(tick)})`}>
       <line class="axis__tick" x1={0} x2={-6} />
 
-      <text dx={-10} dy="0.34em" text-anchor="end">
+      <text class="axis__tick-label"
+      dx={-10} dy="0.34em" text-anchor="end">
         {tick}
       </text>
     </g>
@@ -28,14 +29,18 @@ const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
 
 <style>
 .axis__line {
-  stroke: #bdc3c7;
+  stroke:var(--color-neutral-400);
 }
 
 .axis__tick {
-  stroke: #bdc3c7;
+  stroke:var(--color-neutral-400);
 }
 
 .axis__label {
-  fill: #282828;
+  fill: var(--color-neutral-600);
+}
+
+.axis__tick-label {
+  fill: var(--color-neutral-500);
 }
 </style>

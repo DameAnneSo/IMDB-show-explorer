@@ -1,4 +1,5 @@
 <script>
+import Intro from "./lib/Intro.svelte";
 import Filters from "./lib/Filters.svelte";
 import Charts from "./lib/Charts.svelte";
 import BackToTopButton from "./lib/BackToTopButton.svelte";
@@ -25,7 +26,8 @@ const loadCSVData = async () => {
 
     // Load CSV files
     const [seriesData, episodeData] = await Promise.all([
-      d3.csv("/data/series_test.csv"),
+      // d3.csv("/data/series_test.csv"),
+      d3.csv("/data/series_test_extended.csv"),
       d3.csv("/data/episodes_test.csv"),
     ]);
 
@@ -36,6 +38,9 @@ const loadCSVData = async () => {
       seasons: parseInt(d.seasons) || 0,
       episodes: parseInt(d.episodes) || 0,
       overall_ratings: parseFloat(d.overall_ratings) || 0,
+      storyline: d.storyline?.trim() || "",
+      genresList: d.genres?.trim() || "",
+      link: d.link?.trim() || "",
     }));
 
     const episodesData = episodeData.map((d) => ({
@@ -152,56 +157,133 @@ const filteredEpisodes = $derived(() => {
 loadCSVData();
 </script>
 
-<main class="p-6 max-w-6xl mx-auto">
-  <h1 class="text-3xl font-bold mb-6">IMDb best-rated TV shows</h1>
-
-  {#if isLoading}
-    <div class="flex justify-center items-center py-12">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-      ></div>
-      <span class="ml-3 text-gray-600">Loading series data...</span>
+<div class="app-wrapper">
+  <main class="main-content">
+    <div class="content-container">
+      <h1 class="page-title">
+        IMDb best-rated TV shows
+      </h1>
+      
+      <Intro />
     </div>
-  {:else if loadError}
-    <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg
-            class="h-5 w-5 text-red-400"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">Error Loading Data</h3>
-          <div class="mt-2 text-sm text-red-700">
-            <p>{loadError}</p>
+
+    <div class="filters-section">
+      <div class="filters-inner">
+        {#if isLoading}
+          <div class="flex justify-center items-center py-12">
+            <div
+              class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+            ></div>
+            <span class="ml-3 text-neutral-600">Loading series data...</span>
           </div>
-        </div>
+        {:else if loadError}
+          <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  Error Loading Data
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <p>{loadError}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {:else}
+          <!-- Filters component -->
+          <Filters
+            {availableGenres}
+            {availableLanguages}
+            {minSeasonsInDataset}
+            {maxSeasonsInDataset}
+            bind:selectedGenres
+            bind:selectedLanguages
+            bind:maxSeasons
+          />
+        {/if}
       </div>
     </div>
-  {:else}
-    <!-- Filters component -->
-    <div class="mb-6">
-      <Filters
-        {availableGenres}
-        {availableLanguages}
-        {minSeasonsInDataset}
-        {maxSeasonsInDataset}
-        bind:selectedGenres
-        bind:selectedLanguages
-        bind:maxSeasons
-      />
+
+    <div class="content-container">
+      <!-- Charts component -->
+      {#if !isLoading && !loadError}
+        <Charts
+          shows={filteredShows()}
+          episodes={filteredEpisodes()}
+          {maxSeasons}
+        />
+      {/if}
+
+      <BackToTopButton />
     </div>
-    <!-- Charts component -->
-    <Charts shows={filteredShows()} episodes={filteredEpisodes()} {maxSeasons} />
-  {/if}
-  <BackToTopButton />
+  </main>
   <Footer />
-</main>
+</div>
+
+<style>
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
+
+.content-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  color: var(--color-primary);
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+@media (min-width: 640px) {
+  .page-title {
+    font-size: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    font-size: 3.5rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+.filters-section {
+  background-color: var(--color-primary-50);
+  padding: 2rem 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.filters-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+</style>

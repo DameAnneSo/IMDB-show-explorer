@@ -1,39 +1,81 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: Nunito, system-ui, sans-serif;
+  --font-display: "Rampart One", cursive;
+  
+ /* Primary colors */
+  --color-primary: #6A2A5B;
+  --color-primary-50: #F7F2F6;
+  --color-primary-100: #ECDFE8;
+  --color-primary-200: #D8BFD1;
+  --color-primary-300: #C490B8;
+  --color-primary-400: #A9629A;
+  --color-primary-500: #8C3E7C;
+  --color-primary-600: #722F66;
+  --color-primary-700: #6A2A5B;
+  --color-primary-800: #541F47;
+  --color-primary-900: #3C1532;
+  --color-primary-950: #2A0E23;
+}
+
+
 /* add colour variables */
 :root {
-  --color-primary: #6a00f0; 
-  --color-primary-link: #a66aff;
-  --color-primary-active: #dc267f;
-  --color-primary-dark: #4b00a3;
+/* Primary – Cinematic Plum */
+--color-primary: #6A2A5B;
+--color-primary-link: #A9629A;
+--color-primary-active: #8C3E7C;
+--color-primary-dark: #541F47;
 
-  --color-neutral-50: oklch(0.985 0 0);
-  --color-neutral-100: oklch(0.97 0 0);
-  --color-neutral-200: oklch(0.922 0 0);
-  --color-neutral-300: oklch(0.87 0 0);
-  --color-neutral-400: oklch(0.708 0 0);
-  --color-neutral-500: oklch(0.556 0 0);
-  --color-neutral-600: oklch(0.439 0 0);
-  --color-neutral-700: oklch(0.371 0 0);
-  --color-neutral-800: oklch(0.269 0 0);
-  --color-neutral-900: oklch(0.205 0 0);
-  --color-neutral-950: oklch(0.145 0 0);
+/* Primary scale */
+--color-primary-50:  #F7F2F6;
+--color-primary-100: #ECDFE8;
+--color-primary-200: #D8BFD1;
+--color-primary-300: #C490B8;
+--color-primary-400: #A9629A;
+--color-primary-500: #8C3E7C;
+--color-primary-600: #722F66;
+--color-primary-700: #6A2A5B; /* base */
+--color-primary-800: #541F47;
+--color-primary-900: #3C1532;
+--color-primary-950: #2A0E23;
 
-  --color-50: #f5f0ff;
-  --color-100: #e8dbff;
-  --color-200: #d8bfff;
-  --color-300: #c29aff;
-  --color-400: #a66aff;
-  --color-500: #8f3eff;
-  --color-600: #7b1fff;
-  --color-700: #6a00f0;
-  --color-800: #5a00c7;
-  --color-900: #4b00a3;
-  --color-950: #37007a;
+/* Neutral scale (unchanged from your template) */
+--color-neutral-50: oklch(0.985 0 0);
+--color-neutral-100: oklch(0.97 0 0);
+--color-neutral-150: oklch(0.945 0 0);
+--color-neutral-200: oklch(0.922 0 0);
+--color-neutral-300: oklch(0.87 0 0);
+--color-neutral-400: oklch(0.708 0 0);
+--color-neutral-500: oklch(0.556 0 0);
+--color-neutral-600: oklch(0.439 0 0);
+--color-neutral-700: oklch(0.371 0 0);
+--color-neutral-800: oklch(0.269 0 0);
+--color-neutral-900: oklch(0.205 0 0);
+--color-neutral-950: oklch(0.145 0 0);
+
+/* Secondary palette */
+--color-primary-secondary-indigo: #4A4CBF;
+--color-primary-secondary-gold: #D8A738;
+--color-primary-secondary-teal: #2E7F7B;
+--color-primary-secondary-lilac: #E5D6ED;
+--color-primary-secondary-grey: #6F7785; 
 
  /* warning colours */
-  --red-light: #f8d7da;
-  --red-dark: #842029;
-  --green-light: #d1e7dd;
-  --green-dark: #0f5132;
+/* Diverging alert palette (cool → neutral → warm) */
+/* Cool / negative / safe */
+--warn-neg-5: #1F8F99FF;
+--warn-neg-4: #52C4CCFF;
+--warn-neg-3: #99FAFFFF;
+--warn-neg-2: #B2FCFFFF;
+--warn-neg-1: #CCFEFFFF;
+--warn-neg-0: #E6FFFFFF;
+/* Warm / positive / danger */
+--warn-pos-0: #FFE6CCFF;
+--warn-pos-1: #FFCA99FF;
+--warn-pos-2: #FFAD66FF;
+--warn-pos-3: #FF8F33FF;
+--warn-pos-4: #CC5800FF;
+--warn-pos-5: #994000FF;
 }

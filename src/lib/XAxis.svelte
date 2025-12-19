@@ -23,8 +23,9 @@
     <g transform={`translate(${xScale(tick)} 0)`}>
       <line class="axis__tick" y1={0} y2={6} />
       <text
+      class="axis__tick-label"
         y={10}
-        dy="0.8em"
+        dy="0.7em"
         text-anchor="middle"
         fill='#000000'
       >
@@ -37,7 +38,7 @@
     class="axis__label"
     x={xScale.range()[1] / 2}
     text-anchor="middle"
-    y={50}
+    y={45}
   >
     episode number
   </text>
@@ -45,14 +46,18 @@
 
 <style>
   .axis__line {
-    stroke: #bdc3c7;
+    stroke:var(--color-neutral-400);
   }
 
   .axis__tick {
-    stroke: #bdc3c7;
+    stroke:var(--color-neutral-400);
   }
 
   .axis__label {
-    fill: #000000;
+    fill: var(--color-neutral-600);
+  }
+
+  .axis__tick-label {
+    fill: var(--color-neutral-500);
   }
 </style>

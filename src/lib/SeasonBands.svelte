@@ -21,23 +21,27 @@ const seasonRanges = $derived(
 );
 
 // Convert to array and sort by season number
-const seasons = $derived(Object.values(seasonRanges).sort((a, b) => a.season - b.season));
+const seasons = $derived(
+  Object.values(seasonRanges).sort((a, b) => a.season - b.season)
+);
 
 // Create bands with alternating colors
-const seasonBands = $derived(seasons.map((season, index) => {
-  const x = xScale(season.minEpisode);
-  const width = xScale(season.maxEpisode
-  ) - xScale(season.minEpisode);
-  return {
-    x,
-    width,
-    season: season.season,
-    color: index % 2 === 0 ? "var(--color-neutral-50)" : "var(--color-neutral-200)"
-  };
-})
+const seasonBands = $derived(
+  seasons.map((season, index) => {
+    const x = xScale(season.minEpisode);
+    const width = xScale(season.maxEpisode) - xScale(season.minEpisode);
+    return {
+      x,
+      width,
+      season: season.season,
+      color:
+        index % 2 === 0
+          ? "var(--color-neutral-50)"
+          : "var(--color-neutral-150)",
+    };
+  })
 );
 </script>
-
 
 {#if seasons.length > 1}
   {#each seasonBands as band, i}
@@ -47,7 +51,6 @@ const seasonBands = $derived(seasons.map((season, index) => {
       width={band.width}
       height={boundedHeight}
       fill={band.color}
-
     />
     <!-- Add text labels for debugging -->
     <text
@@ -55,9 +58,9 @@ const seasonBands = $derived(seasons.map((season, index) => {
       y={boundedHeight - 10}
       text-anchor="middle"
       font-size="12"
-      fill="#666"
+      fill="var(--color-neutral-600)"
     >
-      S{band.season}
+      s{band.season}
     </text>
   {/each}
 {/if}

@@ -119,7 +119,7 @@
     bind:this={buttonElement}
     onclick={scrollToTop}
     onkeydown={handleKeydown}
-    class="fixed bottom-8 right-8 h-12 px-4 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white border-none rounded-full shadow-lg hover:shadow-xl cursor-pointer flex items-center justify-center transition-all duration-300 z-50 text-md font-medium whitespace-nowrap opacity-0 scale-75 animate-fade-in"
+    class="fixed bottom-8 right-8 h-12 px-4 bg-primary hover:bg-primary active:scale-95 text-white border-none rounded-full shadow-lg hover:shadow-xl cursor-pointer flex items-center justify-center transition-all duration-300 z-50 text-md font-medium whitespace-nowrap opacity-0 scale-75 animate-fade-in"
     title="Scroll back to the top of the page"
     aria-label="Scroll back to the top of the page"
     type="button"

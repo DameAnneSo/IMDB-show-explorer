@@ -15,6 +15,9 @@ let {
   seasons,
   maxSeasons,
   episodes,
+  storyline,
+  genres,
+  link,
   xScale,
   yScale,
   width,
@@ -102,21 +105,26 @@ const ariaLabel = $derived(
 </script>
 
 <h1 class="info-header">
-  <span class="episode-value">{showName}</span>
-  <span class="separator">|</span>
-  <span class="episode-info"
-    >rated <span class="episode-value">{overallRating}/10</span>
-    <span class="separator">|</span>
-    <span class="episode-value">{seasons} </span>
-
-    <span class="episode-info"> {seasons === 1 ? "season" : "seasons"}</span>
-    <span class="separator">|</span>
-    <span class="episode-value"
-      >{episodes}
-      <span class="episode-info"> episodes</span>
-    </span>
+  <span class="show-value">{showName}</span>
+  <span class="show-info"
+    ><span class="show-value">{overallRating}/10</span>
   </span>
 </h1>
+<h2>
+  <span class="show-value2">{seasons} </span>
+  <span class="show-info"> {seasons === 1 ? "season" : "seasons"}</span>
+  <span class="separator">|</span>
+  <span class="show-value2"
+    >{episodes}
+    <span class="show-info"> episodes</span>
+  </span>
+</h2>
+{#if showAnnotations}
+  <div class="show-details">
+    <p><a href={link} target="_blank" rel="noopener noreferrer">IMDB link 🔗</a> | {storyline} </p>
+    <p><span class='colour'>Genres:</span> {genres}</p>
+  </div>
+{/if}
 
 <div class="chart-wrapper" style="height:{height}px">
   <svg
@@ -131,11 +139,12 @@ const ariaLabel = $derived(
     onblur={handleMouseLeave}
   >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
-      <XAxis {xScale} {height} {margins} {maxSeasons}/>
-      <YAxis {yScale} />
       {#if showAnnotations}
         <SeasonBands {episodeData} {xScale} {boundedHeight} />
       {/if}
+      <XAxis {xScale} {height} {margins} {maxSeasons} />
+      <YAxis {yScale} />
+
       <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
       {#if showAnnotations}
         <MinMaxRatings
@@ -177,13 +186,14 @@ const ariaLabel = $derived(
 <style>
 .chart-wrapper {
   position: relative;
-  font-size: 16px;
+  font-size: 12px;
   width: 100%;
   max-width: 600px;
+  margin-bottom: 2rem;
 }
 .line {
   fill: none;
-  stroke: #4427ca;
+  stroke: var(--color-primary);
   stroke-width: 1px;
   stroke-linecap: round;
 }
@@ -192,23 +202,48 @@ const ariaLabel = $derived(
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   font-size: 1.1rem;
   margin-top: 1rem;
 }
 
-.episode-value {
+.show-value {
   font-weight: 700;
-  color: var(--color-primary, #4427ca);
+  color: var(--color-primary);
+}
+
+.show-value2 {
+  font-weight: 500;
+  color: var(--color-primary);
 }
 
 .separator {
-  color: var(--color-neutral-400, #999);
+  color: var(--color-neutral-400);
   font-weight: 300;
 }
 
-.episode-info {
-  color: var(--color-neutral-600, #666);
+.show-info {
+  color: var(--color-neutral-600);
   font-weight: 400;
+}
+
+.show-details {
+  font-size: 13px;
+  color: var(--color-neutral-700);
+  margin-bottom: 1rem;
+}
+
+.show-details a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.show-details a:hover {
+  color: var(--color-primary-dark);
+}
+
+.colour {
+ color: var(--color-primary);
 }
 </style>
