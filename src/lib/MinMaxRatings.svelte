@@ -64,7 +64,7 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
     x={minX}
     y={scaledMinY + 15}
     text-anchor="middle"
-    font-size="12"
+    font-size="13"
   >
     {minPoint.episodeRating.toFixed(1)}
   </text>

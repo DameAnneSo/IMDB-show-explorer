@@ -57,14 +57,4 @@
   color: var(--color-neutral-700);
 }
 
-a {
-  color: var(--color-primary-700);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: var(--color-primary-900);
-}
 </style>

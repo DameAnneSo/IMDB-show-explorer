@@ -36,7 +36,7 @@ const yPosition = $derived(y + yNudge);
       <span class="tooltip_intro">
         episode {data.episodeNumberinSeason} | season {data.episodeSeason}
       </span>
-      <span class="tooltip_accent">{formatYForTooltip(yAccessor)}/10</span>
+      <span class="rating_accent">{formatYForTooltip(yAccessor)}/10</span>
     </div>
     <p class="tooltip_title">"{data.episodeTitle}"</p>
   </div>
@@ -68,6 +68,7 @@ const yPosition = $derived(y + yNudge);
   font-size: 14px;
   text-align: left;
   transition: transform 300ms ease;
+  box-shadow: var(--box-shadow);
 }
 
 .tooltip_header {
@@ -81,16 +82,7 @@ const yPosition = $derived(y + yNudge);
   align-items: center;
 }
 
-.tooltip_accent {
-  text-transform: uppercase;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  background-color: var(--color-primary-100);
-  border-radius: 3px;
-  padding: 0px 4px;
-  margin-left: 0;
-}
+
 
 .tooltip_intro {
   font-weight: 700;
