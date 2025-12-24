@@ -278,8 +278,7 @@ loadCSVData();
 
 .filters-section {
   background-color: var(--color-primary-50);
-  padding: 2rem 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .filters-inner {
