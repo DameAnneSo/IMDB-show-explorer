@@ -145,7 +145,7 @@ $effect(() => {
     />
 
     <!-- Min/max labels -->
-    <div class="flex justify-between text-xs text-gray-500 mt-1">
+    <div class="flex justify-between text-sm text-gray-700 mt-1">
       <span aria-label="Minimum value">{min}</span>
       <span aria-label="Maximum value">{max}</span>
     </div>
