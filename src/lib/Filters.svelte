@@ -185,7 +185,8 @@ const announceToScreenReader = (message) => {
           <button
             type="button"
             onclick={clearAllFilters}
-            class="px-2 py-1 text-primary-800 bg-white border border-primary-400 rounded-md hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors text-sm font-medium"
+            
+            class="px-2 py-1 text-primary-800 bg-white border border-primary-400 rounded-md hover:bg-primary-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors text-sm cursor-pointer shadow-sm"
             aria-label="Clear all active filters"
           >
             Clear all
@@ -199,7 +200,7 @@ const announceToScreenReader = (message) => {
               <span>{genre}</span>
               <button
                 type="button"
-                class="ml-2 text-primary-700 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded"
+                class="ml-2 text-primary-700 hover:text-primary-900 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded p-0.5 transition-colors cursor-pointer"
                 onclick={() => removeGenre(genre)}
                 aria-label={`Remove ${genre} from genre filters`}
               >
@@ -229,7 +230,7 @@ const announceToScreenReader = (message) => {
               <span>{language}</span>
               <button
                 type="button"
-                class="ml-2 text-primary-700 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded"
+                class="ml-2 text-primary-700 hover:text-primary-900 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded p-0.5 transition-colors cursor-pointer"
                 onclick={() => removeLanguage(language)}
                 aria-label={`Remove ${language} from language filters`}
               >
@@ -260,7 +261,7 @@ const announceToScreenReader = (message) => {
               <span class="ml-1">{maxSeasons}</span>
               <button
                 type="button"
-                class="ml-2 text-primary-700 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded"
+                class="ml-2 text-primary-700 hover:text-primary-900 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded p-0.5 transition-colors cursor-pointer"
                 onclick={resetSeasons}
                 aria-label="Reset maximum seasons filter to show all shows"
               >
