@@ -34,9 +34,8 @@ const yPosition = $derived(y + yNudge);
   <div class="tooltip_header">
     <div class="tooltip_top_line">
       <span class="tooltip_intro">
-        episode {data.episodeNumberinSeason} | season {data.episodeSeason}
+        episode {data.episodeNumberOverall} (season {data.episodeSeason} | episode {data.episodeNumberinSeason})
       </span>
-      <span class="rating_accent">{formatYForTooltip(yAccessor)}/10</span>
     </div>
     <p class="tooltip_title">"{data.episodeTitle}"</p>
   </div>
@@ -45,12 +44,12 @@ const yPosition = $derived(y + yNudge);
   <table class="tooltip_table">
     <tbody>
       <tr>
-        <td class="label">Number of votes:</td>
-        <td class="value">{data.episodeVotes || "include later"}</td>
+        <td class="label">Rating</td>
+        <td class="value"><span class="tooltip_accent">{formatYForTooltip(yAccessor)}/10</span></td>
       </tr>
       <tr>
-        <td class="label">Episode's number overall:</td>
-        <td class="value">{data.episodeNumberOverall}</td>
+        <td class="label">Votes</td>
+        <td class="value">{data.episodeVotes || "include later"}</td>
       </tr>
     </tbody>
   </table>
@@ -82,18 +81,16 @@ const yPosition = $derived(y + yNudge);
   align-items: center;
 }
 
-
-
 .tooltip_intro {
   font-weight: 700;
-  color: var(--color-neutral-600);
+  color: var(--color-neutral-500);
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .tooltip_title {
-  font-weight: 400;
-  color: var(--color-neutral-500);
+  font-weight: 700;
+  color: var(--color-neutral-600);
   width: 100%;
   margin: -2px 0 0 0;
 }
@@ -128,5 +125,15 @@ const yPosition = $derived(y + yNudge);
   opacity: 0.8;
   padding-right: 12px; /* Breathing space between columns */
   font-size: 0.85em; /* Slightly smaller to recede */
+}
+
+.tooltip_accent {
+  text-transform: uppercase;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background-color: var(--color-primary-100);
+  border-radius: 3px;
+  padding: 0px 4px;
 }
 </style>

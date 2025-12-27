@@ -32,6 +32,7 @@ const formattedGenres = $derived(
     ? genres
         .split(",")
         .map((g) => g.trim())
+        .sort()
         .join(" · ")
     : ""
 );
@@ -138,7 +139,7 @@ const ariaLabel = $derived(
       {storyline}
     </i>
     <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link"
-      >🔗</a
+      >Read more -></a
     >
   </div>
 {/if}
@@ -261,7 +262,4 @@ const ariaLabel = $derived(
   margin-bottom: 1rem;
 }
 
-a {
-  text-decoration: none;
-}
 </style>
