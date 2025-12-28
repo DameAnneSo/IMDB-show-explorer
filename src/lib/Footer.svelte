@@ -21,11 +21,11 @@
     <p class="footer-line">
       Source:
       <a
-        href="https://www.imdb.com/chart/top/"
+        href="https://www.imdb.com/chart/toptv/"
         target="_blank"
         rel="noopener noreferrer"
       >
-        IMDB
+        IMDb
       </a>
       &middot; Code & data:
       <a

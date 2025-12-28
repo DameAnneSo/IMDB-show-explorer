@@ -139,7 +139,7 @@ const ariaLabel = $derived(
       {storyline}
     </i>
     <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link"
-      >Read more -></a
+      >Read more →</a
     >
   </div>
 {/if}
