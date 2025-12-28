@@ -56,5 +56,4 @@
   margin: 0.25rem 0;
   color: var(--color-neutral-700);
 }
-
 </style>
