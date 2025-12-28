@@ -3,27 +3,29 @@ import * as d3 from "d3";
 let { episodeData, xAccessor, yAccessor, xScale, yScale } = $props();
 
 // Find the max and min values using unscaled access
-const maxY = $derived(d3.max(episodeData, yAccessor)); // Changed: max for highest rating
-const minY = $derived(d3.min(episodeData, yAccessor)); // Changed: min for lowest rating
+const maxY = $derived(d3.max(episodeData, yAccessor));
+const minY = $derived(d3.min(episodeData, yAccessor));
 
 // Find the full episodeData points at those positions
 const maxPoint = $derived(episodeData.find((d) => yAccessor(d) === maxY));
 const minPoint = $derived(episodeData.find((d) => yAccessor(d) === minY));
 
 // Get the already-scaled x/y positions
-const maxX = $derived(xScale(xAccessor(maxPoint))); // Fixed: apply xScale to the accessor result
-const minX = $derived(xScale(xAccessor(minPoint))); // Fixed: apply xScale to the accessor result
+const maxX = $derived(xScale(xAccessor(maxPoint)));
+const minX = $derived(xScale(xAccessor(minPoint)));
 const scaledMaxY = $derived(yScale(maxY));
 const scaledMinY = $derived(yScale(minY));
 
 // Calculate text dimensions for background rectangles
 const fontSize = 12;
-const padding = 4;
-const maxText = $derived(`+${maxPoint.episodeRating.toFixed(1)}`);
-const minText = $derived(`−${minPoint.episodeRating.toFixed(1)}`);
+const paddingVertical = 4;
+const paddingHorizontal = 1;
+const maxText = $derived(`${maxPoint.episodeRating.toFixed(1)}/10`);
+const minText = $derived(`${minPoint.episodeRating.toFixed(1)}/10`);
 // Approximate text width (you can adjust the multiplier as needed)
-const maxTextWidth = $derived(maxText.length * fontSize * 0.5 + padding * 2);
-const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
+const maxTextWidth = $derived(maxText.length * fontSize * 0.6 + paddingHorizontal * 2);
+const minTextWidth = $derived(minText.length * fontSize * 0.6 + paddingHorizontal * 2);
+const rectHeight = $derived(fontSize + paddingVertical * 2);
 </script>
 
 <g class="pictos">
@@ -31,30 +33,31 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
   <rect
     class="highest_background"
     x={maxX - maxTextWidth / 2}
-    y={scaledMaxY - 9 - fontSize}
+    y={scaledMaxY - rectHeight - 7}
     width={maxTextWidth}
-    height={fontSize + padding}
+    height={rectHeight}
     rx="3"
   />
 
-  <!-- Green "+" above the max point -->
+   <!-- Green "+" above the max point -->
   <text
     class="highest"
     x={maxX}
-    y={scaledMaxY - 9}
+    y={scaledMaxY - 7 - rectHeight / 2}
     text-anchor="middle"
     font-size="12"
+    dominant-baseline="middle"
   >
-    {maxPoint.episodeRating.toFixed(1)}
+    {maxPoint.episodeRating.toFixed(1)}/10
   </text>
 
   <!-- Background rectangle for lowest point -->
   <rect
     class="lowest_background"
     x={minX - minTextWidth / 2}
-    y={scaledMinY + 15 - fontSize}
+    y={scaledMinY + 5}
     width={minTextWidth}
-    height={fontSize + padding}
+    height={rectHeight}
     rx="3"
   />
 
@@ -62,11 +65,12 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
   <text
     class="lowest"
     x={minX}
-    y={scaledMinY + 15}
+    y={scaledMinY + 5 + rectHeight / 2}
     text-anchor="middle"
     font-size="12"
+    dominant-baseline="middle"
   >
-    {minPoint.episodeRating.toFixed(1)}
+    {minPoint.episodeRating.toFixed(1)}/10
   </text>
 </g>
 
@@ -76,7 +80,7 @@ const minTextWidth = $derived(minText.length * fontSize * 0.5 + padding * 2);
 }
 
 text {
-  font-style: italic;
+  font-weight: 600;
 }
 
 .highest {

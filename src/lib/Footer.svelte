@@ -21,11 +21,11 @@
     <p class="footer-line">
       Source:
       <a
-        href="https://www.imdb.com/chart/top/"
+        href="https://www.imdb.com/chart/toptv/"
         target="_blank"
         rel="noopener noreferrer"
       >
-        IMDB
+        IMDb
       </a>
       &middot; Code & data:
       <a
@@ -57,14 +57,4 @@
   color: var(--color-neutral-700);
 }
 
-a {
-  color: var(--color-primary-700);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: var(--color-primary-900);
-}
 </style>

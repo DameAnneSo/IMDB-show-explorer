@@ -38,7 +38,7 @@
     class="axis__label"
     x={xScale.range()[1] / 2}
     text-anchor="middle"
-    y={45}
+    y={37}
   >
     episode number
   </text>
@@ -55,6 +55,7 @@
 
   .axis__label {
     fill: var(--color-neutral-600);
+    font-size: 13px;
   }
 
   .axis__tick-label {
