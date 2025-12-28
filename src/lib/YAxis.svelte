@@ -38,6 +38,7 @@ const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
 
 .axis__label {
   fill: var(--color-neutral-600);
+   font-size: 13px;
 }
 
 .axis__tick-label {

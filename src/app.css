@@ -78,4 +78,29 @@
 --warn-pos-3: #FF8F33FF;
 --warn-pos-4: #CC5800FF;
 --warn-pos-5: #994000FF;
+
+/* Effects */
+--box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+}
+
+a {
+  text-decoration: underline var(--color-primary-400) 0.1em;
+  text-underline-offset: 2px;
+}
+
+a:hover , a:focus{
+  text-decoration: underline var(--color-primary-800)0.2em; 
+  text-underline-offset: 2px;
+}
+
+.rating_accent {
+  text-transform: uppercase;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background-color: var(--color-primary-100);
+  border-radius: 3px;
+  padding: 0px 4px;
+  margin-left: 0;
 }

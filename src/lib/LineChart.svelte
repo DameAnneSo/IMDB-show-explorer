@@ -27,6 +27,16 @@ let {
   showAnnotations = true,
 } = $props();
 
+const formattedGenres = $derived(
+  genres
+    ? genres
+        .split(",")
+        .map((g) => g.trim())
+        .sort()
+        .join(" · ")
+    : ""
+);
+
 const xAccessor = (d) => +d.episodeNumberOverall;
 const yAccessor = (d) => +d.episodeRating;
 
@@ -107,22 +117,30 @@ const ariaLabel = $derived(
 <h1 class="info-header">
   <span class="show-value">{showName}</span>
   <span class="show-info"
-    ><span class="show-value">{overallRating}/10</span>
+    ><span class="show-value rating_accent">{overallRating}/10</span>
   </span>
 </h1>
 <h2>
-  <span class="show-value2">{seasons} </span>
-  <span class="show-info"> {seasons === 1 ? "season" : "seasons"}</span>
-  <span class="separator">|</span>
-  <span class="show-value2"
-    >{episodes}
-    <span class="show-info"> episodes</span>
-  </span>
+  <p class="show-genres">{formattedGenres}</p>
 </h2>
+
 {#if showAnnotations}
   <div class="show-details">
-    <p><a href={link} target="_blank" rel="noopener noreferrer">IMDB link 🔗</a> | {storyline} </p>
-    <p><span class='colour'>Genres:</span> {genres}</p>
+    <h3>
+      <span class="show-value2">{seasons} </span>
+      <span class="show-info"> {seasons === 1 ? "season" : "seasons"}</span>
+      <span class="separator">|</span>
+      <span class="show-value2"
+        >{episodes}
+        <span class="show-info"> episodes</span>
+      </span>
+    </h3>
+    <i class="show-storyline">
+      {storyline}
+    </i>
+    <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link"
+      >Read more →</a
+    >
   </div>
 {/if}
 
@@ -208,6 +226,12 @@ const ariaLabel = $derived(
   margin-top: 1rem;
 }
 
+@media (min-width: 768px) {
+  .info-header {
+    justify-content: flex-start;
+  }
+}
+
 .show-value {
   font-weight: 700;
   color: var(--color-primary);
@@ -215,9 +239,13 @@ const ariaLabel = $derived(
 
 .show-value2 {
   font-weight: 500;
-  color: var(--color-primary);
+  color: var(--color-primary-500);
 }
 
+.show-genres {
+  font-size: 14px;
+  color: var(--color-neutral-600);
+}
 .separator {
   color: var(--color-neutral-400);
   font-weight: 300;
@@ -234,16 +262,4 @@ const ariaLabel = $derived(
   margin-bottom: 1rem;
 }
 
-.show-details a {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
-
-.show-details a:hover {
-  color: var(--color-primary-dark);
-}
-
-.colour {
- color: var(--color-primary);
-}
 </style>
