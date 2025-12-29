@@ -48,7 +48,9 @@ const validData = $derived(
   episodeData?.filter((d) => {
     const x = xAccessor(d);
     const y = yAccessor(d);
-    return !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y);
+    return (
+      !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y) && x > 0 && y > 0
+    );
   }) || []
 );
 
@@ -58,8 +60,8 @@ const bisectX = d3.bisector(xAccessor).left;
 const handleMouseMove = (event) => {
   // Get the x-coordinate of the mouse event and find the closest data point
   const xCoordinate = xScale.invert(event.offsetX - margins.marginLeft);
-  const index = bisectX(episodeData, xCoordinate);
-  hoveredPoint = episodeData[index - 1];
+  const index = bisectX(validData, xCoordinate);
+  hoveredPoint = validData[index - 1];
 };
 
 const handleMouseLeave = () => {
@@ -69,14 +71,8 @@ const handleMouseLeave = () => {
 const lineGenerator = $derived(
   d3
     .line()
-    .x((d) => {
-      const result = xAccessorScaled(d);
-      return isNaN(result) ? 0 : result;
-    })
-    .y((d) => {
-      const result = yAccessorScaled(d);
-      return isNaN(result) ? 0 : result;
-    })
+    .x((d) => xAccessorScaled(d))
+    .y((d) => yAccessorScaled(d))
     .curve(d3.curveMonotoneX)
     .defined((d) => {
       const x = xAccessorScaled(d);
@@ -163,10 +159,17 @@ const ariaLabel = $derived(
       <XAxis {xScale} {height} {margins} {maxSeasons} />
       <YAxis {yScale} />
 
-      <Points {episodeData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
+      <Points
+        episodeData={validData}
+        {xScale}
+        {yScale}
+        {xAccessor}
+        {yAccessor}
+        {width}
+      />
       {#if showAnnotations}
         <MinMaxRatings
-          {episodeData}
+          episodeData={validData}
           {xAccessor}
           {yAccessor}
           {xScale}
@@ -261,5 +264,4 @@ const ariaLabel = $derived(
   color: var(--color-neutral-700);
   margin-bottom: 1rem;
 }
-
 </style>

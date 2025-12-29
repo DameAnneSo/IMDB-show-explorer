@@ -49,7 +49,7 @@ const yPosition = $derived(y + yNudge);
       </tr>
       <tr>
         <td class="label">Votes</td>
-        <td class="value">{data.episodeVotes || "include later"}</td>
+        <td class="value">{data.episodeVotes}</td>
       </tr>
     </tbody>
   </table>
