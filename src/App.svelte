@@ -32,9 +32,10 @@ const loadCSVData = async () => {
     ]);
 
     const showData = seriesData.map((d) => ({
+      rank: parseInt(d.rank) || 0,
       name: d.title?.trim() || "",
       genres: d.genres?.trim() || "",
-      languages: d.languages?.trim() || "",
+      language: d.language?.trim() || "",
       seasons: parseInt(d.seasons) || 0,
       episodes: parseInt(d.episodes) || 0,
       overall_ratings: parseFloat(d.overall_ratings) || 0,
@@ -51,6 +52,7 @@ const loadCSVData = async () => {
       episodeNumberOverall: parseInt(d.episodeNumberOverall) || 0,
       episodeNumberinSeason: parseInt(d.episodeNumberinSeason) || 0,
       episodeRating: parseFloat(d.episodeRating) || 0,
+      episodeVotes: parseInt(d.episodeVotes) || 0,
       episodeTitle: d.episodeTitle?.trim() || "",
     }));
 
@@ -71,12 +73,10 @@ const loadCSVData = async () => {
         });
       }
 
-      // Extract languages
-      if (show.languages) {
-        show.languages.split(",").forEach((lang) => {
-          const cleanLang = lang.trim();
-          if (cleanLang) languagesSet.add(cleanLang);
-        });
+      // Extract language
+      if (show.language) {
+        const cleanLang = show.language.trim();
+        if (cleanLang) languagesSet.add(cleanLang);
       }
 
       // Collect season counts
@@ -125,11 +125,9 @@ const filteredShows = $derived(() => {
     }
 
     if (selectedLanguages.length > 0) {
-      const showLanguages = show.languages.split(",").map((l) => l.trim());
+      const showLanguage = show.language.trim().toLowerCase();
       const hasLanguage = selectedLanguages.some((selectedLang) =>
-        showLanguages.some((showLang) =>
-          showLang.toLowerCase().includes(selectedLang.toLowerCase())
-        )
+        showLanguage.includes(selectedLang.toLowerCase())
       );
       if (!hasLanguage) return false;
     }
@@ -160,10 +158,8 @@ loadCSVData();
 <div class="app-wrapper">
   <main class="main-content">
     <div class="content-container">
-      <h1 class="page-title">
-        IMDb best-rated TV shows
-      </h1>
-      
+      <h1 class="page-title">IMDb best-rated TV shows</h1>
+
       <Intro />
     </div>
 

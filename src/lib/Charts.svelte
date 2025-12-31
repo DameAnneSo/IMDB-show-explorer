@@ -7,20 +7,7 @@ let { shows = [], episodes = [], maxSeasons } = $props();
 
 let showAnnotations = $state(true);
 
-const maxEpisodes = $derived(
-  shows.reduce((max, show) => {
-    return show.episodes > max ? show.episodes : max;
-  }, 0)
-);
-
-const sortedShows = $derived(
-  shows.sort((a, b) => {
-    if (b.overall_ratings !== a.overall_ratings) {
-      return b.overall_ratings - a.overall_ratings;
-    }
-    return a.name.localeCompare(b.name);
-  })
-);
+const sortedShows = $derived(shows.sort((a, b) => a.rank - b.rank));
 
 const yAccessor = (d) => d.episodeRating;
 
@@ -35,13 +22,9 @@ const margins = {
   marginLeft: 55,
 };
 
-// Compute scales once in parent - all charts share the same scales
+// Compute scales once in parent - yScale is shared, but xScale is now per-chart
 const boundedWidth = $derived(width - margins.marginLeft - margins.marginRight);
 const boundedHeight = height - margins.marginTop - margins.marginBottom;
-
-const xScale = $derived(
-  d3.scaleLinear().domain([1, maxEpisodes]).range([0, boundedWidth])
-);
 
 const yScale = $derived(
   d3
@@ -53,31 +36,31 @@ const yScale = $derived(
 </script>
 
 <div class="results-note-section">
-{#if sortedShows.length > 0}
-<div class="mb-5 flex flex-wrap items-center justify-between gap-4">
-  <h1 class="text-lg font-semibold leading-none">
-    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
-  </h1>
-  
-  <div class="flex items-center">
-    <Toggle
-      bind:checked={showAnnotations}
-      label="Show / hide annotations"
-      id="annotations-toggle"
-    />
-  </div>
-</div>
-{:else}
-<h1 class="mb-5 text-center">
-  No shows correspond to your filters
-</h1>
-{/if}
+  {#if sortedShows.length > 0}
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
+      <h1 class="text-lg font-semibold leading-none">
+        Result of your selection: {sortedShows.length}
+        {sortedShows.length === 1 ? "show" : "shows"}
+      </h1>
+
+      <div class="flex items-center">
+        <Toggle
+          bind:checked={showAnnotations}
+          label="Show / hide annotations"
+          id="annotations-toggle"
+        />
+      </div>
+    </div>
+  {:else}
+    <h1 class="mb-5 text-center">No shows correspond to your filters</h1>
+  {/if}
 </div>
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
     <LineChart
       showName={show.name}
-      episodeData={episodes.filter((ep) => ep.seriesTitle == show.name)}
+      rank={show.rank}
+      episodeData={episodes.filter((ep) => ep.seriesRank === show.rank)}
       overallRating={show.overall_ratings}
       seasons={show.seasons}
       {maxSeasons}
@@ -85,11 +68,11 @@ const yScale = $derived(
       storyline={show.storyline}
       genres={show.genres}
       link={show.link}
-      {xScale}
       {yScale}
       {width}
       {height}
       {margins}
+      {boundedWidth}
       {boundedHeight}
       {showAnnotations}
     />
@@ -101,7 +84,6 @@ const yScale = $derived(
   width: 100%;
 }
 .results-note-section {
-  margin-bottom:3rem; 
-
+  margin-bottom: 3rem;
 }
 </style>

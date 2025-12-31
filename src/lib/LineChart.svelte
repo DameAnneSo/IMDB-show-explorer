@@ -10,6 +10,7 @@ import Tooltip from "./Tooltip.svelte";
 
 let {
   showName,
+  rank,
   episodeData,
   overallRating,
   seasons,
@@ -18,14 +19,19 @@ let {
   storyline,
   genres,
   link,
-  xScale,
   yScale,
   width,
   height,
   margins,
+  boundedWidth,
   boundedHeight,
   showAnnotations = true,
 } = $props();
+
+// Create xScale specific to this show's episode count
+const xScale = $derived(
+  d3.scaleLinear().domain([1, episodes]).range([0, boundedWidth])
+);
 
 const formattedGenres = $derived(
   genres
@@ -111,6 +117,7 @@ const ariaLabel = $derived(
 </script>
 
 <h1 class="info-header">
+  <span class="rank">#{rank}</span>
   <span class="show-value">{showName}</span>
   <span class="show-info"
     ><span class="show-value rating_accent">{overallRating}/10</span>
@@ -156,7 +163,7 @@ const ariaLabel = $derived(
       {#if showAnnotations}
         <SeasonBands {episodeData} {xScale} {boundedHeight} />
       {/if}
-      <XAxis {xScale} {height} {margins} {maxSeasons} />
+      <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
 
       <Points
@@ -263,5 +270,10 @@ const ariaLabel = $derived(
   font-size: 13px;
   color: var(--color-neutral-700);
   margin-bottom: 1rem;
+}
+
+.rank{
+  font-weight: 700;
+  color: var(--color-neutral-500);
 }
 </style>
