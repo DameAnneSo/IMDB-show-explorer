@@ -8,6 +8,7 @@ import * as d3 from "d3";
 
 let shows = $state([]);
 let episodes = $state([]);
+let showDetails = $state(new Map()); // Store storylines separately
 let selectedGenres = $state([]);
 let selectedLanguages = $state([]);
 let maxSeasons = $state(12);
@@ -24,11 +25,11 @@ const loadCSVData = async () => {
     isLoading = true;
     loadError = null;
 
-    // Load CSV files
-    const [seriesData, episodeData] = await Promise.all([
-      // d3.csv("/data/series_test.csv"),
-      d3.csv("/data/imdb_top_tv_shows.csv"),
+    // Load CSV files + pre-computed metadata for faster initialization
+    const [seriesData, episodeData, metadataResponse] = await Promise.all([
+      d3.csv("/data/imdb_top_tv_shows_base.csv"),
       d3.csv("/data/imdb_episodes.csv"),
+      fetch("/data/metadata.json").then((r) => r.json()),
     ]);
 
     const showData = seriesData.map((d) => ({
@@ -39,7 +40,7 @@ const loadCSVData = async () => {
       seasons: parseInt(d.seasons) || 0,
       episodes: parseInt(d.episodes) || 0,
       overall_ratings: parseFloat(d.overall_ratings) || 0,
-      storyline: d.storyline?.trim() || "",
+      storyline: "", // Will be loaded lazily
       genresList: d.genres?.trim() || "",
       link: d.link?.trim() || "",
     }));
@@ -59,45 +60,14 @@ const loadCSVData = async () => {
     shows = showData;
     episodes = episodesData;
 
-    // Compute available options and ranges from the data
-    const genresSet = new Set();
-    const languagesSet = new Set();
-    const seasonCounts = [];
+    // Load storylines in the background (non-blocking)
+    loadStorylines();
 
-    showData.forEach((show) => {
-      // Extract genres
-      if (show.genres) {
-        show.genres.split(",").forEach((genre) => {
-          const cleanGenre = genre.trim();
-          if (cleanGenre) genresSet.add(cleanGenre);
-        });
-      }
-
-      // Extract language
-      if (show.language) {
-        const cleanLang = show.language.trim();
-        if (cleanLang) languagesSet.add(cleanLang);
-      }
-
-      // Collect season counts
-      if (show.seasons > 0) {
-        seasonCounts.push(show.seasons);
-      }
-    });
-
-    // Set values
-    availableGenres = Array.from(genresSet).sort();
-    availableLanguages = Array.from(languagesSet).sort();
-
-    // Compute min/max seasons from actual data
-    if (seasonCounts.length > 0) {
-      minSeasonsInDataset = Math.min(...seasonCounts);
-      maxSeasonsInDataset = Math.max(...seasonCounts);
-    } else {
-      // Fallback values if no valid season data
-      minSeasonsInDataset = 1;
-      maxSeasonsInDataset = 1;
-    }
+    // Use pre-computed metadata instead of calculating from data
+    availableGenres = metadataResponse.genres || [];
+    availableLanguages = metadataResponse.languages || [];
+    minSeasonsInDataset = metadataResponse.minSeasons || 1;
+    maxSeasonsInDataset = metadataResponse.maxSeasons || 12;
 
     // Set initial slider value to maximum seasons found in data
     maxSeasons = maxSeasonsInDataset;
@@ -110,20 +80,51 @@ const loadCSVData = async () => {
   }
 };
 
+const loadStorylines = async () => {
+  try {
+    const detailsData = await d3.csv("/data/imdb_top_tv_shows_details.csv");
+    const detailsMap = new Map();
+
+    detailsData.forEach((d) => {
+      const rank = parseInt(d.rank);
+      detailsMap.set(rank, d.storyline?.trim() || "");
+    });
+
+    showDetails = detailsMap;
+
+    // Update shows with storylines
+    shows = shows.map((show) => ({
+      ...show,
+      storyline: detailsMap.get(show.rank) || "",
+    }));
+  } catch (error) {
+    console.warn("Could not load storylines:", error);
+  }
+};
+
 const filteredShows = $derived(() => {
   if (!shows || shows.length === 0) return [];
 
   return shows.filter((show) => {
+    // Season filter (fastest check first - simple number comparison)
+    if (show.seasons > maxSeasons) {
+      return false;
+    }
+
+    // Genre filter
     if (selectedGenres.length > 0) {
-      const showGenres = show.genres.split(",").map((g) => g.trim());
+      const showGenres = show.genres
+        .split(",")
+        .map((g) => g.trim().toLowerCase());
       const hasGenre = selectedGenres.some((selectedGenre) =>
         showGenres.some((showGenre) =>
-          showGenre.toLowerCase().includes(selectedGenre.toLowerCase())
+          showGenre.includes(selectedGenre.toLowerCase())
         )
       );
       if (!hasGenre) return false;
     }
 
+    // Language filter
     if (selectedLanguages.length > 0) {
       const showLanguage = show.language.trim().toLowerCase();
       const hasLanguage = selectedLanguages.some((selectedLang) =>
@@ -132,23 +133,19 @@ const filteredShows = $derived(() => {
       if (!hasLanguage) return false;
     }
 
-    // Filter by maximum number of seasons
-    if (show.seasons > maxSeasons) {
-      return false;
-    }
-
     return true;
   });
 });
 
-// Filter episodes based on selected shows
+// Optimized episode filtering using Set for O(1) lookup instead of array.includes()
 const filteredEpisodes = $derived(() => {
   if (!episodes || episodes.length === 0 || !filteredShows()) return [];
 
-  const filteredShowNames = filteredShows().map((show) => show.name);
+  // Use Set with rank (number) for faster lookup vs string comparison
+  const filteredShowRanks = new Set(filteredShows().map((show) => show.rank));
 
   return episodes.filter((episode) =>
-    filteredShowNames.includes(episode.seriesTitle)
+    filteredShowRanks.has(episode.seriesRank)
   );
 });
 

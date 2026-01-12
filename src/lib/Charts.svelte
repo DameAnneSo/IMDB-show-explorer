@@ -1,6 +1,6 @@
 <script>
 import * as d3 from "d3";
-import LineChart from "./LineChart.svelte";
+import LazyLineChart from "./LazyLineChart.svelte";
 import Toggle from "./Toggle.svelte";
 
 let { shows = [], episodes = [], maxSeasons } = $props();
@@ -57,7 +57,7 @@ const yScale = $derived(
 </div>
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
-    <LineChart
+    <LazyLineChart
       showName={show.name}
       rank={show.rank}
       episodeData={episodes.filter((ep) => ep.seriesRank === show.rank)}
