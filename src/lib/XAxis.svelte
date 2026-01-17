@@ -1,21 +1,14 @@
 <script>
-let { xScale, height, margins } = $props();
+  let {xScale, height, margins } = $props();
+  
+  const numberOfTicks = (pixelsAvailable, pixelsPerTick = 80) =>
+    Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
+  
+  const [xMin, xMax] = $derived(xScale.range());
 
-const numberOfTicks = (pixelsAvailable, pixelsPerTick = 80) =>
-  Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
-
-const [xMin, xMax] = $derived(xScale.range());
-const [domainMin, domainMax] = $derived(xScale.domain());
-
-const defaultTicks = $derived(xScale.ticks(numberOfTicks(xMax - xMin)));
-
-// Filter out non-integer ticks if the domain is small
-const ticks = $derived(
-  domainMax <= 20
-    ? defaultTicks.filter((tick) => Number.isInteger(tick))
-    : defaultTicks
-);
-
+  const ticks = $derived(xScale.ticks(numberOfTicks(xMax - xMin))
+    .filter(tick => Number.isInteger(tick))
+  );
 </script>
 
 <g
