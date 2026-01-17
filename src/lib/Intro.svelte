@@ -1,17 +1,17 @@
 <section class="intro-section">
   <p>
-    With countless TV shows out there, deciding what to watch next can be
-    exhausting. The <a
-      href="https://www.imdb.com/chart/toptv/"
-      target="_blank"
-      rel="noopener noreferrer">IMDb Top 250 TV</a
-    >
-    shows gives you a solid starting point, but even then, finding the right show
-    can be hard.
-    <br />
-    This sites allows you to filter by genre, language, or maximum number of seasons.
-    It also turns the IMDb data leaderboard into visualizations that show the highs
-    and lows of each show, to help you find the perfect show for you!
+    With countless TV shows available, deciding what to watch next can feel overwhelming. The
+      <a
+        href="https://www.imdb.com/chart/toptv/"
+        target="_blank"
+        rel="noopener noreferrer">IMDb Top 250 TV shows
+      </a>
+    shows gives you a solid starting point, but even then, finding the right show can be challenging.
+  </p>
+  <p>
+    This site makes it easier by letting you filter
+      IMDb's top-rated shows by genre, language, or number of seasons. It also visualizes each show's ratings across seasons so you can see
+        at a glance which shows maintain their quality.
   </p>
 </section>
 
