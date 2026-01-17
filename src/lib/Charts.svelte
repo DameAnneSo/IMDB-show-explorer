@@ -5,7 +5,7 @@ import Toggle from "./Toggle.svelte";
 
 let { shows = [], episodes = [], maxSeasons } = $props();
 
-let showAnnotations = $state(true);
+let showDetails = $state(true);
 
 const sortedShows = $derived(shows.sort((a, b) => a.rank - b.rank));
 
@@ -45,9 +45,9 @@ const yScale = $derived(
 
       <div class="flex items-center">
         <Toggle
-          bind:checked={showAnnotations}
-          label="Show / hide annotations"
-          id="annotations-toggle"
+          bind:checked={showDetails}
+          label="Show / hide details"
+          id="details-toggle"
         />
       </div>
     </div>
@@ -74,7 +74,7 @@ const yScale = $derived(
       {margins}
       {boundedWidth}
       {boundedHeight}
-      {showAnnotations}
+      {showDetails}
     />
   {/each}
 </div>

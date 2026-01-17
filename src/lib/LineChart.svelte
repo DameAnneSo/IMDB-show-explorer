@@ -25,7 +25,7 @@ let {
   margins,
   boundedWidth,
   boundedHeight,
-  showAnnotations = true,
+  showDetails = true,
 } = $props();
 
 // Create xScale specific to this show's episode count
@@ -127,7 +127,7 @@ const ariaLabel = $derived(
   <p class="show-genres">{formattedGenres}</p>
 </h2>
 
-{#if showAnnotations}
+{#if showDetails}
   <div class="show-details">
     <h3>
       <span class="show-value2">{seasons} </span>
@@ -160,7 +160,7 @@ const ariaLabel = $derived(
     onblur={handleMouseLeave}
   >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
-      {#if showAnnotations}
+      {#if showDetails}
         <SeasonBands {episodeData} {xScale} {boundedHeight} />
       {/if}
       <XAxis {xScale} {height} {margins} />
@@ -174,7 +174,7 @@ const ariaLabel = $derived(
         {yAccessor}
         {width}
       />
-      {#if showAnnotations}
+      {#if showDetails}
         <MinMaxRatings
           episodeData={validData}
           {xAccessor}

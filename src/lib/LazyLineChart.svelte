@@ -19,7 +19,7 @@ let {
   margins,
   boundedWidth,
   boundedHeight,
-  showAnnotations,
+  showDetails,
 } = $props();
 
 let isVisible = $state(false);
@@ -71,7 +71,7 @@ onMount(() => {
       {margins}
       {boundedWidth}
       {boundedHeight}
-      {showAnnotations}
+      {showDetails}
     />
   {:else}
     <!-- Placeholder with same height to prevent layout shift -->
