@@ -39,8 +39,8 @@ const yScale = $derived(
   {#if sortedShows.length > 0}
     <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
       <h1 class="text-lg font-semibold leading-none">
-        Result of your selection: {sortedShows.length}
-        {sortedShows.length === 1 ? "show" : "shows"}
+        {sortedShows.length} {sortedShows.length === 1 ? 'result' : 'results'}
+        {sortedShows.length === 1 ? 'matches' : 'match'} the active filters
       </h1>
 
       <div class="flex items-center">
@@ -52,7 +52,11 @@ const yScale = $derived(
       </div>
     </div>
   {:else}
-    <h1 class="mb-5 text-center">No shows correspond to your filters</h1>
+    <div class="mb-5">
+      <h1 class="text-lg font-semibold leading-none">
+        No results match the active filters
+      </h1>
+    </div>
   {/if}
 </div>
 <div class="line-charts" bind:clientWidth={width}>
