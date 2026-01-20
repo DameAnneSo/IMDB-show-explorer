@@ -11,7 +11,7 @@ let episodes = $state([]);
 let showDetails = $state(new Map()); // Store storylines separately
 let selectedGenres = $state([]);
 let selectedLanguages = $state([]);
-let maxSeasons = $state(12);
+let maxSeasons = $state(42);
 
 let availableGenres = $state([]);
 let availableLanguages = $state([]);
@@ -27,7 +27,7 @@ const loadCSVData = async () => {
 
     // Load CSV files + pre-computed metadata for faster initialization
     const [seriesData, episodeData, metadataResponse] = await Promise.all([
-      d3.csv("/data/imdb_top_tv_shows_base.csv"),
+      d3.csv("/data/imdb_top_tv_shows.csv"),
       d3.csv("/data/imdb_episodes.csv"),
       fetch("/data/metadata.json").then((r) => r.json()),
     ]);
@@ -39,16 +39,16 @@ const loadCSVData = async () => {
       language: d.language?.trim() || "",
       seasons: parseInt(d.seasons) || 0,
       episodes: parseInt(d.episodes) || 0,
-      overall_ratings: parseFloat(d.overall_ratings) || 0,
-      storyline: "", // Will be loaded lazily
+      overall_ratings: parseFloat(d.overall_rating) || 0,
+      storyline: d.storyline?.trim() || "",
       genresList: d.genres?.trim() || "",
       link: d.link?.trim() || "",
     }));
+    console.log("imdb_top_tv_shows:", showData);
 
     const episodesData = episodeData.map((d) => ({
       seriesRank: parseInt(d.seriesRank) || 0,
       seriesTitle: d.seriesTitle?.trim() || "",
-      seriesNumberOfEpisodes: parseInt(d.seriesNumberOfEpisodes) || 0,
       episodeSeason: parseInt(d.episodeSeason) || 0,
       episodeNumberOverall: parseInt(d.episodeNumberOverall) || 0,
       episodeNumberinSeason: parseInt(d.episodeNumberinSeason) || 0,
@@ -56,12 +56,10 @@ const loadCSVData = async () => {
       episodeVotes: parseInt(d.episodeVotes) || 0,
       episodeTitle: d.episodeTitle?.trim() || "",
     }));
+    console.log("imdb_episodes:", episodesData);
 
     shows = showData;
     episodes = episodesData;
-
-    // Load storylines in the background (non-blocking)
-    loadStorylines();
 
     // Use pre-computed metadata instead of calculating from data
     availableGenres = metadataResponse.genres || [];
@@ -118,8 +116,8 @@ const filteredShows = $derived(() => {
         .map((g) => g.trim().toLowerCase());
       const hasGenre = selectedGenres.some((selectedGenre) =>
         showGenres.some((showGenre) =>
-          showGenre.includes(selectedGenre.toLowerCase())
-        )
+          showGenre.includes(selectedGenre.toLowerCase()),
+        ),
       );
       if (!hasGenre) return false;
     }
@@ -128,7 +126,7 @@ const filteredShows = $derived(() => {
     if (selectedLanguages.length > 0) {
       const showLanguage = show.language.trim().toLowerCase();
       const hasLanguage = selectedLanguages.some((selectedLang) =>
-        showLanguage.includes(selectedLang.toLowerCase())
+        showLanguage.includes(selectedLang.toLowerCase()),
       );
       if (!hasLanguage) return false;
     }
@@ -145,7 +143,7 @@ const filteredEpisodes = $derived(() => {
   const filteredShowRanks = new Set(filteredShows().map((show) => show.rank));
 
   return episodes.filter((episode) =>
-    filteredShowRanks.has(episode.seriesRank)
+    filteredShowRanks.has(episode.seriesRank),
   );
 });
 

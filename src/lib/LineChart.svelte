@@ -30,7 +30,7 @@ let {
 
 // Create xScale specific to this show's episode count
 const xScale = $derived(
-  d3.scaleLinear().domain([1, episodes]).range([0, boundedWidth])
+  d3.scaleLinear().domain([1, episodes]).range([0, boundedWidth]),
 );
 
 const formattedGenres = $derived(
@@ -40,7 +40,7 @@ const formattedGenres = $derived(
         .map((g) => g.trim())
         .sort()
         .join(" · ")
-    : ""
+    : "",
 );
 
 const xAccessor = (d) => +d.episodeNumberOverall;
@@ -57,7 +57,17 @@ const validData = $derived(
     return (
       !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y) && x > 0 && y > 0
     );
-  }) || []
+  }) || [],
+);
+
+// Check if there are episodes without ratings (not aired yet)
+const hasUnratedEpisodes = $derived(
+  episodeData && episodeData.length > validData.length,
+);
+
+// Check if there are missing episodes (e.g., bonus episodes not plotted)
+const hasMissingEpisodes = $derived(
+  episodeData && episodes && episodeData.length < episodes,
 );
 
 let hoveredPoint = $state(null);
@@ -84,7 +94,7 @@ const lineGenerator = $derived(
       const x = xAccessorScaled(d);
       const y = yAccessorScaled(d);
       return !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y);
-    })
+    }),
 );
 
 const line = $derived(lineGenerator(validData));
@@ -112,7 +122,7 @@ const ariaLabel = $derived(
           : "unknown episode";
 
         return `This is a line chart of IMDB ratings for the TV series ${showName}, ${episodes} episodes across ${seasons} ${seasons === 1 ? "season" : "seasons"}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
-      })()
+      })(),
 );
 </script>
 
@@ -211,6 +221,22 @@ const ariaLabel = $derived(
   {/if}
 </div>
 
+{#if hasUnratedEpisodes || hasMissingEpisodes}
+  <div class="chart-notes">
+    {#if hasUnratedEpisodes}
+      <p class="note">
+        Note: Some episodes have not been rated yet (not aired or insufficient
+        data).
+      </p>
+    {/if}
+    {#if hasMissingEpisodes}
+      <p class="note">
+        Note: Bonus episodes with unknown season were not plotted.
+      </p>
+    {/if}
+  </div>
+{/if}
+
 <style>
 .chart-wrapper {
   position: relative;
@@ -272,8 +298,20 @@ const ariaLabel = $derived(
   margin-bottom: 1rem;
 }
 
-.rank{
+.rank {
   font-weight: 700;
   color: var(--color-neutral-500);
+}
+
+.chart-notes {
+  margin-top: -3.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.note {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0.25rem 0;
 }
 </style>
