@@ -30,16 +30,20 @@ let {
   isDuplicateName = false,
 } = $props();
 
-// Find the maximum episode number from actual data
-const maxEpisodeNumber = $derived(
-  episodeData && episodeData.length > 0
-    ? Math.max(...episodeData.map((d) => +d.episodeNumberOverall))
-    : episodes,
+// Filter out invalid data points first
+const validData = $derived(
+  episodeData?.filter((d) => {
+    const y = +d.episodeRating;
+    const x = +d.episodeNumberOverall;
+    return (
+      !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y) && x > 0 && y > 0
+    );
+  }) || [],
 );
 
-// Create xScale specific to this show's episode count using actual data
+// Create xScale based on the count of valid episodes (1-indexed)
 const xScale = $derived(
-  d3.scaleLinear().domain([1, maxEpisodeNumber]).range([0, boundedWidth]),
+  d3.scaleLinear().domain([1, validData.length]).range([0, boundedWidth]),
 );
 
 const formattedGenres = $derived(
@@ -52,22 +56,13 @@ const formattedGenres = $derived(
     : "",
 );
 
-const xAccessor = (d) => +d.episodeNumberOverall;
 const yAccessor = (d) => +d.episodeRating;
+
+// Use index-based x accessor (1-indexed position in validData array)
+const xAccessor = (d) => validData.indexOf(d) + 1;
 
 const xAccessorScaled = $derived((d) => xScale(xAccessor(d)));
 const yAccessorScaled = $derived((d) => yScale(yAccessor(d)));
-
-// Filter out invalid data points before creating the line
-const validData = $derived(
-  episodeData?.filter((d) => {
-    const x = xAccessor(d);
-    const y = yAccessor(d);
-    return (
-      !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y) && x > 0 && y > 0
-    );
-  }) || [],
-);
 
 // Check if there are episodes without ratings (not aired yet)
 const hasUnratedEpisodes = $derived(
@@ -144,7 +139,7 @@ const ariaLabel = $derived(
 );
 </script>
 
-<h1 class="info-header">
+<div class="info-header">
   <span class="rank">#{rank}</span>
   <span class="show-name-group">
     <span class="show-value">{showName}</span>
@@ -160,10 +155,8 @@ const ariaLabel = $derived(
       >
     {/if}
   </span>
-</h1>
-<h2>
-  <p class="show-genres">{formattedGenres}</p>
-</h2>
+</div>
+<p class="show-genres">{formattedGenres}</p>
 
 {#if showDetails}
   <div class="show-details">
@@ -189,6 +182,22 @@ const ariaLabel = $derived(
   </div>
 {/if}
 
+{#if hasUnratedEpisodes || hasMissingEpisodes}
+  <div class="chart-notes">
+    {#if hasUnratedEpisodes}
+      <p class="note">
+        Note: some episodes have not been rated yet (not aired or insufficient
+        data).
+      </p>
+    {/if}
+    {#if hasMissingEpisodes}
+      <p class="note">
+        Note: bonus episodes with unknown season were not plotted.
+      </p>
+    {/if}
+  </div>
+{/if}
+
 <div class="chart-wrapper" style="height:{height}px">
   <svg
     class="chart"
@@ -203,7 +212,12 @@ const ariaLabel = $derived(
   >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
       {#if showDetails}
-        <SeasonBands {episodeData} {xScale} {boundedHeight} />
+        <SeasonBands
+          episodeData={validData}
+          {xScale}
+          {xAccessor}
+          {boundedHeight}
+        />
       {/if}
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
@@ -252,22 +266,6 @@ const ariaLabel = $derived(
     />
   {/if}
 </div>
-
-{#if hasUnratedEpisodes || hasMissingEpisodes}
-  <div class="chart-notes">
-    {#if hasUnratedEpisodes}
-      <p class="note">
-        Note: Some episodes have not been rated yet (not aired or insufficient
-        data).
-      </p>
-    {/if}
-    {#if hasMissingEpisodes}
-      <p class="note">
-        Note: Bonus episodes with unknown season were not plotted.
-      </p>
-    {/if}
-  </div>
-{/if}
 
 <style>
 .chart-wrapper {
@@ -333,7 +331,11 @@ const ariaLabel = $derived(
 .show-details {
   font-size: 13px;
   color: var(--color-neutral-700);
-  margin-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+.chart-notes {
+  margin-top: 0rem;
 }
 
 .rank {
@@ -347,15 +349,8 @@ const ariaLabel = $derived(
   font-size: 0.9rem;
 }
 
-.chart-notes {
-  margin-top: -3.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
 .note {
   font-size: 12px;
   color: #6b7280;
-  margin: 0.25rem 0;
 }
 </style>
