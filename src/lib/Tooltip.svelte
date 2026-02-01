@@ -34,25 +34,20 @@ const yPosition = $derived(y + yNudge);
   <div class="tooltip_header">
     <div class="tooltip_top_line">
       <span class="tooltip_intro">
-        episode {data.episodeNumberOverall} (season {data.episodeSeason} | episode {data.episodeNumberinSeason})
+        episode {data.episodeNumberOverall} (season {data.episodeSeason} | episode
+        {data.episodeNumberinSeason})
       </span>
     </div>
     <p class="tooltip_title">"{data.episodeTitle}"</p>
   </div>
 
   <hr class="divider" />
-  <table class="tooltip_table">
-    <tbody>
-      <tr>
-        <td class="label">Rating</td>
-        <td class="value"><span class="tooltip_accent">{formatYForTooltip(yAccessor)}/10</span></td>
-      </tr>
-      <tr>
-        <td class="label">Votes</td>
-        <td class="value">{data.episodeVotes || "include later"}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div>
+    <span class="rating">{formatYForTooltip(yAccessor)}/10</span>
+    <span class="votes"
+      >out of <b>{data.episodeVotes.toLocaleString()}</b> votes</span
+    >
+  </div>
 </div>
 
 <style>
@@ -102,32 +97,7 @@ const yPosition = $derived(y + yNudge);
   margin-bottom: 5px;
 }
 
-.tooltip_table {
-  width: 100%;
-  margin-top: 0.5em;
-}
-
-.tooltip_table td {
-  padding: 2px 0;
-  border: none;
-}
-
-.value {
-  text-align: end;
-  font-weight: 600;
-  color: var(--color-neutral-500);
-}
-
-.label {
-  text-align: left;
-  font-weight: 400;
-  color: var(--color-neutral-500);
-  opacity: 0.8;
-  padding-right: 12px; /* Breathing space between columns */
-  font-size: 0.85em; /* Slightly smaller to recede */
-}
-
-.tooltip_accent {
+.rating {
   text-transform: uppercase;
   font-size: 1rem;
   font-weight: 700;
@@ -135,5 +105,10 @@ const yPosition = $derived(y + yNudge);
   background-color: var(--color-primary-100);
   border-radius: 3px;
   padding: 0px 4px;
+}
+
+.votes {
+  color: var(--color-neutral-500);
+  font-weight: 400;
 }
 </style>

@@ -1,25 +1,20 @@
 <script>
 import * as d3 from "d3";
-import LineChart from "./LineChart.svelte";
+import LazyLineChart from "./LazyLineChart.svelte";
 import Toggle from "./Toggle.svelte";
 
 let { shows = [], episodes = [], maxSeasons } = $props();
 
-let showAnnotations = $state(true);
+let showDetails = $state(true);
 
-const maxEpisodes = $derived(
-  shows.reduce((max, show) => {
-    return show.episodes > max ? show.episodes : max;
-  }, 0)
-);
+const sortedShows = $derived(shows.sort((a, b) => a.rank - b.rank));
 
-const sortedShows = $derived(
-  shows.sort((a, b) => {
-    if (b.overall_ratings !== a.overall_ratings) {
-      return b.overall_ratings - a.overall_ratings;
-    }
-    return a.name.localeCompare(b.name);
-  })
+// Detect duplicate show names
+const showNameCounts = $derived(
+  sortedShows.reduce((acc, show) => {
+    acc[show.name] = (acc[show.name] || 0) + 1;
+    return acc;
+  }, {}),
 );
 
 const yAccessor = (d) => d.episodeRating;
@@ -35,63 +30,66 @@ const margins = {
   marginLeft: 55,
 };
 
-// Compute scales once in parent - all charts share the same scales
+// Compute scales once in parent - yScale is shared, but xScale is now per-chart
 const boundedWidth = $derived(width - margins.marginLeft - margins.marginRight);
 const boundedHeight = height - margins.marginTop - margins.marginBottom;
-
-const xScale = $derived(
-  d3.scaleLinear().domain([1, maxEpisodes]).range([0, boundedWidth])
-);
 
 const yScale = $derived(
   d3
     .scaleLinear()
     .domain([0, d3.max(episodes, yAccessor)])
     .range([boundedHeight, 0])
-    .nice()
+    .nice(),
 );
 </script>
 
 <div class="results-note-section">
-{#if sortedShows.length > 0}
-<div class="mb-5 flex flex-wrap items-center justify-between gap-4">
-  <h1 class="text-lg font-semibold leading-none">
-    Result of your selection: {sortedShows.length} {sortedShows.length === 1 ? 'show' : 'shows'}
-  </h1>
-  
-  <div class="flex items-center">
-    <Toggle
-      bind:checked={showAnnotations}
-      label="Show / hide annotations"
-      id="annotations-toggle"
-    />
-  </div>
-</div>
-{:else}
-<h1 class="mb-5 text-center">
-  No shows correspond to your filters
-</h1>
-{/if}
+  {#if sortedShows.length > 0}
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
+      <h1 class="text-lg font-semibold leading-none">
+        {sortedShows.length}
+        {sortedShows.length === 1 ? "result" : "results"}
+        {sortedShows.length === 1 ? "matches" : "match"} the active filters
+      </h1>
+
+      <div class="flex items-center">
+        <Toggle
+          bind:checked={showDetails}
+          label="Show / hide details"
+          id="details-toggle"
+        />
+      </div>
+    </div>
+  {:else}
+    <div class="mb-5">
+      <h1 class="text-lg font-semibold leading-none">
+        No results match the active filters
+      </h1>
+    </div>
+  {/if}
 </div>
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show, i}
-    <LineChart
+    <LazyLineChart
       showName={show.name}
-      episodeData={episodes.filter((ep) => ep.seriesTitle == show.name)}
+      rank={show.rank}
+      episodeData={episodes.filter((ep) => ep.seriesRank === show.rank)}
       overallRating={show.overall_ratings}
       seasons={show.seasons}
-      {maxSeasons}
       episodes={show.episodes}
       storyline={show.storyline}
       genres={show.genres}
       link={show.link}
-      {xScale}
       {yScale}
       {width}
       {height}
       {margins}
+      {boundedWidth}
       {boundedHeight}
-      {showAnnotations}
+      {showDetails}
+      numberOfRatings={show.numberOfRatings}
+      timeRange={show.timeRange}
+      isDuplicateName={showNameCounts[show.name] > 1}
     />
   {/each}
 </div>
@@ -101,7 +99,6 @@ const yScale = $derived(
   width: 100%;
 }
 .results-note-section {
-  margin-bottom:3rem; 
-
+  margin-bottom: 3rem;
 }
 </style>

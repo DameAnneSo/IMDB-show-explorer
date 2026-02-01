@@ -148,7 +148,7 @@ const announceToScreenReader = (message) => {
           for="languages-select"
           id="languages-label"
         >
-          Max seasons
+          Max. number of seasons
         </label>
         <RangeSlider
           min={minSeasonsInDataset}

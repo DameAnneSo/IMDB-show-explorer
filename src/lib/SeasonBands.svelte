@@ -1,35 +1,35 @@
 <script>
-let { episodeData, xScale, boundedHeight } = $props();
+let { episodeData, xScale, xAccessor, boundedHeight } = $props();
 
-// Group data by season and find the episode range for each season
+// Group data by season and find the index range for each season
 const seasonRanges = $derived(
-  episodeData?.reduce((acc, d) => {
+  episodeData?.reduce((acc, d, index) => {
     const season = d.episodeSeason;
-    const episodeNum = +d.episodeNumberOverall;
+    const episodeIndex = index + 1; // 1-indexed
     if (!acc[season]) {
       acc[season] = {
         season: +season,
-        minEpisode: episodeNum,
-        maxEpisode: episodeNum,
+        minIndex: episodeIndex,
+        maxIndex: episodeIndex,
       };
     } else {
-      acc[season].minEpisode = Math.min(acc[season].minEpisode, episodeNum);
-      acc[season].maxEpisode = Math.max(acc[season].maxEpisode, episodeNum);
+      acc[season].minIndex = Math.min(acc[season].minIndex, episodeIndex);
+      acc[season].maxIndex = Math.max(acc[season].maxIndex, episodeIndex);
     }
     return acc;
-  }, {}) || {}
+  }, {}) || {},
 );
 
 // Convert to array and sort by season number
 const seasons = $derived(
-  Object.values(seasonRanges).sort((a, b) => a.season - b.season)
+  Object.values(seasonRanges).sort((a, b) => a.season - b.season),
 );
 
 // Create bands with alternating colors
 const seasonBands = $derived(
   seasons.map((season, index) => {
-    const x = xScale(season.minEpisode);
-    const width = xScale(season.maxEpisode) - xScale(season.minEpisode);
+    const x = xScale(season.minIndex);
+    const width = xScale(season.maxIndex) - xScale(season.minIndex);
     return {
       x,
       width,
@@ -39,7 +39,7 @@ const seasonBands = $derived(
           ? "var(--color-neutral-50)"
           : "var(--color-neutral-150)",
     };
-  })
+  }),
 );
 </script>
 
