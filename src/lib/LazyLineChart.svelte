@@ -8,7 +8,6 @@ let {
   episodeData,
   overallRating,
   seasons,
-  maxSeasons,
   episodes,
   storyline,
   genres,
@@ -20,6 +19,9 @@ let {
   boundedWidth,
   boundedHeight,
   showDetails,
+  numberOfRatings,
+  timeRange,
+  isDuplicateName,
 } = $props();
 
 let isVisible = $state(false);
@@ -39,7 +41,7 @@ onMount(() => {
     {
       rootMargin: "400px", // Load charts 400px before they enter viewport
       threshold: 0,
-    }
+    },
   );
 
   if (containerRef) {
@@ -60,7 +62,6 @@ onMount(() => {
       {episodeData}
       {overallRating}
       {seasons}
-      {maxSeasons}
       {episodes}
       {storyline}
       {genres}
@@ -72,6 +73,9 @@ onMount(() => {
       {boundedWidth}
       {boundedHeight}
       {showDetails}
+      {numberOfRatings}
+      {timeRange}
+      {isDuplicateName}
     />
   {:else}
     <!-- Placeholder with same height to prevent layout shift -->

@@ -9,6 +9,14 @@ let showDetails = $state(true);
 
 const sortedShows = $derived(shows.sort((a, b) => a.rank - b.rank));
 
+// Detect duplicate show names
+const showNameCounts = $derived(
+  sortedShows.reduce((acc, show) => {
+    acc[show.name] = (acc[show.name] || 0) + 1;
+    return acc;
+  }, {}),
+);
+
 const yAccessor = (d) => d.episodeRating;
 
 // Shared width that all charts will use
@@ -31,7 +39,7 @@ const yScale = $derived(
     .scaleLinear()
     .domain([0, d3.max(episodes, yAccessor)])
     .range([boundedHeight, 0])
-    .nice()
+    .nice(),
 );
 </script>
 
@@ -39,8 +47,9 @@ const yScale = $derived(
   {#if sortedShows.length > 0}
     <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
       <h1 class="text-lg font-semibold leading-none">
-        {sortedShows.length} {sortedShows.length === 1 ? 'result' : 'results'}
-        {sortedShows.length === 1 ? 'matches' : 'match'} the active filters
+        {sortedShows.length}
+        {sortedShows.length === 1 ? "result" : "results"}
+        {sortedShows.length === 1 ? "matches" : "match"} the active filters
       </h1>
 
       <div class="flex items-center">
@@ -67,7 +76,6 @@ const yScale = $derived(
       episodeData={episodes.filter((ep) => ep.seriesRank === show.rank)}
       overallRating={show.overall_ratings}
       seasons={show.seasons}
-      {maxSeasons}
       episodes={show.episodes}
       storyline={show.storyline}
       genres={show.genres}
@@ -79,6 +87,9 @@ const yScale = $derived(
       {boundedWidth}
       {boundedHeight}
       {showDetails}
+      numberOfRatings={show.numberOfRatings}
+      timeRange={show.timeRange}
+      isDuplicateName={showNameCounts[show.name] > 1}
     />
   {/each}
 </div>

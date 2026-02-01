@@ -14,7 +14,6 @@ let {
   episodeData,
   overallRating,
   seasons,
-  maxSeasons,
   episodes,
   storyline,
   genres,
@@ -26,11 +25,21 @@ let {
   boundedWidth,
   boundedHeight,
   showDetails = true,
+  numberOfRatings,
+  timeRange,
+  isDuplicateName = false,
 } = $props();
 
-// Create xScale specific to this show's episode count
+// Find the maximum episode number from actual data
+const maxEpisodeNumber = $derived(
+  episodeData && episodeData.length > 0
+    ? Math.max(...episodeData.map((d) => +d.episodeNumberOverall))
+    : episodes,
+);
+
+// Create xScale specific to this show's episode count using actual data
 const xScale = $derived(
-  d3.scaleLinear().domain([1, episodes]).range([0, boundedWidth]),
+  d3.scaleLinear().domain([1, maxEpisodeNumber]).range([0, boundedWidth]),
 );
 
 const formattedGenres = $derived(
@@ -101,6 +110,15 @@ const line = $derived(lineGenerator(validData));
 
 const formatX = d3.format("d");
 const formatYForTooltip = d3.format(",.1f");
+const formatNumberOfRatings = (num) => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + "M";
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(0) + "K";
+  }
+  return num.toString();
+};
 
 const ariaLabel = $derived(
   !validData || validData.length === 0
@@ -128,9 +146,19 @@ const ariaLabel = $derived(
 
 <h1 class="info-header">
   <span class="rank">#{rank}</span>
-  <span class="show-value">{showName}</span>
+  <span class="show-name-group">
+    <span class="show-value">{showName}</span>
+    {#if isDuplicateName && timeRange}
+      <span class="time-range">({timeRange})</span>
+    {/if}
+  </span>
   <span class="show-info"
     ><span class="show-value rating_accent">{overallRating}/10</span>
+    {#if numberOfRatings}
+      <span class="ratings-count"
+        >(out of {formatNumberOfRatings(numberOfRatings)} votes)</span
+      >
+    {/if}
   </span>
 </h1>
 <h2>
@@ -147,6 +175,10 @@ const ariaLabel = $derived(
         >{episodes}
         <span class="show-info"> episodes</span>
       </span>
+      {#if timeRange}
+        <span class="separator">|</span>
+        <span class="show-info">{timeRange}</span>
+      {/if}
     </h3>
     <i class="show-storyline">
       {storyline}
@@ -268,6 +300,12 @@ const ariaLabel = $derived(
   }
 }
 
+.show-name-group {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
 .show-value {
   font-weight: 700;
   color: var(--color-primary);
@@ -301,6 +339,12 @@ const ariaLabel = $derived(
 .rank {
   font-weight: 700;
   color: var(--color-neutral-500);
+}
+
+.ratings-count,
+.time-range {
+  color: var(--color-neutral-500);
+  font-size: 0.9rem;
 }
 
 .chart-notes {

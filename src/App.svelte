@@ -33,16 +33,18 @@ const loadCSVData = async () => {
     ]);
 
     const showData = seriesData.map((d) => ({
-      rank: parseInt(d.rank) || 0,
-      name: d.title?.trim() || "",
+      rank: parseInt(d.seriesRank) || 0,
+      name: d.seriesTitle?.trim() || "",
       genres: d.genres?.trim() || "",
       language: d.language?.trim() || "",
       seasons: parseInt(d.seasons) || 0,
       episodes: parseInt(d.episodes) || 0,
-      overall_ratings: parseFloat(d.overall_rating) || 0,
+      overall_ratings: parseFloat(d.overallRating) || 0,
       storyline: d.storyline?.trim() || "",
       genresList: d.genres?.trim() || "",
-      link: d.link?.trim() || "",
+      link: d.seriesLink?.trim() || "",
+      numberOfRatings: parseInt(d.numberOfRatings) || 0,
+      timeRange: d.timeRange?.trim() || "",
     }));
     console.log("imdb_top_tv_shows:", showData);
 
@@ -55,6 +57,8 @@ const loadCSVData = async () => {
       episodeRating: parseFloat(d.episodeRating) || 0,
       episodeVotes: parseInt(d.episodeVotes) || 0,
       episodeTitle: d.episodeTitle?.trim() || "",
+      episodeSummary: d.episodeSummary?.trim() || "",
+      episodeLink: d.episodeLink?.trim() || "",
     }));
     console.log("imdb_episodes:", episodesData);
 
@@ -82,7 +86,6 @@ const loadStorylines = async () => {
   try {
     const detailsData = await d3.csv("/data/imdb_top_tv_shows_details.csv");
     const detailsMap = new Map();
-
     detailsData.forEach((d) => {
       const rank = parseInt(d.rank);
       detailsMap.set(rank, d.storyline?.trim() || "");
