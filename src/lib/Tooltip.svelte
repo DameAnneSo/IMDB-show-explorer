@@ -45,7 +45,7 @@ const yPosition = $derived(y + yNudge);
   <div>
     <span class="rating">{formatYForTooltip(yAccessor)}/10</span>
     <span class="votes"
-      >out of <b>{data.episodeVotes.toLocaleString()}</b> votes</span
+      >(<b>{data.episodeVotes.toLocaleString()}</b> votes)</span
     >
   </div>
 </div>

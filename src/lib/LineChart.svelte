@@ -151,7 +151,7 @@ const ariaLabel = $derived(
     ><span class="show-value rating_accent">{overallRating}/10</span>
     {#if numberOfRatings}
       <span class="ratings-count"
-        >(out of {formatNumberOfRatings(numberOfRatings)} votes)</span
+        >({formatNumberOfRatings(numberOfRatings)} votes)</span
       >
     {/if}
   </span>
@@ -290,13 +290,9 @@ const ariaLabel = $derived(
   gap: 8px;
   font-size: 1.1rem;
   margin-top: 1rem;
+  justify-content: flex-start;
 }
 
-@media (min-width: 768px) {
-  .info-header {
-    justify-content: flex-start;
-  }
-}
 
 .show-name-group {
   display: flex;

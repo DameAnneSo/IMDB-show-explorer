@@ -1,6 +1,21 @@
 <script>
 let { episodeData, xScale, xAccessor, boundedHeight } = $props();
 
+let windowWidth = $state(
+  typeof window !== "undefined" ? window.innerWidth : 1024,
+);
+
+$effect(() => {
+  if (typeof window === "undefined") return;
+
+  const handleResize = () => {
+    windowWidth = window.innerWidth;
+  };
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+});
+
 // Group data by season and find the index range for each season
 const seasonRanges = $derived(
   episodeData?.reduce((acc, d, index) => {
@@ -41,6 +56,9 @@ const seasonBands = $derived(
     };
   }),
 );
+
+// Minimum width threshold for showing labels (in pixels)
+const minLabelWidth = $derived(windowWidth < 768 ? 17 : 20);
 </script>
 
 {#if seasons.length > 1}
@@ -52,15 +70,16 @@ const seasonBands = $derived(
       height={boundedHeight}
       fill={band.color}
     />
-    <!-- Add text labels for debugging -->
-    <text
-      x={band.x + band.width / 2}
-      y={boundedHeight - 10}
-      text-anchor="middle"
-      font-size="12"
-      fill="var(--color-neutral-600)"
-    >
-      s{band.season}
-    </text>
+    {#if band.width >= minLabelWidth}
+      <text
+        x={band.x + band.width / 2}
+        y={boundedHeight - 10}
+        text-anchor="middle"
+        font-size="12"
+        fill="var(--color-neutral-600)"
+      >
+        s{band.season}
+      </text>
+    {/if}
   {/each}
 {/if}
