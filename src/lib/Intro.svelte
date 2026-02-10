@@ -13,6 +13,9 @@
       IMDb's top-rated shows by genre, language, or number of seasons. It also visualizes each show's ratings across seasons so you can see
         at a glance which shows maintain their quality.
   </p>
+
+  <small class="note">Note: the list is ranked by a formula which includes the number of ratings each show received from users, and value of ratings received from regular users
+To be included on the list, a series or mini series must receive ratings from at least 10000 users, and a TV series must also have aired at least 5 episode</small>
 </section>
 
 <style>
@@ -27,5 +30,9 @@ p {
 
 p:not(:last-child) {
   margin-bottom: 1rem;
+}
+
+small { 
+  color: var(--color-neutral-600);
 }
 </style>
