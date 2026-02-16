@@ -10,7 +10,8 @@
     "prepare-data": "node scripts/prepare-data.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
@@ -24,6 +25,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.15.0",
     "globals": "^17.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.4.1",
     "svelte": "^5.23.1",
@@ -34,5 +37,14 @@
     "d3": "^7.9.0",
     "svelte-select": "^5.8.3",
     "tailwindcss": "^4.1.11"
+  },
+  "lint-staged": {
+    "*.{js,svelte}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,html,json,md}": [
+      "prettier --write"
+    ]
   }
 }
