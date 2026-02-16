@@ -1,9 +1,9 @@
 <script>
-let { episodeData, xScale, yScale, xAccessor, yAccessor, width } = $props();
+  let { episodeData, xScale, yScale, xAccessor, yAccessor, width } = $props();
 </script>
 
 <g class="points">
-  {#each episodeData as episode}
+  {#each episodeData as episode (episode)}
     <circle
       cx={xScale(xAccessor(episode))}
       cy={yScale(yAccessor(episode))}

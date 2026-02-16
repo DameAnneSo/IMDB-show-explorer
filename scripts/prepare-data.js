@@ -12,10 +12,10 @@ console.log('🚀 Starting data preparation...\n');
 try {
   console.log('📊 Step 1: Splitting data files...');
   execSync('node scripts/split-data.js', { stdio: 'inherit' });
-  
+
   console.log('\n📋 Step 2: Generating metadata...');
   execSync('node scripts/generate-metadata.js', { stdio: 'inherit' });
-  
+
   console.log('\n✅ Data preparation complete!');
   console.log('📦 Generated files:');
   console.log('   - public/data/imdb_top_tv_shows_base.csv');

@@ -1,96 +1,92 @@
 <script>
-import MultiSelect from "./MultiSelect.svelte";
-import RangeSlider from "./RangeSlider.svelte";
+  import MultiSelect from './MultiSelect.svelte';
+  import RangeSlider from './RangeSlider.svelte';
 
-let {
-  availableGenres = [],
-  availableLanguages = [],
-  minSeasonsInDataset,
-  maxSeasonsInDataset,
-  selectedGenres = $bindable([]),
-  selectedLanguages = $bindable([]),
-  maxSeasons = $bindable(12),
-  onGenreChange = undefined,
-  onLanguageChange = undefined,
-  onSeasonsChange = undefined,
-} = $props();
+  let {
+    availableGenres = [],
+    availableLanguages = [],
+    minSeasonsInDataset,
+    maxSeasonsInDataset,
+    selectedGenres = $bindable([]),
+    selectedLanguages = $bindable([]),
+    maxSeasons = $bindable(12),
+    onGenreChange = undefined,
+    onLanguageChange = undefined,
+    onSeasonsChange = undefined,
+  } = $props();
 
-const hasActiveFilters = $derived(
-  selectedGenres.length > 0 ||
-    selectedLanguages.length > 0 ||
-    maxSeasons < maxSeasonsInDataset
-);
-
-const clearAllFilters = () => {
-  const totalFilters =
-    selectedGenres.length +
-    selectedLanguages.length +
-    (maxSeasons < maxSeasonsInDataset ? 1 : 0);
-  selectedGenres = [];
-  selectedLanguages = [];
-  maxSeasons = maxSeasonsInDataset;
-  announceToScreenReader(`All ${totalFilters} filters cleared`);
-};
-
-const removeGenre = (genre) => {
-  selectedGenres = selectedGenres.filter((g) => g !== genre);
-  announceToScreenReader(
-    `${genre} removed from genre filters. ${selectedGenres.length} genre filters remaining.`
+  const hasActiveFilters = $derived(
+    selectedGenres.length > 0 || selectedLanguages.length > 0 || maxSeasons < maxSeasonsInDataset,
   );
-};
 
-const removeLanguage = (language) => {
-  selectedLanguages = selectedLanguages.filter((l) => l !== language);
-  announceToScreenReader(
-    `${language} removed from language filters. ${selectedLanguages.length} language filters remaining.`
-  );
-};
+  const clearAllFilters = () => {
+    const totalFilters =
+      selectedGenres.length + selectedLanguages.length + (maxSeasons < maxSeasonsInDataset ? 1 : 0);
+    selectedGenres = [];
+    selectedLanguages = [];
+    maxSeasons = maxSeasonsInDataset;
+    announceToScreenReader(`All ${totalFilters} filters cleared`);
+  };
 
-const resetSeasons = () => {
-  maxSeasons = maxSeasonsInDataset;
-  announceToScreenReader("Season filter reset to maximum");
-};
+  const removeGenre = (genre) => {
+    selectedGenres = selectedGenres.filter((g) => g !== genre);
+    announceToScreenReader(
+      `${genre} removed from genre filters. ${selectedGenres.length} genre filters remaining.`,
+    );
+  };
 
-const handleGenreChange = (event) => {
-  if (onGenreChange) {
-    onGenreChange(event);
-  }
-};
+  const removeLanguage = (language) => {
+    selectedLanguages = selectedLanguages.filter((l) => l !== language);
+    announceToScreenReader(
+      `${language} removed from language filters. ${selectedLanguages.length} language filters remaining.`,
+    );
+  };
 
-const handleLanguageChange = (event) => {
-  if (onLanguageChange) {
-    onLanguageChange(event);
-  }
-};
+  const resetSeasons = () => {
+    maxSeasons = maxSeasonsInDataset;
+    announceToScreenReader('Season filter reset to maximum');
+  };
 
-const handleSeasonsChange = (event) => {
-  if (onSeasonsChange) {
-    onSeasonsChange(event);
-  }
-};
-
-// Screen reader announcements
-const announceToScreenReader = (message) => {
-  const announcement = document.createElement("div");
-  announcement.setAttribute("role", "status");
-  announcement.setAttribute("aria-live", "polite");
-  announcement.setAttribute("aria-atomic", "true");
-  announcement.className = "sr-only";
-
-  document.body.appendChild(announcement);
-
-  // Small delay to ensure screen reader picks it up
-  setTimeout(() => {
-    announcement.textContent = message;
-  }, 100);
-
-  // Clean up after announcement
-  setTimeout(() => {
-    if (announcement.parentNode) {
-      document.body.removeChild(announcement);
+  const handleGenreChange = (event) => {
+    if (onGenreChange) {
+      onGenreChange(event);
     }
-  }, 1000);
-};
+  };
+
+  const handleLanguageChange = (event) => {
+    if (onLanguageChange) {
+      onLanguageChange(event);
+    }
+  };
+
+  const handleSeasonsChange = (event) => {
+    if (onSeasonsChange) {
+      onSeasonsChange(event);
+    }
+  };
+
+  // Screen reader announcements
+  const announceToScreenReader = (message) => {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'sr-only';
+
+    document.body.appendChild(announcement);
+
+    // Small delay to ensure screen reader picks it up
+    setTimeout(() => {
+      announcement.textContent = message;
+    }, 100);
+
+    // Clean up after announcement
+    setTimeout(() => {
+      if (announcement.parentNode) {
+        document.body.removeChild(announcement);
+      }
+    }, 1000);
+  };
 </script>
 
 <section aria-labelledby="filters-heading" class="filters-wrapper">
@@ -99,9 +95,7 @@ const announceToScreenReader = (message) => {
 
     <!-- Filter Controls -->
     <fieldset class="filter-grid">
-      <legend class="sr-only"
-        >Filter TV shows by genre, language, and number of seasons</legend
-      >
+      <legend class="sr-only">Filter TV shows by genre, language, and number of seasons</legend>
 
       <!-- Genres Filter -->
       <div>
@@ -158,12 +152,8 @@ const announceToScreenReader = (message) => {
           onchange={handleSeasonsChange}
           showValue={true}
         />
-        <div
-          class="text-xs text-primary-800 mt-1"
-          id="seasons-description"
-          aria-live="polite"
-        >
-          Shows with {maxSeasons} season{maxSeasons !== 1 ? "s" : ""} or fewer
+        <div class="text-xs text-primary-800 mt-1" id="seasons-description" aria-live="polite">
+          Shows with {maxSeasons} season{maxSeasons !== 1 ? 's' : ''} or fewer
         </div>
       </div>
     </fieldset>
@@ -185,7 +175,6 @@ const announceToScreenReader = (message) => {
           <button
             type="button"
             onclick={clearAllFilters}
-            
             class="px-2 py-1 text-primary-800 bg-white border border-primary-400 rounded-md hover:bg-primary-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors text-sm cursor-pointer shadow-sm"
             aria-label="Clear all active filters"
           >
@@ -297,38 +286,38 @@ const announceToScreenReader = (message) => {
 </section>
 
 <style>
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.filters-wrapper {
-  background-color: var(--color-primary-50);
-  padding: 2rem 1.5rem;
-}
-
-.filters-content {
-  max-width: 72rem;
-  margin: 0 auto;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .filter-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
-}
+
+  .filters-wrapper {
+    background-color: var(--color-primary-50);
+    padding: 2rem 1.5rem;
+  }
+
+  .filters-content {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .filter-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 </style>

@@ -1,39 +1,39 @@
 <script>
-let {
-  checked = $bindable(true),
-  disabled = false,
-  label = "",
-  id = undefined,
-  onchange = undefined,
-} = $props();
+  let {
+    checked = $bindable(true),
+    disabled = false,
+    label = '',
+    id = undefined,
+    onchange = undefined,
+  } = $props();
 
-// Generate a unique ID if none provided
-const toggleId = id || `toggle-${Math.random().toString(36).substring(2, 11)}`;
+  // Generate a unique ID if none provided
+  const toggleId = id || `toggle-${Math.random().toString(36).substring(2, 11)}`;
 
-const handleChange = (event) => {
-  checked = event.target.checked;
-  if (onchange) {
-    onchange({ detail: { checked } });
-  }
-};
-
-const handleButtonClick = () => {
-  if (!disabled) {
-    checked = !checked;
-    // Trigger change event for consistency
+  const handleChange = (event) => {
+    checked = event.target.checked;
     if (onchange) {
-      onchange({ detail: { checked: !checked } });
+      onchange({ detail: { checked } });
     }
-  }
-};
+  };
 
-const handleKeyDown = (event) => {
-  // Handle space and enter keys for accessibility
-  if (event.key === " " || event.key === "Enter") {
-    event.preventDefault();
-    handleButtonClick();
-  }
-};
+  const handleButtonClick = () => {
+    if (!disabled) {
+      checked = !checked;
+      // Trigger change event for consistency
+      if (onchange) {
+        onchange({ detail: { checked: !checked } });
+      }
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    // Handle space and enter keys for accessibility
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault();
+      handleButtonClick();
+    }
+  };
 </script>
 
 <div class="flex items-center">
@@ -51,14 +51,14 @@ const handleKeyDown = (event) => {
     role="switch"
     aria-checked={checked}
     aria-labelledby={label ? toggleId : undefined}
-    aria-label={!label ? "Toggle switch" : undefined}
+    aria-label={!label ? 'Toggle switch' : undefined}
     aria-describedby={label ? undefined : `${toggleId}-description`}
     onclick={handleButtonClick}
     onkeydown={handleKeyDown}
     {disabled}
     tabindex={disabled ? -1 : 0}
   >
-    <span class="sr-only">{label || "Toggle switch"}</span>
+    <span class="sr-only">{label || 'Toggle switch'}</span>
     <span
       class="pointer-events-none inline-block rounded-full bg-white shadow transform ring-0 transition duration-200 ease-in-out h-5 w-5 {checked
         ? 'translate-x-5'
@@ -82,7 +82,7 @@ const handleKeyDown = (event) => {
   <!-- Hidden description for screen readers when no label is provided -->
   {#if !label}
     <span id="{toggleId}-description" class="sr-only">
-      Toggle switch, currently {checked ? "on" : "off"}
+      Toggle switch, currently {checked ? 'on' : 'off'}
     </span>
   {/if}
 </div>

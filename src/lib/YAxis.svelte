@@ -1,23 +1,22 @@
 <script>
-let { yScale } = $props();
+  let { yScale } = $props();
 
-const numberOfTicks = (pixelsAvailable, pixelsPerTick = 40) =>
-  Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
+  const numberOfTicks = (pixelsAvailable, pixelsPerTick = 40) =>
+    Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
 
-const [yMin, yMax] = $derived(yScale.range());
+  const [yMin, yMax] = $derived(yScale.range());
 
-const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
+  const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
 </script>
 
 <g>
   <line class="axis__line" x1={0} x2={0} y1={yMin} y2={yMax} />
 
-  {#each ticks as tick}
+  {#each ticks as tick (tick)}
     <g transform={`translate(0 ${yScale(tick)})`}>
       <line class="axis__tick" x1={0} x2={-6} />
 
-      <text class="axis__tick-label"
-      dx={-10} dy="0.34em" text-anchor="end">
+      <text class="axis__tick-label" dx={-10} dy="0.34em" text-anchor="end">
         {tick}
       </text>
     </g>
@@ -28,20 +27,20 @@ const ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
 </g>
 
 <style>
-.axis__line {
-  stroke:var(--color-neutral-400);
-}
+  .axis__line {
+    stroke: var(--color-neutral-400);
+  }
 
-.axis__tick {
-  stroke:var(--color-neutral-400);
-}
+  .axis__tick {
+    stroke: var(--color-neutral-400);
+  }
 
-.axis__label {
-  fill: var(--color-neutral-600);
-   font-size: 13px;
-}
+  .axis__label {
+    fill: var(--color-neutral-600);
+    font-size: 13px;
+  }
 
-.axis__tick-label {
-  fill: var(--color-neutral-500);
-}
+  .axis__tick-label {
+    fill: var(--color-neutral-500);
+  }
 </style>
