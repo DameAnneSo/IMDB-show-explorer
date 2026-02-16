@@ -1,6 +1,6 @@
 <script>
-let { x, y, width } = $props();
-// $inspect(x, y);
+  let { x, y, width } = $props();
+  // $inspect(x, y);
 </script>
 
 <g>
@@ -8,8 +8,8 @@ let { x, y, width } = $props();
 </g>
 
 <style>
-.point {
-  fill: var(--color-primary-300);
-  stroke: var(--color-primary-600);
-}
+  .point {
+    fill: var(--color-primary-300);
+    stroke: var(--color-primary-600);
+  }
 </style>

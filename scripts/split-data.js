@@ -18,15 +18,15 @@ const detailsLines = [detailsHeader];
 
 for (let i = 1; i < lines.length; i++) {
   if (!lines[i].trim()) continue;
-  
+
   // Split the line while handling quoted fields
   const cols = [];
   let currentCol = '';
   let inQuotes = false;
-  
+
   for (let j = 0; j < lines[i].length; j++) {
     const char = lines[i][j];
-    
+
     if (char === '"') {
       inQuotes = !inQuotes;
       currentCol += char;
@@ -38,11 +38,11 @@ for (let i = 1; i < lines.length; i++) {
     }
   }
   cols.push(currentCol); // Add last column
-  
+
   // Base data (without storyline)
   const baseCols = cols.filter((_, i) => i !== storylineIndex);
   baseLines.push(baseCols.join(','));
-  
+
   // Details data (rank and storyline)
   detailsLines.push(`${cols[0]},${cols[storylineIndex]}`);
 }
@@ -55,4 +55,6 @@ console.log('✅ Data split complete!');
 console.log(`Base file: ${Buffer.byteLength(baseLines.join('\n'))} bytes`);
 console.log(`Details file: ${Buffer.byteLength(detailsLines.join('\n'))} bytes`);
 console.log(`Original file: ${Buffer.byteLength(csvContent)} bytes`);
-console.log(`Savings: ${100 - (Buffer.byteLength(baseLines.join('\n')) / Buffer.byteLength(csvContent) * 100).toFixed(1)}% reduction in base file`);
+console.log(
+  `Savings: ${100 - ((Buffer.byteLength(baseLines.join('\n')) / Buffer.byteLength(csvContent)) * 100).toFixed(1)}% reduction in base file`,
+);

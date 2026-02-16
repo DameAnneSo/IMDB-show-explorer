@@ -1,31 +1,31 @@
 <script>
-import * as d3 from "d3";
-let { episodeData, xAccessor, yAccessor, xScale, yScale } = $props();
+  import * as d3 from 'd3';
+  let { episodeData, xAccessor, yAccessor, xScale, yScale } = $props();
 
-// Find the max and min values using unscaled access
-const maxY = $derived(d3.max(episodeData, yAccessor));
-const minY = $derived(d3.min(episodeData, yAccessor));
+  // Find the max and min values using unscaled access
+  const maxY = $derived(d3.max(episodeData, yAccessor));
+  const minY = $derived(d3.min(episodeData, yAccessor));
 
-// Find the full episodeData points at those positions
-const maxPoint = $derived(episodeData.find((d) => yAccessor(d) === maxY));
-const minPoint = $derived(episodeData.find((d) => yAccessor(d) === minY));
+  // Find the full episodeData points at those positions
+  const maxPoint = $derived(episodeData.find((d) => yAccessor(d) === maxY));
+  const minPoint = $derived(episodeData.find((d) => yAccessor(d) === minY));
 
-// Get the already-scaled x/y positions
-const maxX = $derived(xScale(xAccessor(maxPoint)));
-const minX = $derived(xScale(xAccessor(minPoint)));
-const scaledMaxY = $derived(yScale(maxY));
-const scaledMinY = $derived(yScale(minY));
+  // Get the already-scaled x/y positions
+  const maxX = $derived(xScale(xAccessor(maxPoint)));
+  const minX = $derived(xScale(xAccessor(minPoint)));
+  const scaledMaxY = $derived(yScale(maxY));
+  const scaledMinY = $derived(yScale(minY));
 
-// Calculate text dimensions for background rectangles
-const fontSize = 12;
-const paddingVertical = 4;
-const paddingHorizontal = 1;
-const maxText = $derived(`${maxPoint.episodeRating.toFixed(1)}/10`);
-const minText = $derived(`${minPoint.episodeRating.toFixed(1)}/10`);
-// Approximate text width (you can adjust the multiplier as needed)
-const maxTextWidth = $derived(maxText.length * fontSize * 0.6 + paddingHorizontal * 2);
-const minTextWidth = $derived(minText.length * fontSize * 0.6 + paddingHorizontal * 2);
-const rectHeight = $derived(fontSize + paddingVertical * 2);
+  // Calculate text dimensions for background rectangles
+  const fontSize = 12;
+  const paddingVertical = 4;
+  const paddingHorizontal = 1;
+  const maxText = $derived(`${maxPoint.episodeRating.toFixed(1)}/10`);
+  const minText = $derived(`${minPoint.episodeRating.toFixed(1)}/10`);
+  // Approximate text width (you can adjust the multiplier as needed)
+  const maxTextWidth = $derived(maxText.length * fontSize * 0.6 + paddingHorizontal * 2);
+  const minTextWidth = $derived(minText.length * fontSize * 0.6 + paddingHorizontal * 2);
+  const rectHeight = $derived(fontSize + paddingVertical * 2);
 </script>
 
 <g class="pictos">
@@ -39,7 +39,7 @@ const rectHeight = $derived(fontSize + paddingVertical * 2);
     rx="3"
   />
 
-   <!-- Green "+" above the max point -->
+  <!-- Green "+" above the max point -->
   <text
     class="highest"
     x={maxX}
@@ -75,29 +75,29 @@ const rectHeight = $derived(fontSize + paddingVertical * 2);
 </g>
 
 <style>
-.pictos {
-  pointer-events: none;
-}
+  .pictos {
+    pointer-events: none;
+  }
 
-text {
-  font-weight: 600;
-}
+  text {
+    font-weight: 600;
+  }
 
-.highest {
-  fill: var(--warn-neg-5);
-}
+  .highest {
+    fill: var(--warn-neg-5);
+  }
 
-.lowest {
-  fill: var(--warn-pos-5);
-}
+  .lowest {
+    fill: var(--warn-pos-5);
+  }
 
-.highest_background {
-  fill: var(--warn-neg-0);
-  opacity: 0.8;
-}
+  .highest_background {
+    fill: var(--warn-neg-0);
+    opacity: 0.8;
+  }
 
-.lowest_background {
-  fill: var(--warn-pos-0);
-  opacity: 0.8;
-}
+  .lowest_background {
+    fill: var(--warn-pos-0);
+    opacity: 0.8;
+  }
 </style>

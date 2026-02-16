@@ -9,10 +9,10 @@ const parseCSVLine = (line) => {
   const result = [];
   let current = '';
   let inQuotes = false;
-  
+
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
-    
+
     if (char === '"') {
       inQuotes = !inQuotes;
     } else if (char === ',' && !inQuotes) {
@@ -30,14 +30,14 @@ const parseCSVLine = (line) => {
 const shows = [];
 for (let i = 1; i < lines.length; i++) {
   if (!lines[i].trim()) continue;
-  
+
   const cols = parseCSVLine(lines[i]);
   const show = {
     rank: parseInt(cols[0]),
     title: cols[1],
     genres: cols[7], // Index 7 based on header
     language: cols[8], // Index 8 based on header
-    seasons: parseInt(cols[5]) // Index 5 based on header
+    seasons: parseInt(cols[5]), // Index 5 based on header
   };
   shows.push(show);
 }
@@ -79,7 +79,7 @@ const metadata = {
   languages: Array.from(languagesSet).sort(),
   minSeasons: Math.min(...seasonCounts),
   maxSeasons: Math.max(...seasonCounts),
-  generatedAt: new Date().toISOString()
+  generatedAt: new Date().toISOString(),
 };
 
 // Write metadata file
