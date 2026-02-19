@@ -125,7 +125,7 @@
             ? `"${bestEpisode.episodeTitle}" (episode ${bestEpisode.episodeNumberinSeason}, season ${bestEpisode.episodeSeason})`
             : 'unknown episode';
 
-          return `This is a line chart of IMDB ratings for the TV series ${showName}, ${episodes} episodes across ${seasons} ${seasons === 1 ? 'season' : 'seasons'}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
+          return `This is a line chart of IMDB ratings for the TV series ${showName}, ${validData.length} episodes across ${seasons} ${seasons === 1 ? 'season' : 'seasons'}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
         })(),
   );
 </script>
@@ -154,7 +154,7 @@
       <span class="show-info"> {seasons === 1 ? 'season' : 'seasons'}</span>
       <span class="separator">|</span>
       <span class="show-value2"
-        >{episodes}
+        >{validData.length}
         <span class="show-info"> episodes</span>
       </span>
       {#if timeRange}

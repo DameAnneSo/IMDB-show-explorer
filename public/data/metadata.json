@@ -34,7 +34,6 @@
     "Japanese",
     "Korean",
     "Neapolitan",
-    "Norwegian",
     "Polish",
     "Serbian",
     "Spanish",
@@ -42,6 +41,6 @@
     "Turkish"
   ],
   "minSeasons": 1,
-  "maxSeasons": 42,
-  "generatedAt": "2026-01-12T09:24:55.502Z"
+  "maxSeasons": 40,
+  "generatedAt": "2026-02-17T17:49:16.631Z"
 }

@@ -23,7 +23,7 @@
       >
         GitHub
       </a>
-      &middot; Last data refresh: January 2026
+      &middot; Last data refresh: February 2026
     </p>
   </div>
 </footer>
