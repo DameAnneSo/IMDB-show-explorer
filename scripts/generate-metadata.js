@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 // Read the base file
-const csvContent = fs.readFileSync('public/data/imdb_top_tv_shows_base.csv', 'utf-8');
+const csvContent = fs.readFileSync('public/data/imdb_top_tv_shows.csv', 'utf-8');
 const lines = csvContent.split('\n');
 
 // Parse CSV properly handling quoted fields
@@ -35,17 +35,37 @@ for (let i = 1; i < lines.length; i++) {
   const show = {
     rank: parseInt(cols[0]),
     title: cols[1],
-    genres: cols[7], // Index 7 based on header
-    language: cols[8], // Index 8 based on header
-    seasons: parseInt(cols[5]), // Index 5 based on header
+    genres: cols[9], // Index 9: genres
+    language: cols[10], // Index 10: language
+    seasons: parseInt(cols[7]), // Index 7: seasons
   };
   shows.push(show);
+}
+
+// Read episodes data to get actual season counts
+const episodesContent = fs.readFileSync('public/data/imdb_episodes.csv', 'utf-8');
+const episodesLines = episodesContent.split('\n');
+
+// Track max seasons per series from episodes data
+const seriesMaxSeasons = new Map();
+
+for (let i = 1; i < episodesLines.length; i++) {
+  if (!episodesLines[i].trim()) continue;
+
+  const cols = parseCSVLine(episodesLines[i]);
+  const seriesTitle = cols[1];
+  const season = parseInt(cols[2]);
+
+  if (seriesTitle && !isNaN(season) && season > 0) {
+    const currentMax = seriesMaxSeasons.get(seriesTitle) || 0;
+    seriesMaxSeasons.set(seriesTitle, Math.max(currentMax, season));
+  }
 }
 
 // Compute metadata
 const genresSet = new Set();
 const languagesSet = new Set();
-const seasonCounts = [];
+const seasonCounts = Array.from(seriesMaxSeasons.values());
 
 shows.forEach((show) => {
   // Extract genres
@@ -64,11 +84,6 @@ shows.forEach((show) => {
     if (cleanLang && cleanLang.length > 0 && !cleanLang.includes(',')) {
       languagesSet.add(cleanLang);
     }
-  }
-
-  // Collect season counts
-  if (show.seasons > 0 && !isNaN(show.seasons)) {
-    seasonCounts.push(show.seasons);
   }
 });
 
