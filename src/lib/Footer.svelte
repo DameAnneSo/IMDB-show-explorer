@@ -6,7 +6,7 @@
         Anne-Sophie Pereira De Sà
       </a>
       and
-      <a href="https://leandrocollares.netlify.app/" target="_blank" rel="noopener noreferrer">
+      <a href="https://leandrocollares.vercel.app/" target="_blank" rel="noopener noreferrer">
         Leandro Collares
       </a>
     </p>
@@ -17,7 +17,7 @@
       </a>
       &middot; Code & data:
       <a
-        href="https://github.com/leandrocollares/tv-shows-playground"
+        href="https://github.com/DameAnneSo/imdb-show-explorer"
         target="_blank"
         rel="noopener noreferrer"
       >
