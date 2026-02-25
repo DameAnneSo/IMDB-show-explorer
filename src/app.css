@@ -1,8 +1,62 @@
 @import 'tailwindcss';
 
+/* rampart-one-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Rampart One';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/rampart-one-v13-latin-regular.woff2') format('woff2');
+}
+
+/* nunito-300 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/nunito-v32-latin-300.woff2') format('woff2');
+}
+
+/* nunito-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/nunito-v32-latin-regular.woff2') format('woff2');
+}
+
+/* nunito-500 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/nunito-v32-latin-500.woff2') format('woff2');
+}
+
+/* nunito-600 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/nunito-v32-latin-600.woff2') format('woff2');
+}
+
+/* nunito-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/nunito-v32-latin-700.woff2') format('woff2');
+}
+
 @theme {
   --font-sans: Nunito, system-ui, sans-serif;
-  --font-display: 'Rampart One', cursive;
+  --font-display: 'Rampart One', system-ui, sans-serif;
 
   /* Primary colors */
   --color-primary: #6a2a5b;
