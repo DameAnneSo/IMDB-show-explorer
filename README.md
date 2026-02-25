@@ -24,7 +24,8 @@ This project uses modern web technologies for fast, interactive data visualizati
 - **[D3.js](https://d3js.org/)** - Data visualization and manipulation library
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
 - **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
-- **[svelte-select](https://github.com/rob-balfre/svelte-select)** - Multi-select component for filters
+
+All UI components (filters, charts, toggles, etc.) are built from scratch using Svelte and Tailwind CSS.
 
 Additional development tools:
 
