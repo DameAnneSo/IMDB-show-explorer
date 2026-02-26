@@ -88,12 +88,11 @@
   {/each}
 </div>
 
-<small class="note"
-  >IMDb notes: The list is ranked by a formula which includes the number of ratings each show
-  received from users, and value of ratings received from regular users ; to be included on the
-  list, a series must receive ratings from at least 10000 users, and a TV series must also have
-  aired at least 5 episodes</small
->
+<small class="note">
+  IMDb notes: The list is ranked using a formula that considers both the total number of user
+  ratings each TV show has received and the ratings from regular users. To qualify, a series must
+  have at least 10,000 user ratings and must have aired a minimum of 5 episodes.
+</small>
 
 <style>
   .line-charts {
@@ -106,6 +105,6 @@
   small {
     display: block;
     margin-bottom: 2rem;
-    color: var(--color-neutral-600);
+    color: var(--color-neutral-800);
   }
 </style>
