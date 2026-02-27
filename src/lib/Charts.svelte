@@ -88,11 +88,23 @@
   {/each}
 </div>
 
+<small class="note">
+  IMDb notes: The list is ranked using a formula that considers both the total number of user
+  ratings each TV show has received and the ratings from regular users. To qualify, a series must
+  have at least 10,000 user ratings and must have aired a minimum of 5 episodes.
+</small>
+
 <style>
   .line-charts {
     width: 100%;
   }
   .results-note-section {
     margin-bottom: 3rem;
+  }
+
+  small {
+    display: block;
+    margin-bottom: 2rem;
+    color: var(--color-neutral-800);
   }
 </style>

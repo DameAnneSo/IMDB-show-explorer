@@ -22,7 +22,6 @@
     </g>
   {/each}
 
-  <!-- <text class="axis__label" dx={4} y={-25} dy="0.8em"> -->
   <text class="axis__label" x={-20} y={-15}> rating </text>
 </g>
 

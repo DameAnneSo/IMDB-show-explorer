@@ -5,9 +5,7 @@
   let buttonElement = $state(null);
 
   // Show button when user scrolls down 2 viewport heights
-  const threshold = $derived(
-    typeof window !== 'undefined' ? window.innerHeight * 2 : 1600
-  );
+  const threshold = $derived(typeof window !== 'undefined' ? window.innerHeight * 2 : 1600);
 
   const showButton = $derived(scrollY > threshold);
 
@@ -143,6 +141,27 @@
     button {
       forced-color-adjust: none;
       border: 1px solid ButtonText;
+    }
+  }
+
+  /* Mobile positioning - centered and lower */
+  @media (max-width: 768px) {
+    button {
+      left: 50%;
+      transform: translateX(-50%);
+      right: auto;
+      bottom: 0rem;
+    }
+
+    .animate-fade-in {
+      animation: fade-in-mobile 0.3s ease forwards;
+    }
+
+    @keyframes fade-in-mobile {
+      to {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
     }
   }
 </style>

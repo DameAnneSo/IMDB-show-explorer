@@ -19,6 +19,18 @@
   let isLoading = $state(true);
   let loadError = $state(null);
 
+  // Helper function to parse abbreviated numbers (e.g., "12.3K" -> 12300, "1.5M" -> 1500000)
+  const parseAbbreviatedNumber = (str) => {
+    if (!str) return 0;
+    const numStr = str.toString().trim().toUpperCase();
+    if (numStr.endsWith('K')) {
+      return Math.round(parseFloat(numStr.slice(0, -1)) * 1000);
+    } else if (numStr.endsWith('M')) {
+      return Math.round(parseFloat(numStr.slice(0, -1)) * 1000000);
+    }
+    return parseInt(numStr) || 0;
+  };
+
   const loadCSVData = async () => {
     try {
       isLoading = true;
@@ -45,7 +57,6 @@
         numberOfRatings: parseInt(d.numberOfRatings) || 0,
         timeRange: d.timeRange?.trim() || '',
       }));
-      console.log('imdb_top_tv_shows:', showData);
 
       const episodesData = episodeData.map((d) => ({
         seriesRank: parseInt(d.seriesRank) || 0,
@@ -54,12 +65,11 @@
         episodeNumberOverall: parseInt(d.episodeNumberOverall) || 0,
         episodeNumberinSeason: parseInt(d.episodeNumberinSeason) || 0,
         episodeRating: parseFloat(d.episodeRating) || 0,
-        episodeVotes: parseInt(d.episodeVotes) || 0,
+        episodeVotes: parseAbbreviatedNumber(d.episodeVotes),
         episodeTitle: d.episodeTitle?.trim() || '',
         episodeSummary: d.episodeSummary?.trim() || '',
         episodeLink: d.episodeLink?.trim() || '',
       }));
-      console.log('imdb_episodes:', episodesData);
 
       shows = showData;
       episodes = episodesData;
