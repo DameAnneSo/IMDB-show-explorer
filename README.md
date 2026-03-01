@@ -23,7 +23,7 @@ This project uses modern web technologies for fast, interactive data visualizati
 - **[Vite](https://vitejs.dev/)** - Fast build tool and dev server
 - **[D3.js](https://d3js.org/)** - Data visualization and manipulation library
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
-- **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
+- **[npm](https://www.npmjs.com/)** - Package manager
 
 All UI components (filters, charts, toggles, etc.) are built from scratch using Svelte and Tailwind CSS.
 
@@ -60,7 +60,6 @@ The data is sourced from [IMDb's Top 250 TV shows](https://www.imdb.com/chart/to
 ### Prerequisites
 
 - **Node.js** (v18 or higher recommended)
-- **pnpm** (if not installed, run: `npm install -g pnpm`)
 
 ### Installation Steps
 
@@ -74,13 +73,13 @@ The data is sourced from [IMDb's Top 250 TV shows](https://www.imdb.com/chart/to
 2. **Install dependencies**
 
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. **Start the development server**
 
    ```bash
-   pnpm dev
+   npm run dev
    ```
 
 4. **Open in browser**
@@ -92,30 +91,30 @@ The data is sourced from [IMDb's Top 250 TV shows](https://www.imdb.com/chart/to
 - **Build for production**
 
   ```bash
-  pnpm build
+  npm run build
   ```
 
 - **Preview production build**
 
   ```bash
-  pnpm preview
+  npm run preview
   ```
 
 - **Lint code**
 
   ```bash
-  pnpm lint
+  npm run lint
   ```
 
 - **Format code**
 
   ```bash
-  pnpm format
+  npm run format
   ```
 
 - **Prepare/update data** (if you have new IMDb data)
   ```bash
-  pnpm prepare-data
+  npm run prepare-data
   ```
 
 ## 📁 Project Structure
