@@ -7,6 +7,7 @@
   import MinMaxRatings from './MinMaxRatings.svelte';
   import HoveredPoint from './HoveredPoint.svelte';
   import Tooltip from './Tooltip.svelte';
+  import Gradient from './Gradient.svelte';
 
   let {
     showName,
@@ -24,7 +25,6 @@
     margins,
     boundedWidth,
     boundedHeight,
-    showDetails = true,
     numberOfRatings,
     timeRange,
     isDuplicateName = false,
@@ -66,7 +66,16 @@
   // Check if there are missing episodes (e.g., bonus episodes not plotted)
   const hasMissingEpisodes = $derived(episodeData && episodes && episodeData.length < episodes);
 
+  // Calculate max and min ratings for tooltip comparison
+  const maxRating = $derived(d3.max(validData, yAccessor));
+  const minRating = $derived(d3.min(validData, yAccessor));
+
   let hoveredPoint = $state(null);
+
+  // Check if hovered point is best or worst episode
+  const isBestEpisode = $derived(hoveredPoint && yAccessor(hoveredPoint) === maxRating);
+  const isWorstEpisode = $derived(hoveredPoint && yAccessor(hoveredPoint) === minRating);
+
   // function created using D3's bisector utility that helps find the closest data point when hovering over the chart
   const bisectX = d3.bisector(xAccessor).left;
   const handleMouseMove = (event) => {
@@ -147,27 +156,25 @@
 </div>
 <p class="show-genres">{formattedGenres}</p>
 
-{#if showDetails}
-  <div class="show-details">
-    <h3>
-      <span class="show-value2">{seasons} </span>
-      <span class="show-info"> {seasons === 1 ? 'season' : 'seasons'}</span>
+<div class="show-details">
+  <h3>
+    <span class="show-value2">{seasons} </span>
+    <span class="show-info"> {seasons === 1 ? 'season' : 'seasons'}</span>
+    <span class="separator">|</span>
+    <span class="show-value2"
+      >{validData.length}
+      <span class="show-info"> episodes</span>
+    </span>
+    {#if timeRange}
       <span class="separator">|</span>
-      <span class="show-value2"
-        >{validData.length}
-        <span class="show-info"> episodes</span>
-      </span>
-      {#if timeRange}
-        <span class="separator">|</span>
-        <span class="show-info">{timeRange}</span>
-      {/if}
-    </h3>
-    <i class="show-storyline">
-      {storyline}
-    </i>
-    <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link">Read more →</a>
-  </div>
-{/if}
+      <span class="show-info">{timeRange}</span>
+    {/if}
+  </h3>
+  <i class="show-storyline">
+    {storyline}
+  </i>
+  <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link">Read more →</a>
+</div>
 
 {#if hasUnratedEpisodes || hasMissingEpisodes}
   <div class="chart-notes">
@@ -195,19 +202,21 @@
     onblur={handleMouseLeave}
   >
     <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
-      {#if showDetails}
-        <SeasonBands episodeData={validData} {xScale} {boundedHeight} />
-      {/if}
       <XAxis {xScale} {height} {margins} />
       <YAxis {yScale} />
-
-      <Points episodeData={validData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
-      {#if showDetails}
-        <MinMaxRatings episodeData={validData} {xAccessor} {yAccessor} {xScale} {yScale} />
-      {/if}
+      <Gradient
+        {validData}
+        {xAccessorScaled}
+        {yAccessorScaled}
+        {boundedHeight}
+        gradientId="gradient-{rank}"
+      />
+      <SeasonBands episodeData={validData} {xScale} {boundedHeight} />
       {#if line}
         <path class="line" d={line} />
       {/if}
+      <Points episodeData={validData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
+      <MinMaxRatings episodeData={validData} {xAccessor} {yAccessor} {xScale} {yScale} />
       {#if hoveredPoint}
         <HoveredPoint x={xAccessorScaled(hoveredPoint)} y={yAccessorScaled(hoveredPoint)} {width} />
       {/if}
@@ -223,6 +232,8 @@
       {margins}
       {formatYForTooltip}
       data={hoveredPoint}
+      {isBestEpisode}
+      {isWorstEpisode}
     />
   {/if}
 </div>

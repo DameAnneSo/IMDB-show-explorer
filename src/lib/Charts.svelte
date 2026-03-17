@@ -1,11 +1,8 @@
 <script>
   import * as d3 from 'd3';
   import LazyLineChart from './LazyLineChart.svelte';
-  import Toggle from './Toggle.svelte';
 
   let { shows = [], episodes = [] } = $props();
-
-  let showDetails = $state(true);
 
   const sortedShows = $derived(shows.sort((a, b) => a.rank - b.rank));
 
@@ -45,16 +42,12 @@
 
 <div class="results-note-section">
   {#if sortedShows.length > 0}
-    <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
+    <div class="mb-5">
       <h1 class="text-lg font-semibold leading-none">
         {sortedShows.length}
         {sortedShows.length === 1 ? 'result' : 'results'}
         {sortedShows.length === 1 ? 'matches' : 'match'} the active filters
       </h1>
-
-      <div class="flex items-center">
-        <Toggle bind:checked={showDetails} label="Show / hide details" id="details-toggle" />
-      </div>
     </div>
   {:else}
     <div class="mb-5">
@@ -80,7 +73,6 @@
       {margins}
       {boundedWidth}
       {boundedHeight}
-      {showDetails}
       numberOfRatings={show.numberOfRatings}
       timeRange={show.timeRange}
       isDuplicateName={showNameCounts[show.name] > 1}

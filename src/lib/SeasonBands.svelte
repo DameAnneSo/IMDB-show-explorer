@@ -36,36 +36,46 @@
   // Convert to array and sort by season number
   const seasons = $derived(Object.values(seasonRanges).sort((a, b) => a.season - b.season));
 
-  // Create bands with alternating colors
-  const seasonBands = $derived(
+  // Create season markers with vertical lines
+  const seasonMarkers = $derived(
     seasons.map((season, index) => {
       const x = xScale(season.minIndex);
-      const width = xScale(season.maxIndex) - xScale(season.minIndex);
+      const nextX = index < seasons.length - 1 ? xScale(seasons[index + 1].minIndex) : Infinity;
+      const widthToNext = nextX - x;
       return {
         x,
-        width,
         season: season.season,
-        color: index % 2 === 0 ? 'var(--color-neutral-50)' : 'var(--color-neutral-150)',
+        widthToNext,
       };
     }),
   );
 
   // Minimum width threshold for showing labels (in pixels)
-  const minLabelWidth = $derived(windowWidth < 768 ? 17 : 20);
+  const minLabelWidth = $derived(windowWidth < 768 ? 23 : 20);
 </script>
 
 {#if seasons.length > 1}
-  {#each seasonBands as band (band)}
-    <rect x={band.x} y={0} width={band.width} height={boundedHeight} fill={band.color} />
-    {#if band.width >= minLabelWidth}
+  {#each seasonMarkers as marker (marker)}
+    <!-- Vertical line at the start of each season -->
+    <line
+      x1={marker.x}
+      y1={0}
+      x2={marker.x}
+      y2={boundedHeight}
+      stroke="white"
+      stroke-width="2"
+      opacity="1"
+    />
+    <!-- Season label, skip for season 1, and only show if there's enough space -->
+    {#if marker.widthToNext >= minLabelWidth}
       <text
-        x={band.x + band.width / 2}
+        x={marker.x + 6}
         y={boundedHeight - 10}
-        text-anchor="middle"
+        text-anchor="start"
         font-size="12"
         fill="var(--color-neutral-600)"
       >
-        s{band.season}
+        s{marker.season}
       </text>
     {/if}
   {/each}

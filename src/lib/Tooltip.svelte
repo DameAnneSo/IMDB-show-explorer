@@ -1,6 +1,15 @@
 <script>
-  let { yAccessor, xAccessorScaled, yAccessorScaled, width, margins, formatYForTooltip, data } =
-    $props();
+  let {
+    yAccessor,
+    xAccessorScaled,
+    yAccessorScaled,
+    width,
+    margins,
+    formatYForTooltip,
+    data,
+    isBestEpisode = false,
+    isWorstEpisode = false,
+  } = $props();
 
   let tooltipWidth = $state();
 
@@ -32,6 +41,13 @@
   class="tooltip"
   style="transform: translate({xPosition}px, {yPosition}px)"
 >
+  {#if isBestEpisode}
+    <div class="episode-badge best-episode">Best episode of the show</div>
+  {/if}
+  {#if isWorstEpisode}
+    <div class="episode-badge worst-episode">Worst episode of the show</div>
+  {/if}
+
   <div class="tooltip_header">
     <div class="tooltip_top_line">
       <span class="tooltip_intro">
@@ -109,5 +125,27 @@
   .votes {
     color: var(--color-neutral-500);
     font-weight: 400;
+  }
+
+  .episode-badge {
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 4px 6px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    text-align: left;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .best-episode {
+    background-color: var(--warn-neg-0);
+    color: var(--warn-neg-5);
+  }
+
+  .worst-episode {
+    background-color: var(--warn-pos-0);
+    color: var(--warn-pos-5);
   }
 </style>

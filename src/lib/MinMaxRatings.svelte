@@ -29,6 +29,10 @@
 </script>
 
 <g class="pictos">
+  <!-- Dots for highest and lowest points -->
+  <circle class="highest-dot" cx={maxX} cy={scaledMaxY} r="4" />
+  <circle class="lowest-dot" cx={minX} cy={scaledMinY} r="4" />
+
   <!-- Background rectangle for highest point -->
   <rect
     class="highest_background"
@@ -39,7 +43,7 @@
     rx="3"
   />
 
-  <!-- Green "+" above the max point -->
+  <!-- above the max point -->
   <text
     class="highest"
     x={maxX}
@@ -61,7 +65,7 @@
     rx="3"
   />
 
-  <!-- Red "−" below the min point -->
+  <!-- below the min point -->
   <text
     class="lowest"
     x={minX}
@@ -91,13 +95,21 @@
     fill: var(--warn-pos-5);
   }
 
+  .highest-dot {
+    fill: var(--warn-neg-5);
+  }
+
+  .lowest-dot {
+    fill: var(--warn-pos-5);
+  }
+
   .highest_background {
     fill: var(--warn-neg-0);
-    opacity: 0.8;
+    opacity: 0.9;
   }
 
   .lowest_background {
     fill: var(--warn-pos-0);
-    opacity: 0.8;
+    opacity: 0.9;
   }
 </style>
