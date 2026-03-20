@@ -29,10 +29,6 @@
 </script>
 
 <g class="pictos">
-  <!-- Dots for highest and lowest points -->
-  <circle class="highest-dot" cx={maxX} cy={scaledMaxY} r="4" />
-  <circle class="lowest-dot" cx={minX} cy={scaledMinY} r="4" />
-
   <!-- Background rectangle for highest point -->
   <rect
     class="highest_background"
@@ -92,14 +88,6 @@
   }
 
   .lowest {
-    fill: var(--warn-pos-5);
-  }
-
-  .highest-dot {
-    fill: var(--warn-neg-5);
-  }
-
-  .lowest-dot {
     fill: var(--warn-pos-5);
   }
 

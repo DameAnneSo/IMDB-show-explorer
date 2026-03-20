@@ -42,10 +42,10 @@
   style="transform: translate({xPosition}px, {yPosition}px)"
 >
   {#if isBestEpisode}
-    <div class="episode-badge best-episode">Best episode of the show</div>
+    <div class="episode-badge best-episode">Best-rated episode</div>
   {/if}
   {#if isWorstEpisode}
-    <div class="episode-badge worst-episode">Worst episode of the show</div>
+    <div class="episode-badge worst-episode">Worst-rated episode</div>
   {/if}
 
   <div class="tooltip_header">
