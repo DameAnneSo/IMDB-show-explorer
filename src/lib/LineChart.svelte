@@ -66,17 +66,32 @@
   // Check if there are missing episodes (e.g., bonus episodes not plotted)
   const hasMissingEpisodes = $derived(episodeData && episodes && episodeData.length < episodes);
 
-  // Calculate max and min ratings for tooltip comparison
-  const maxRating = $derived(d3.max(validData, yAccessor));
-  const minRating = $derived(d3.min(validData, yAccessor));
+  // Find the best episode using tiebreaker: highest rating, then highest votes
+  const bestEpisode = $derived(() => {
+    if (!validData.length) return null;
+    const max = d3.max(validData, yAccessor);
+    const tied = validData.filter((d) => yAccessor(d) === max);
+    return tied.reduce((best, d) => (d.episodeVotes > best.episodeVotes ? d : best), tied[0]);
+  });
+
+  // Find the worst episode using tiebreaker: lowest rating, then highest votes
+  const worstEpisode = $derived(() => {
+    if (!validData.length) return null;
+    const min = d3.min(validData, yAccessor);
+    const tied = validData.filter((d) => yAccessor(d) === min);
+    return tied.reduce((worst, d) => (d.episodeVotes > worst.episodeVotes ? d : worst), tied[0]);
+  });
+
+  const maxRating = $derived(bestEpisode() ? yAccessor(bestEpisode()) : null);
+  const minRating = $derived(worstEpisode() ? yAccessor(worstEpisode()) : null);
 
   let hoveredPoint = $state(null);
 
-  // Check if hovered point is best or worst episode
-  const isBestEpisode = $derived(hoveredPoint && yAccessor(hoveredPoint) === maxRating);
-  const isWorstEpisode = $derived(hoveredPoint && yAccessor(hoveredPoint) === minRating);
+  // Check if hovered point is best or worst episode using identity comparison
+  const isBestEpisode = $derived(hoveredPoint && hoveredPoint === bestEpisode());
+  const isWorstEpisode = $derived(hoveredPoint && hoveredPoint === worstEpisode());
 
-  // function created using D3's bisector utility that helps find the closest data point when hovering over the chart
+  // Function created using D3's bisector utility that helps find the closest data point when hovering over the chart
   const bisectX = d3.bisector(xAccessor).left;
   const handleMouseMove = (event) => {
     // Get the x-coordinate of the mouse event and find the closest data point
@@ -119,22 +134,18 @@
     !validData || validData.length === 0
       ? 'Empty chart'
       : (() => {
-          const ratings = validData.map((d) => yAccessor(d));
-          const minRating = Math.min(...ratings);
-          const maxRating = Math.max(...ratings);
-          // Find the actual episode objects for min and max ratings
-          const worstEpisode = validData.find((d) => yAccessor(d) === minRating);
-          const bestEpisode = validData.find((d) => yAccessor(d) === maxRating);
+          const worst = worstEpisode();
+          const best = bestEpisode();
 
-          const worstInfo = worstEpisode
-            ? `"${worstEpisode.episodeTitle}" (episode ${worstEpisode.episodeNumberinSeason}, season ${worstEpisode.episodeSeason})`
+          const worstInfo = worst
+            ? `"${worst.episodeTitle}" (episode ${worst.episodeNumberinSeason}, season ${worst.episodeSeason})`
             : 'unknown episode';
 
-          const bestInfo = bestEpisode
-            ? `"${bestEpisode.episodeTitle}" (episode ${bestEpisode.episodeNumberinSeason}, season ${bestEpisode.episodeSeason})`
+          const bestInfo = best
+            ? `"${best.episodeTitle}" (episode ${best.episodeNumberinSeason}, season ${best.episodeSeason})`
             : 'unknown episode';
 
-          return `This is a line chart of IMDB ratings for the TV series ${showName}, ${validData.length} episodes across ${seasons} ${seasons === 1 ? 'season' : 'seasons'}. The worst episode is ${worstInfo} rated ${minRating.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating.toFixed(1)} out of 10.`;
+          return `This is a line chart of IMDB ratings for the TV series ${showName}, ${validData.length} episodes across ${seasons} ${seasons === 1 ? 'season' : 'seasons'}. The worst episode is ${worstInfo} rated ${minRating?.toFixed(1)} out of 10, the best episode is ${bestInfo} rated ${maxRating?.toFixed(1)} out of 10.`;
         })(),
   );
 </script>
@@ -215,8 +226,24 @@
       {#if line}
         <path class="line" d={line} />
       {/if}
-      <Points episodeData={validData} {xScale} {yScale} {xAccessor} {yAccessor} {width} />
-      <MinMaxRatings episodeData={validData} {xAccessor} {yAccessor} {xScale} {yScale} />
+      <Points
+        episodeData={validData}
+        {xScale}
+        {yScale}
+        {xAccessor}
+        {yAccessor}
+        {width}
+        bestEpisode={bestEpisode()}
+        worstEpisode={worstEpisode()}
+      />
+      <MinMaxRatings
+        {xAccessor}
+        {yAccessor}
+        {xScale}
+        {yScale}
+        bestEpisode={bestEpisode()}
+        worstEpisode={worstEpisode()}
+      />
       {#if hoveredPoint}
         <HoveredPoint x={xAccessorScaled(hoveredPoint)} y={yAccessorScaled(hoveredPoint)} {width} />
       {/if}

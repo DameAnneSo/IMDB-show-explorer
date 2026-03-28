@@ -1,26 +1,18 @@
 <script>
-  import * as d3 from 'd3';
+  let { episodeData, xScale, yScale, xAccessor, yAccessor, width, bestEpisode, worstEpisode } =
+    $props();
 
-  let { episodeData, xScale, yScale, xAccessor, yAccessor, width } = $props();
-
-  // Calculate min and max ratings
-  const maxRating = $derived(d3.max(episodeData, yAccessor));
-  const minRating = $derived(d3.min(episodeData, yAccessor));
-
-  // Helper function to determine dot color
+  // Helper function to determine dot color using identity comparison
   const getDotColor = (episode) => {
-    const rating = yAccessor(episode);
-    if (rating === maxRating) return 'var(--warn-neg-5)';
-    if (rating === minRating) return 'var(--warn-pos-3)';
+    if (episode === bestEpisode) return 'var(--warn-neg-5)';
+    if (episode === worstEpisode) return 'var(--warn-pos-3)';
     return 'var(--color-primary)';
   };
 
   // Helper function to determine dot radius
   const getDotRadius = (episode) => {
-    const rating = yAccessor(episode);
     const baseRadius = width > 700 ? 3 : 2;
-    // Make min/max dots slightly larger
-    if (rating === maxRating || rating === minRating) return baseRadius + 1;
+    if (episode === bestEpisode || episode === worstEpisode) return baseRadius + 1;
     return baseRadius;
   };
 </script>

@@ -1,28 +1,19 @@
 <script>
-  import * as d3 from 'd3';
-  let { episodeData, xAccessor, yAccessor, xScale, yScale } = $props();
+  let { xAccessor, yAccessor, xScale, yScale, bestEpisode, worstEpisode } = $props();
 
-  // Find the max and min values using unscaled access
-  const maxY = $derived(d3.max(episodeData, yAccessor));
-  const minY = $derived(d3.min(episodeData, yAccessor));
-
-  // Find the full episodeData points at those positions
-  const maxPoint = $derived(episodeData.find((d) => yAccessor(d) === maxY));
-  const minPoint = $derived(episodeData.find((d) => yAccessor(d) === minY));
-
-  // Get the already-scaled x/y positions
-  const maxX = $derived(xScale(xAccessor(maxPoint)));
-  const minX = $derived(xScale(xAccessor(minPoint)));
-  const scaledMaxY = $derived(yScale(maxY));
-  const scaledMinY = $derived(yScale(minY));
+  const maxX = $derived(xScale(xAccessor(bestEpisode)));
+  const minX = $derived(xScale(xAccessor(worstEpisode)));
+  const scaledMaxY = $derived(yScale(yAccessor(bestEpisode)));
+  const scaledMinY = $derived(yScale(yAccessor(worstEpisode)));
 
   // Calculate text dimensions for background rectangles
   const fontSize = 12;
   const paddingVertical = 4;
   const paddingHorizontal = 1;
-  const maxText = $derived(`${maxPoint.episodeRating.toFixed(1)}/10`);
-  const minText = $derived(`${minPoint.episodeRating.toFixed(1)}/10`);
-  // Approximate text width (you can adjust the multiplier as needed)
+  const maxText = $derived(`${bestEpisode.episodeRating.toFixed(1)}/10`);
+  const minText = $derived(`${worstEpisode.episodeRating.toFixed(1)}/10`);
+
+  // Approximate text width
   const maxTextWidth = $derived(maxText.length * fontSize * 0.6 + paddingHorizontal * 2);
   const minTextWidth = $derived(minText.length * fontSize * 0.6 + paddingHorizontal * 2);
   const rectHeight = $derived(fontSize + paddingVertical * 2);
@@ -48,7 +39,7 @@
     font-size="12"
     dominant-baseline="middle"
   >
-    {maxPoint.episodeRating.toFixed(1)}/10
+    {bestEpisode.episodeRating.toFixed(1)}/10
   </text>
 
   <!-- Background rectangle for lowest point -->
@@ -70,7 +61,7 @@
     font-size="12"
     dominant-baseline="middle"
   >
-    {minPoint.episodeRating.toFixed(1)}/10
+    {worstEpisode.episodeRating.toFixed(1)}/10
   </text>
 </g>
 
