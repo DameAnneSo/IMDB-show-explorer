@@ -18,7 +18,6 @@
     margins,
     boundedWidth,
     boundedHeight,
-    showDetails,
     numberOfRatings,
     timeRange,
     isDuplicateName,
@@ -72,7 +71,6 @@
       {margins}
       {boundedWidth}
       {boundedHeight}
-      {showDetails}
       {numberOfRatings}
       {timeRange}
       {isDuplicateName}
