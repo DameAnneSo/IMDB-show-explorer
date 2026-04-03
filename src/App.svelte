@@ -11,6 +11,7 @@
   let selectedGenres = $state([]);
   let selectedLanguages = $state([]);
   let maxSeasons = $state(42);
+  let showTitleSearch = $state('');
 
   let availableGenres = $state([]);
   let availableLanguages = $state([]);
@@ -43,21 +44,6 @@
         fetch('/data/metadata.json').then((r) => r.json()),
       ]);
 
-      const showData = seriesData.map((d) => ({
-        rank: parseInt(d.seriesRank) || 0,
-        name: d.seriesTitle?.trim() || '',
-        genres: d.genres?.trim() || '',
-        language: d.language?.trim() || '',
-        seasons: parseInt(d.seasons) || 0,
-        episodes: parseInt(d.episodes) || 0,
-        overall_ratings: parseFloat(d.overallRating) || 0,
-        storyline: d.storyline?.trim() || '',
-        genresList: d.genres?.trim() || '',
-        link: d.seriesLink?.trim() || '',
-        numberOfRatings: parseInt(d.numberOfRatings) || 0,
-        timeRange: d.timeRange?.trim() || '',
-      }));
-
       const episodesData = episodeData.map((d) => ({
         seriesRank: parseInt(d.seriesRank) || 0,
         seriesTitle: d.seriesTitle?.trim() || '',
@@ -69,6 +55,29 @@
         episodeTitle: d.episodeTitle?.trim() || '',
         episodeSummary: d.episodeSummary?.trim() || '',
         episodeLink: d.episodeLink?.trim() || '',
+      }));
+
+      // Calculate max season for each show from episodes data
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const maxSeasonsByTitle = new Map();
+      episodesData.forEach((episode) => {
+        const currentMax = maxSeasonsByTitle.get(episode.seriesTitle) || 0;
+        maxSeasonsByTitle.set(episode.seriesTitle, Math.max(currentMax, episode.episodeSeason));
+      });
+
+      const showData = seriesData.map((d) => ({
+        rank: parseInt(d.seriesRank) || 0,
+        name: d.seriesTitle?.trim() || '',
+        genres: d.genres?.trim() || '',
+        language: d.language?.trim() || '',
+        seasons: maxSeasonsByTitle.get(d.seriesTitle?.trim()) || parseInt(d.seasons) || 0,
+        episodes: parseInt(d.episodes) || 0,
+        overall_ratings: parseFloat(d.overallRating) || 0,
+        storyline: d.storyline?.trim() || '',
+        genresList: d.genres?.trim() || '',
+        link: d.seriesLink?.trim() || '',
+        numberOfRatings: parseInt(d.numberOfRatings) || 0,
+        timeRange: d.timeRange?.trim() || '',
       }));
 
       shows = showData;
@@ -116,6 +125,11 @@
           showLanguage.includes(selectedLang.toLowerCase()),
         );
         if (!hasLanguage) return false;
+      }
+
+      // Title search filter
+      if (showTitleSearch.trim().length > 0) {
+        if (!show.name.toLowerCase().includes(showTitleSearch.trim().toLowerCase())) return false;
       }
 
       return true;
@@ -180,6 +194,7 @@
             bind:selectedGenres
             bind:selectedLanguages
             bind:maxSeasons
+            bind:showTitleSearch
           />
         {/if}
       </div>
@@ -188,7 +203,7 @@
     <div class="content-container">
       <!-- Charts component -->
       {#if !isLoading && !loadError}
-        <Charts shows={filteredShows()} episodes={filteredEpisodes()} />
+        <Charts shows={filteredShows()} episodes={filteredEpisodes()} {showTitleSearch} />
       {/if}
 
       <BackToTopButton />

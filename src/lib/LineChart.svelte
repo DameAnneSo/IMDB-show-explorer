@@ -150,128 +150,138 @@
   );
 </script>
 
-<div class="info-header">
-  <span class="rank">#{rank}</span>
-  <span class="show-name-group">
-    <span class="show-value">{showName}</span>
-    {#if isDuplicateName && timeRange}
-      <span class="time-range">({timeRange})</span>
-    {/if}
-  </span>
-  <span class="show-info"
-    ><span class="show-value rating_accent">{overallRating}/10</span>
-    {#if numberOfRatings}
-      <span class="ratings-count">({formatNumberOfRatings(numberOfRatings)} votes)</span>
-    {/if}
-  </span>
-</div>
-<p class="show-genres">{formattedGenres}</p>
-
-<div class="show-details">
-  <h3>
-    <span class="show-value2">{seasons} </span>
-    <span class="show-info"> {seasons === 1 ? 'season' : 'seasons'}</span>
-    <span class="separator">|</span>
-    <span class="show-value2"
-      >{validData.length}
-      <span class="show-info"> episodes</span>
+<div class="line-chart-container">
+  <div class="info-header">
+    <span class="rank">#{rank}</span>
+    <span class="show-name-group">
+      <span class="show-value">{showName}</span>
+      {#if isDuplicateName && timeRange}
+        <span class="time-range">({timeRange})</span>
+      {/if}
     </span>
-    {#if timeRange}
-      <span class="separator">|</span>
-      <span class="show-info">{timeRange}</span>
-    {/if}
-  </h3>
-  <i class="show-storyline">
-    {storyline}
-  </i>
-  <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link">Read more →</a>
-</div>
+    <span class="show-info"
+      ><span class="show-value rating_accent">{overallRating}/10</span>
+      {#if numberOfRatings}
+        <span class="ratings-count">({formatNumberOfRatings(numberOfRatings)} votes)</span>
+      {/if}
+    </span>
+  </div>
+  <p class="show-genres">{formattedGenres}</p>
 
-{#if hasUnratedEpisodes || hasMissingEpisodes}
-  <div class="chart-notes">
-    {#if hasUnratedEpisodes}
-      <p class="note">
-        Note: some episodes have not been rated yet (not aired or insufficient data).
-      </p>
-    {/if}
-    {#if hasMissingEpisodes}
-      <p class="note">Note: bonus episodes with unknown season were not plotted.</p>
+  <div class="show-details">
+    <h3>
+      <span class="show-value2">{seasons} </span>
+      <span class="show-info"> {seasons === 1 ? 'season' : 'seasons'}</span>
+      <span class="separator">|</span>
+      <span class="show-value2"
+        >{validData.length}
+        <span class="show-info"> episodes</span>
+      </span>
+      {#if timeRange}
+        <span class="separator">|</span>
+        <span class="show-info">{timeRange}</span>
+      {/if}
+    </h3>
+    <p class="show-storyline">
+      {storyline}
+    </p>
+    <a href={link} target="_blank" rel="noopener noreferrer" title="IMDB link">Read more →</a>
+  </div>
+
+  <div class="chart-wrapper" style="height:{height}px">
+    <svg
+      class="chart"
+      {width}
+      {height}
+      role="img"
+      aria-label={ariaLabel}
+      onmousemove={handleMouseMove}
+      onmouseleave={handleMouseLeave}
+      onfocus={handleMouseMove}
+      onblur={handleMouseLeave}
+    >
+      <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
+        <Gradient
+          {validData}
+          {xAccessorScaled}
+          {yAccessorScaled}
+          {boundedHeight}
+          gradientId="gradient-{rank}"
+        />
+        <SeasonBands episodeData={validData} {xScale} {boundedHeight} />
+        {#if line}
+          <path class="line" d={line} />
+        {/if}
+        <XAxis {xScale} {height} {margins} />
+        <YAxis {yScale} />
+        <Points
+          episodeData={validData}
+          {xScale}
+          {yScale}
+          {xAccessor}
+          {yAccessor}
+          {width}
+          bestEpisode={bestEpisode()}
+          worstEpisode={worstEpisode()}
+        />
+        <MinMaxRatings
+          {xAccessor}
+          {yAccessor}
+          {xScale}
+          {yScale}
+          bestEpisode={bestEpisode()}
+          worstEpisode={worstEpisode()}
+          {validData}
+        />
+        {#if hoveredPoint}
+          <HoveredPoint
+            x={xAccessorScaled(hoveredPoint)}
+            y={yAccessorScaled(hoveredPoint)}
+            {width}
+          />
+        {/if}
+      </g>
+    </svg>
+
+    {#if hoveredPoint}
+      <Tooltip
+        yAccessor={yAccessor(hoveredPoint)}
+        xAccessorScaled={xAccessorScaled(hoveredPoint)}
+        yAccessorScaled={yAccessorScaled(hoveredPoint)}
+        {width}
+        {margins}
+        {formatYForTooltip}
+        data={hoveredPoint}
+        {isBestEpisode}
+        {isWorstEpisode}
+      />
     {/if}
   </div>
-{/if}
 
-<div class="chart-wrapper" style="height:{height}px">
-  <svg
-    class="chart"
-    {width}
-    {height}
-    role="img"
-    aria-label={ariaLabel}
-    onmousemove={handleMouseMove}
-    onmouseleave={handleMouseLeave}
-    onfocus={handleMouseMove}
-    onblur={handleMouseLeave}
-  >
-    <g transform={`translate(${margins.marginLeft}, ${margins.marginTop})`}>
-      <XAxis {xScale} {height} {margins} />
-      <YAxis {yScale} />
-      <Gradient
-        {validData}
-        {xAccessorScaled}
-        {yAccessorScaled}
-        {boundedHeight}
-        gradientId="gradient-{rank}"
-      />
-      <SeasonBands episodeData={validData} {xScale} {boundedHeight} />
-      {#if line}
-        <path class="line" d={line} />
+  {#if hasUnratedEpisodes || hasMissingEpisodes}
+    <div class="chart-notes">
+      {#if hasUnratedEpisodes}
+        <p class="note">
+          Note: some episodes have not been rated yet (not aired or insufficient data).
+        </p>
       {/if}
-      <Points
-        episodeData={validData}
-        {xScale}
-        {yScale}
-        {xAccessor}
-        {yAccessor}
-        {width}
-        bestEpisode={bestEpisode()}
-        worstEpisode={worstEpisode()}
-      />
-      <MinMaxRatings
-        {xAccessor}
-        {yAccessor}
-        {xScale}
-        {yScale}
-        bestEpisode={bestEpisode()}
-        worstEpisode={worstEpisode()}
-      />
-      {#if hoveredPoint}
-        <HoveredPoint x={xAccessorScaled(hoveredPoint)} y={yAccessorScaled(hoveredPoint)} {width} />
+      {#if hasMissingEpisodes}
+        <p class="note">Note: bonus episodes with unknown season were not plotted.</p>
       {/if}
-    </g>
-  </svg>
-
-  {#if hoveredPoint}
-    <Tooltip
-      yAccessor={yAccessor(hoveredPoint)}
-      xAccessorScaled={xAccessorScaled(hoveredPoint)}
-      yAccessorScaled={yAccessorScaled(hoveredPoint)}
-      {width}
-      {margins}
-      {formatYForTooltip}
-      data={hoveredPoint}
-      {isBestEpisode}
-      {isWorstEpisode}
-    />
+    </div>
   {/if}
 </div>
 
 <style>
+  .line-chart-container {
+    margin-bottom: 3rem;
+  }
   .chart-wrapper {
     position: relative;
     font-size: 12px;
     width: 100%;
     max-width: 600px;
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
   }
   .line {
     fill: none;
@@ -327,6 +337,9 @@
     margin-bottom: 0;
   }
 
+  .show-storyline {
+    color: var(--color-neutral-600);
+  }
   .chart-notes {
     margin-top: 0rem;
   }
