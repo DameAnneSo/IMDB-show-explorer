@@ -1,6 +1,7 @@
 <script>
   import MultiSelect from './MultiSelect.svelte';
   import RangeSlider from './RangeSlider.svelte';
+  import TextSearch from './TextSearch.svelte';
 
   let {
     availableGenres = [],
@@ -165,18 +166,16 @@
         </div>
       </div>
 
-      <!-- Title search filter -->
+      <!-- Title search -->
       <div>
         <label class="block text-sm font-medium text-primary-900 mb-2" for="title-search">
-          Is a show in the IMDb Top 250?
+          Search IMDb Top 250 TV show by title
         </label>
-        <input
+        <TextSearch
           id="title-search"
-          type="text"
           bind:value={showTitleSearch}
-          placeholder="Search by show title..."
-          class="w-full min-h-10 px-3 py-2 text-sm border border-primary-300 rounded-md bg-white text-primary-900 placeholder-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-          aria-label="Search for a show title in the top 250 list"
+          placeholder="Type to search..."
+          label="Search TV show by title"
         />
       </div>
     </fieldset>
