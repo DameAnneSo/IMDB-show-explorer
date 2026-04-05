@@ -359,4 +359,15 @@
     font-size: 12px;
     color: #6b7280;
   }
+
+  .rating_accent {
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background-color: var(--color-primary-100);
+    border-radius: 3px;
+    padding: 0px 4px;
+    margin-left: 0;
+  }
 </style>

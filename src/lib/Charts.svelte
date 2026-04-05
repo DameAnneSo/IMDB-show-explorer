@@ -2,7 +2,7 @@
   import * as d3 from 'd3';
   import LazyLineChart from './LazyLineChart.svelte';
 
-  let { shows = [], episodes = [], showTitleSearch = '' } = $props();
+  let { shows = [], episodes = [] } = $props();
 
   const sortedShows = $derived(shows.sort((a, b) => a.rank - b.rank));
 
@@ -40,27 +40,6 @@
   );
 </script>
 
-<div class="results-note-section">
-  {#if sortedShows.length > 0}
-    <div class="mb-5">
-      <h1 class="text-lg font-semibold leading-none">
-        {sortedShows.length}
-        {sortedShows.length === 1 ? 'result' : 'results'}
-        {sortedShows.length === 1 ? 'matches' : 'match'} the active filters
-      </h1>
-    </div>
-  {:else}
-    <div class="mb-5">
-      {#if showTitleSearch.trim().length > 0}
-        <h1 class="text-lg font-semibold leading-none">
-          Sorry, "{showTitleSearch.trim()}" is not in the top 250!
-        </h1>
-      {:else}
-        <h1 class="text-lg font-semibold leading-none">No results match the active filters</h1>
-      {/if}
-    </div>
-  {/if}
-</div>
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show (show)}
     <LazyLineChart
@@ -95,9 +74,7 @@
 <style>
   .line-charts {
     width: 100%;
-  }
-  .results-note-section {
-    margin-bottom: 3rem;
+    margin-top: 3rem;
   }
 
   small {

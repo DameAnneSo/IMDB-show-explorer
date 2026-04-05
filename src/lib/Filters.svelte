@@ -12,6 +12,7 @@
     selectedLanguages = $bindable([]),
     maxSeasons = $bindable(12),
     showTitleSearch = $bindable(''),
+    resultCount = 0,
     onGenreChange = undefined,
     onLanguageChange = undefined,
     onSeasonsChange = undefined,
@@ -188,8 +189,21 @@
         aria-live="polite"
         aria-atomic="false"
       >
-        <h2 id="active-filters-heading" class="font-semibold text-primary-900 mb-2.5">
-          Active filters
+        <h2
+          id="active-filters-heading"
+          class="font-semibold text-primary-900 mb-2.5"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {#if resultCount > 0}
+            {resultCount}
+            {resultCount === 1 ? 'result' : 'results'}
+            {resultCount === 1 ? 'matches' : 'match'} the active filters
+          {:else if showTitleSearch.trim().length > 0}
+            Sorry, "{showTitleSearch.trim()}" is not in the top 250!
+          {:else}
+            No results match the active filters
+          {/if}
         </h2>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -331,10 +345,22 @@
     {:else}
       <!-- No filters message -->
       <div role="region" aria-labelledby="active-filters-heading">
-        <h2 id="active-filters-heading" class="font-semibold text-primary-900 mb-2">
-          Active filters
+        <h2
+          id="active-filters-heading"
+          class="font-semibold text-primary-900 mb-2"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {#if resultCount > 0}
+            {resultCount}
+            {resultCount === 1 ? 'TV show' : 'TV shows'} to explore
+          {:else if showTitleSearch.trim().length > 0}
+            Sorry, "{showTitleSearch.trim()}" is not in the top 250!
+          {:else}
+            No results match the active filters
+          {/if}
+          <span class="text-primary-700 text-sm"> • No filters applied</span>
         </h2>
-        <div class="text-primary-700 text-sm">No filters applied</div>
       </div>
     {/if}
   </div>

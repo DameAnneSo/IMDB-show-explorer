@@ -152,8 +152,6 @@
 <div class="app-wrapper">
   <main class="main-content">
     <div class="content-container">
-      <h1 class="page-title">IMDb best-rated TV shows</h1>
-
       <Intro />
     </div>
 
@@ -191,6 +189,7 @@
             {availableLanguages}
             {minSeasonsInDataset}
             {maxSeasonsInDataset}
+            resultCount={filteredShows().length}
             bind:selectedGenres
             bind:selectedLanguages
             bind:maxSeasons
@@ -203,7 +202,7 @@
     <div class="content-container">
       <!-- Charts component -->
       {#if !isLoading && !loadError}
-        <Charts shows={filteredShows()} episodes={filteredEpisodes()} {showTitleSearch} />
+        <Charts shows={filteredShows()} episodes={filteredEpisodes()} />
       {/if}
 
       <BackToTopButton />
@@ -227,32 +226,6 @@
     max-width: 72rem;
     margin: 0 auto;
     padding: 0 1.5rem;
-  }
-
-  .page-title {
-    font-size: 2.5rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    margin-top: 1.5rem;
-    color: var(--color-primary);
-    line-height: 1.2;
-    word-wrap: break-word;
-  }
-
-  @media (min-width: 640px) {
-    .page-title {
-      font-size: 3rem;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .page-title {
-      font-size: 3.5rem;
-      margin-bottom: 2.5rem;
-    }
   }
 
   .filters-section {
