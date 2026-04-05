@@ -23,7 +23,7 @@
   const margins = {
     marginTop: 40,
     marginRight: 55,
-    marginBottom: 65,
+    marginBottom: 40,
     marginLeft: 55,
   };
 
@@ -40,21 +40,6 @@
   );
 </script>
 
-<div class="results-note-section">
-  {#if sortedShows.length > 0}
-    <div class="mb-5">
-      <h1 class="text-lg font-semibold leading-none">
-        {sortedShows.length}
-        {sortedShows.length === 1 ? 'result' : 'results'}
-        {sortedShows.length === 1 ? 'matches' : 'match'} the active filters
-      </h1>
-    </div>
-  {:else}
-    <div class="mb-5">
-      <h1 class="text-lg font-semibold leading-none">No results match the active filters</h1>
-    </div>
-  {/if}
-</div>
 <div class="line-charts" bind:clientWidth={width}>
   {#each sortedShows as show (show)}
     <LazyLineChart
@@ -89,9 +74,7 @@
 <style>
   .line-charts {
     width: 100%;
-  }
-  .results-note-section {
-    margin-bottom: 3rem;
+    margin-top: 3rem;
   }
 
   small {

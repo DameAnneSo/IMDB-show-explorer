@@ -11,6 +11,7 @@
   let selectedGenres = $state([]);
   let selectedLanguages = $state([]);
   let maxSeasons = $state(42);
+  let showTitleSearch = $state('');
 
   let availableGenres = $state([]);
   let availableLanguages = $state([]);
@@ -43,21 +44,6 @@
         fetch('/data/metadata.json').then((r) => r.json()),
       ]);
 
-      const showData = seriesData.map((d) => ({
-        rank: parseInt(d.seriesRank) || 0,
-        name: d.seriesTitle?.trim() || '',
-        genres: d.genres?.trim() || '',
-        language: d.language?.trim() || '',
-        seasons: parseInt(d.seasons) || 0,
-        episodes: parseInt(d.episodes) || 0,
-        overall_ratings: parseFloat(d.overallRating) || 0,
-        storyline: d.storyline?.trim() || '',
-        genresList: d.genres?.trim() || '',
-        link: d.seriesLink?.trim() || '',
-        numberOfRatings: parseInt(d.numberOfRatings) || 0,
-        timeRange: d.timeRange?.trim() || '',
-      }));
-
       const episodesData = episodeData.map((d) => ({
         seriesRank: parseInt(d.seriesRank) || 0,
         seriesTitle: d.seriesTitle?.trim() || '',
@@ -69,6 +55,29 @@
         episodeTitle: d.episodeTitle?.trim() || '',
         episodeSummary: d.episodeSummary?.trim() || '',
         episodeLink: d.episodeLink?.trim() || '',
+      }));
+
+      // Calculate max season for each show from episodes data
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const maxSeasonsByTitle = new Map();
+      episodesData.forEach((episode) => {
+        const currentMax = maxSeasonsByTitle.get(episode.seriesTitle) || 0;
+        maxSeasonsByTitle.set(episode.seriesTitle, Math.max(currentMax, episode.episodeSeason));
+      });
+
+      const showData = seriesData.map((d) => ({
+        rank: parseInt(d.seriesRank) || 0,
+        name: d.seriesTitle?.trim() || '',
+        genres: d.genres?.trim() || '',
+        language: d.language?.trim() || '',
+        seasons: maxSeasonsByTitle.get(d.seriesTitle?.trim()) || parseInt(d.seasons) || 0,
+        episodes: parseInt(d.episodes) || 0,
+        overall_ratings: parseFloat(d.overallRating) || 0,
+        storyline: d.storyline?.trim() || '',
+        genresList: d.genres?.trim() || '',
+        link: d.seriesLink?.trim() || '',
+        numberOfRatings: parseInt(d.numberOfRatings) || 0,
+        timeRange: d.timeRange?.trim() || '',
       }));
 
       shows = showData;
@@ -118,6 +127,11 @@
         if (!hasLanguage) return false;
       }
 
+      // Title search filter
+      if (showTitleSearch.trim().length > 0) {
+        if (!show.name.toLowerCase().includes(showTitleSearch.trim().toLowerCase())) return false;
+      }
+
       return true;
     });
   });
@@ -138,8 +152,6 @@
 <div class="app-wrapper">
   <main class="main-content">
     <div class="content-container">
-      <h1 class="page-title">IMDb best-rated TV shows</h1>
-
       <Intro />
     </div>
 
@@ -177,9 +189,11 @@
             {availableLanguages}
             {minSeasonsInDataset}
             {maxSeasonsInDataset}
+            resultCount={filteredShows().length}
             bind:selectedGenres
             bind:selectedLanguages
             bind:maxSeasons
+            bind:showTitleSearch
           />
         {/if}
       </div>
@@ -212,32 +226,6 @@
     max-width: 72rem;
     margin: 0 auto;
     padding: 0 1.5rem;
-  }
-
-  .page-title {
-    font-size: 2.5rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    margin-top: 1.5rem;
-    color: var(--color-primary);
-    line-height: 1.2;
-    word-wrap: break-word;
-  }
-
-  @media (min-width: 640px) {
-    .page-title {
-      font-size: 3rem;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .page-title {
-      font-size: 3.5rem;
-      margin-bottom: 2.5rem;
-    }
   }
 
   .filters-section {

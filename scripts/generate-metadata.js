@@ -37,7 +37,6 @@ for (let i = 1; i < lines.length; i++) {
     title: cols[1],
     genres: cols[9], // Index 9: genres
     language: cols[10], // Index 10: language
-    seasons: parseInt(cols[7]), // Index 7: seasons
   };
   shows.push(show);
 }
@@ -61,6 +60,11 @@ for (let i = 1; i < episodesLines.length; i++) {
     seriesMaxSeasons.set(seriesTitle, Math.max(currentMax, season));
   }
 }
+
+// Add max seasons from episodes data to shows
+shows.forEach((show) => {
+  show.seasons = seriesMaxSeasons.get(show.title) || 0;
+});
 
 // Compute metadata
 const genresSet = new Set();

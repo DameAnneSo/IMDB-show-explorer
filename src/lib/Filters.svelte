@@ -1,6 +1,7 @@
 <script>
   import MultiSelect from './MultiSelect.svelte';
   import RangeSlider from './RangeSlider.svelte';
+  import TextSearch from './TextSearch.svelte';
 
   let {
     availableGenres = [],
@@ -10,21 +11,30 @@
     selectedGenres = $bindable([]),
     selectedLanguages = $bindable([]),
     maxSeasons = $bindable(12),
+    showTitleSearch = $bindable(''),
+    resultCount = 0,
     onGenreChange = undefined,
     onLanguageChange = undefined,
     onSeasonsChange = undefined,
   } = $props();
 
   const hasActiveFilters = $derived(
-    selectedGenres.length > 0 || selectedLanguages.length > 0 || maxSeasons < maxSeasonsInDataset,
+    selectedGenres.length > 0 ||
+      selectedLanguages.length > 0 ||
+      maxSeasons < maxSeasonsInDataset ||
+      showTitleSearch.trim().length > 0,
   );
 
   const clearAllFilters = () => {
     const totalFilters =
-      selectedGenres.length + selectedLanguages.length + (maxSeasons < maxSeasonsInDataset ? 1 : 0);
+      selectedGenres.length +
+      selectedLanguages.length +
+      (maxSeasons < maxSeasonsInDataset ? 1 : 0) +
+      (showTitleSearch.trim().length > 0 ? 1 : 0);
     selectedGenres = [];
     selectedLanguages = [];
     maxSeasons = maxSeasonsInDataset;
+    showTitleSearch = '';
     announceToScreenReader(`All ${totalFilters} filters cleared`);
   };
 
@@ -156,6 +166,19 @@
           Shows with {maxSeasons} season{maxSeasons !== 1 ? 's' : ''} or fewer
         </div>
       </div>
+
+      <!-- Title search -->
+      <div>
+        <label class="block text-sm font-medium text-primary-900 mb-2" for="title-search">
+          Search IMDb Top 250 TV show by title
+        </label>
+        <TextSearch
+          id="title-search"
+          bind:value={showTitleSearch}
+          placeholder="Type to search..."
+          label="Search TV show by title"
+        />
+      </div>
     </fieldset>
 
     <!-- Active filters display with pills -->
@@ -166,8 +189,21 @@
         aria-live="polite"
         aria-atomic="false"
       >
-        <h2 id="active-filters-heading" class="font-semibold text-primary-900 mb-2.5">
-          Active filters
+        <h2
+          id="active-filters-heading"
+          class="font-semibold text-primary-900 mb-2.5"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {#if resultCount > 0}
+            {resultCount}
+            {resultCount === 1 ? 'result' : 'results'}
+            {resultCount === 1 ? 'matches' : 'match'} the active filters
+          {:else if showTitleSearch.trim().length > 0}
+            Sorry, "{showTitleSearch.trim()}" is not in the top 250!
+          {:else}
+            No results match the active filters
+          {/if}
         </h2>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -241,6 +277,39 @@
             </div>
           {/each}
 
+          <!-- Title search pill -->
+          {#if showTitleSearch.trim().length > 0}
+            <div
+              class="flex items-center bg-white text-primary-900 border border-primary-400 rounded-md px-2 py-1 text-sm shadow-sm"
+            >
+              <span class="font-medium">Title:</span>
+              <span class="ml-1">{showTitleSearch}</span>
+              <button
+                type="button"
+                class="ml-2 text-primary-700 hover:text-primary-900 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 rounded p-0.5 transition-colors cursor-pointer"
+                onclick={() => {
+                  showTitleSearch = '';
+                }}
+                aria-label="Clear title search filter"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          {/if}
+
           <!-- Seasons pill -->
           {#if maxSeasons < maxSeasonsInDataset}
             <div
@@ -276,10 +345,22 @@
     {:else}
       <!-- No filters message -->
       <div role="region" aria-labelledby="active-filters-heading">
-        <h2 id="active-filters-heading" class="font-semibold text-primary-900 mb-2">
-          Active filters
+        <h2
+          id="active-filters-heading"
+          class="font-semibold text-primary-900 mb-2"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {#if resultCount > 0}
+            {resultCount}
+            {resultCount === 1 ? 'TV show' : 'TV shows'} to explore
+          {:else if showTitleSearch.trim().length > 0}
+            Sorry, "{showTitleSearch.trim()}" is not in the top 250!
+          {:else}
+            No results match the active filters
+          {/if}
+          <span class="text-primary-700 text-sm"> • No filters applied</span>
         </h2>
-        <div class="text-primary-700 text-sm">No filters applied</div>
       </div>
     {/if}
   </div>

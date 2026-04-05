@@ -22,7 +22,7 @@
     </g>
   {/each}
 
-  <text class="axis__label" x={-20} y={-15}> rating </text>
+  <text class="axis__label" x={-10} y={-15} text-anchor="end"> rating </text>
 </g>
 
 <style>
